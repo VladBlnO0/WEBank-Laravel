@@ -1,0 +1,11 @@
+@import 'tailwindcss';
+@plugin "@tailwindcss/forms";
+
+@theme {
+    /* Colors */
+    --color-brand: #6366f1;
+    --color-brand-light: #818cf8;
+
+    /* Typography */
+    --font-sans: Figtree, system-ui, sans-serif;
+}
