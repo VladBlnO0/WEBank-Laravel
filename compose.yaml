@@ -101,6 +101,12 @@ services:
             - '/dev/shm:/dev/shm'
         networks:
             - sail
+    adminer:
+        image: 'adminer:latest'
+        ports:
+            - '${FORWARD_ADMINER_PORT:-8080}:8080'
+        networks:
+            - sail
 networks:
     sail:
         driver: bridge
