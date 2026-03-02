@@ -11,17 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('accounts', function (Blueprint $table) {
+        Schema::create('cards', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(App\Models\User::class, 'user_id')->constrained('users');
 
-            $table->string('iban', 34);
-
-            // balance with 15 digits in total and 2 decimal places
-            $table->decimal('balance', 15);
+            $table->string('pan', 10);
+            $table->string('cvv', 3);
+            $table->string('pin_hash', 64);
+            $table->date('expire_date');
+            $table->string('type', 10);
+            $table->string('status', 10);
+            $table->decimal('limit_amount', 15);
 
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('accounts');
+        Schema::dropIfExists('cards');
     }
 };

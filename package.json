@@ -8,13 +8,13 @@
         "lint": "eslint resources/js --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore --fix"
     },
     "devDependencies": {
-        "@eslint-react/eslint-plugin": "^2.13.0",
-        "@eslint/css": "^0.14.1",
-        "@eslint/js": "^10.0.1",
-        "@eslint/json": "^1.0.1",
-        "@eslint/markdown": "^7.5.1",
-        "@headlessui/react": "^2.2.9",
-        "@inertiajs/react": "^2.3.17",
+        "@eslint-react/eslint-plugin": "^2",
+        "@eslint/css": "^0",
+        "@eslint/js": "^10",
+        "@eslint/json": "^1",
+        "@eslint/markdown": "^7",
+        "@headlessui/react": "^2",
+        "@inertiajs/react": "^2",
         "@tailwindcss/forms": "^0.5.11",
         "@tailwindcss/vite": "^4.2.1",
         "@types/node": "^25.3.2",
@@ -26,10 +26,8 @@
         "autoprefixer": "^10.4.12",
         "axios": "^1.11.0",
         "concurrently": "^9.0.1",
-        "eslint": "^9.39.3",
-        "eslint-config-prettier": "^10.1.8",
-        "eslint-plugin-prettier": "^5.5.5",
-        "eslint-plugin-react": "^7.37.5",
+        "eslint": "^10",
+        "eslint-plugin-prettier": "^5",
         "globals": "^17.4.0",
         "laravel-vite-plugin": "^2.1.0",
         "postcss": "^8.5.6",
@@ -44,6 +42,7 @@
         "vite": "^7.3.1"
     },
     "dependencies": {
-        "@tailwindcss/postcss": "^4.2.1"
+        "@tailwindcss/postcss": "^4.2.1",
+        "clsx": "^2.1.1"
     }
 }
