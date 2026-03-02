@@ -28,6 +28,10 @@
         @apply block w-full rounded-md border border-gray-300 p-2 text-gray-500 shadow-sm focus:border-gray-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-500 dark:focus:ring-blue-600;
     }
 
+    .footer {
+        @apply bg-white p-3 text-sm text-gray-500 dark:bg-gray-900;
+    }
+
     .input-error {
         @apply block w-full rounded-md p-2 text-red-500 shadow-sm;
         margin-top: 0.5rem;
@@ -44,6 +48,10 @@
     .btn-primary {
         @apply items-center rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700;
         text-align: center;
+    }
+
+    .btn-sidebar {
+        @apply /* width: 100%; padding: 12px 24px; display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--color-white); background: var(--color-button); text-decoration: none; font-weight: bold; border-radius: 8px; transition: 0.3s ease; */ items-center rounded bg-gray-600 px-4 py-2 font-semibold text-white hover:bg-blue-700;
     }
 
     .btn-normal {

@@ -19,3 +19,16 @@ export type PageProps<
   };
   ziggy: Config & { location: string };
 };
+
+export type DashboardMainProps = {
+  userData: Array<{ balance: number; number: string }>;
+  transactions: Array<{
+    id: number;
+    label: string;
+    type: string;
+    date: string;
+    description?: string;
+    status?: string;
+    amount: number;
+  }>;
+};

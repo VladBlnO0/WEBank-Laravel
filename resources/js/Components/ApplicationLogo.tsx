@@ -3,7 +3,7 @@ import { SVGAttributes } from 'react';
 
 export default function ApplicationLogo(props: SVGAttributes<SVGElement>) {
   return (
-    <svg {...props} viewBox="0 0 47 47">
+    <svg {...props} width={47} height={47} viewBox="0 0 47 47">
       <path d="M23.501,7.705c0.55,0,1-0.45,1-1V1c0-0.55-0.45-1-1-1s-1,0.45-1,1v5.704C22.501,7.254,22.951,7.705,23.501,7.705z" />
       <path d="M23.501,39.295c-0.55,0-1,0.45-1,1V46c0,0.55,0.45,1,1,1s1-0.45,1-1v-5.704C24.501,39.746,24.051,39.295,23.501,39.295z" />
       <path
