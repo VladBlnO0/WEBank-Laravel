@@ -1,21 +1,26 @@
 <?php
 
 use App\Models\ServiceProvider;
-use App\Models\Transaction;
+use App\Models\Card;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('service_payments', function (Blueprint $table) {
             $table->id();
-            $table->integer('meter_reading');
-            $table->foreignIdFor(Transaction::class)->constrained('transactions');
+
+            $table->decimal('amount', 15, 2)->default(0);
+            $table->dateTime('next_date');
+            $table->boolean('is_payed');
+
+            $table->foreignIdFor(Card::class)->constrained('cards');
             $table->foreignIdFor(ServiceProvider::class)->constrained('service_providers');
+
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

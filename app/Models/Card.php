@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Card extends Model
 {
     use HasFactory;
-    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -17,6 +17,7 @@ class Card extends Model
      * @var array
      */
     protected $fillable = [
+        'account_id',
         'pan',
         'cvv',
         'pin_hash',
@@ -28,13 +29,21 @@ class Card extends Model
 
     /**
      * Get the attributes that should be cast.
-     *
-     * @return array
      */
     protected function casts(): array
     {
         return [
             'expire_date' => 'date',
         ];
+    }
+
+    public function belongToUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function hasTransactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
     }
 }

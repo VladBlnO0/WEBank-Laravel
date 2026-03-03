@@ -2,28 +2,23 @@
 
 namespace Database\Factories;
 
+use App\Enums\TransactionType;
 use App\Models\Transaction;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Carbon;
 
 class TransactionFactory extends Factory
 {
     protected $model = Transaction::class;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array
-     */
     public function definition(): array
     {
         return [
-            'type' => $this->faker->word(),
-            'amount' => $this->faker->randomFloat(),
-            'status' => $this->faker->word(),
-            'description' => $this->faker->text(),
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
+
+            'type' => $this->faker->randomElement(TransactionType::class),
+            'amount' => $this->faker->randomFloat(2, 10, 5000),
+            'description' => $this->faker->sentence(),
+
+            'created_at' => $this->faker->dateTimeThisYear(),
         ];
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Card;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,11 +14,11 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(Card::class, 'from_card_id')->constrained('cards');
+            $table->foreignIdFor(Card::class, 'to_card_id')->constrained('cards');
 
-            $table->foreignIdFor(\App\Models\Account::class, 'account_id')->constrained('accounts');
             $table->string('type', 50);
             $table->decimal('amount', 15, 2);
-            $table->string('status', 10);
             $table->text('description')->nullable();
 
             $table->timestamps();
