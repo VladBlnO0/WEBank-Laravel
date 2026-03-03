@@ -13,10 +13,8 @@ class Account extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'card_num',
+        'iban',
         'balance',
-        'currency',
-        'type',
     ];
 
     public function user(): BelongsTo

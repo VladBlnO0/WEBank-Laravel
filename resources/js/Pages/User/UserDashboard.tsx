@@ -31,8 +31,6 @@ export default function UserDashboard({ userData, transactions }: Props) {
     }, 1000);
   };
 
-  // const mainCard = userData[0];
-
   const formatCard = (value: string) => {
     return value
       .replace(/\D/g, '')
@@ -62,16 +60,14 @@ export default function UserDashboard({ userData, transactions }: Props) {
                         {new Intl.NumberFormat('en-US', {
                           style: 'currency',
                           currency: 'USD',
-                        }).format(123)}
-                        {/*/ .format(Number(mainCard.balance))} */}
+                        }).format(Number(mainCard.balance))}
                       </div>
                       <div
                         className="small position-relative text-muted"
                         onMouseEnter={handleMouseEnter}
                         onMouseLeave={handleMouseLeave}
                       >
-                        1111 1111 1111{' '}
-                        {/* **** **** **** {mainCard.number.slice(-4)} */}
+                         **** **** **** {mainCard.number.slice(-4)}
                       </div>
                     </>
                   )}
@@ -90,55 +86,53 @@ export default function UserDashboard({ userData, transactions }: Props) {
                   paddingRight: '6px',
                 }}
               >
-                {/* {transactions.map((tx) => (
-                    <div
-                      key={tx.id}
-                      className="d-flex justify-content-between align-items-center bg-light rounded border p-3"
-                    >
-                      <div className="w-100">
-                        <div className="d-flex justify-content-between align-items-center mb-2">
-                          <div className="fw-medium">
-                            {tx.label}
-                            <span
-                              className={`badge text-uppercase ms-2 ${
-                                tx.type === 'Надіслано'
-                                  ? 'bg-danger'
-                                  : tx.type === 'Отримано'
-                                    ? 'bg-success'
-                                    : 'bg-primary'
-                              }`}
-                            >
-                              {tx.type}
-                            </span>
-                          </div>
-                          <div className="small text-muted">
-                            {new Date(tx.date).toLocaleDateString()}
-                          </div>
+                {transactions.map((tx) => (
+                  <div
+                    key={tx.id}
+                    className="d-flex justify-content-between align-items-center bg-light rounded border p-3"
+                  >
+                    <div className="w-100">
+                      <div className="d-flex justify-content-between align-items-center mb-2">
+                        <div className="fw-medium">
+                          {tx.label}
+                          <span
+                            className={`badge text-uppercase ms-2 ${
+                              tx.type === 'Надіслано'
+                                ? 'bg-danger'
+                                : tx.type === 'Отримано'
+                                  ? 'bg-success'
+                                  : 'bg-primary'
+                            }`}
+                          >
+                            {tx.type}
+                          </span>
                         </div>
-
-                        {tx.description && (
-                          <div className="small text-muted mb-1">
-                            {tx.description}
-                          </div>
-                        )}
-
-                        {tx.status && (
-                          <div className="small text-muted mb-2">
-                            {tx.status}
-                          </div>
-                        )}
-
-                        <div
-                          className={`fw-bold text-end ${
-                            tx.amount < 0 ? 'text-danger' : 'text-success'
-                          }`}
-                        >
-                          {tx.amount > 0 ? '+' : '-'}$
-                          {Math.abs(tx.amount).toFixed(2)}
+                        <div className="small text-muted">
+                          {new Date(tx.date).toLocaleDateString()}
                         </div>
                       </div>
+
+                      {tx.description && (
+                        <div className="small text-muted mb-1">
+                          {tx.description}
+                        </div>
+                      )}
+
+                      {tx.status && (
+                        <div className="small text-muted mb-2">{tx.status}</div>
+                      )}
+
+                      <div
+                        className={`fw-bold text-end ${
+                          tx.amount < 0 ? 'text-danger' : 'text-success'
+                        }`}
+                      >
+                        {tx.amount > 0 ? '+' : '-'}$
+                        {Math.abs(tx.amount).toFixed(2)}
+                      </div>
                     </div>
-                  ))} */}
+                  </div>
+                ))}
               </div>
             </div>
           }

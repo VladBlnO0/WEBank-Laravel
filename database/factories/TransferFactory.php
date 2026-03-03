@@ -3,12 +3,13 @@
 namespace Database\Factories;
 
 use App\Models\Transaction;
+use App\Models\Transfer;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
-class TransactionFactory extends Factory
+class TransferFactory extends Factory
 {
-    protected $model = Transaction::class;
+    protected $model = Transfer::class;
 
     /**
      * Define the model's default state.
@@ -18,12 +19,10 @@ class TransactionFactory extends Factory
     public function definition(): array
     {
         return [
-            'type' => $this->faker->word(),
-            'amount' => $this->faker->randomFloat(),
-            'status' => $this->faker->word(),
-            'description' => $this->faker->text(),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
+
+            'transaction_id' => Transaction::factory(),
         ];
     }
 }

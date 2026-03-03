@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Transaction;
+use App\Models\Card;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
-class TransactionFactory extends Factory
+class CardFactory extends Factory
 {
-    protected $model = Transaction::class;
+    protected $model = Card::class;
 
     /**
      * Define the model's default state.
@@ -18,10 +18,12 @@ class TransactionFactory extends Factory
     public function definition(): array
     {
         return [
+            'pan' => $this->faker->word(),
+            'cvv' => $this->faker->randomNumber(),
+            'pin_hash' => $this->faker->word(),
+            'expire_date' => Carbon::now(),
             'type' => $this->faker->word(),
-            'amount' => $this->faker->randomFloat(),
-            'status' => $this->faker->word(),
-            'description' => $this->faker->text(),
+            'limit_amount' => $this->faker->randomFloat(),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];

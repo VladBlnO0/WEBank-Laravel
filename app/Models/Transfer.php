@@ -4,12 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Transaction extends Model
+class Transfer extends Model
 {
     use HasFactory;
-    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -17,9 +16,12 @@ class Transaction extends Model
      * @var array
      */
     protected $fillable = [
-        'type',
-        'amount',
-        'status',
-        'description',
+        'transaction_id',
+        'receiver_iban',
     ];
+
+    public function transaction(): BelongsTo
+    {
+        return $this->belongsTo(related: Transaction::class);
+    }
 }
