@@ -4,7 +4,9 @@ namespace Database\Seeders;
 
 use App\Models\Card;
 use App\Models\ServicePayment;
+use App\Models\ServiceProvider;
 use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -14,8 +16,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $users = \App\Models\User::factory(10)->create();
-        $providers = \App\Models\ServiceProvider::factory(10)->create();
+        $users = User::factory(10)->create();
+        User::factory()->create([
+           'email' => '1@1',
+       ]);
+        $providers = ServiceProvider::factory(10)->create();
 
         $users->each(function ($user) use ($providers) {
             Card::factory(rand(1, 2))->create([

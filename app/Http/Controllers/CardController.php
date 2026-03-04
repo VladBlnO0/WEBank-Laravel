@@ -2,63 +2,57 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Account;
+use App\Models\Card;
 use Illuminate\Http\Request;
 
-class AccountController extends Controller
+class CardController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        return Card::all();
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        //
-    }
+    public function create() {}
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
+        return Card::create($request->all());
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Account $account)
+    public function show(Card $card)
     {
-        //
+        return $card;
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Account $account)
+    public function edit(Card $card)
     {
-        //
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Account $account)
+    public function update(Request $request, Card $card)
     {
-        //
+        $card->update($request->all());
+        return $card;
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Account $account)
+    public function destroy(Card $card)
     {
         //
     }

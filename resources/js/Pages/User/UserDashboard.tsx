@@ -1,20 +1,21 @@
 import SidebarMenu from '@/Components/Sidebar/SidebarMenu';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Card } from '@/types';
 import { Head } from '@inertiajs/react';
-import { useRef, useState } from 'react';
-type Props = {
-  userData: Array<{ balance: number; number: string }>;
-  transactions: Array<{
-    id: number;
-    label: string;
-    type: string;
-    date: string;
-    description?: string;
-    status?: string;
-    amount: number;
-  }>;
-};
-export default function UserDashboard({ userData, transactions }: Props) {
+import { useEffect, useRef, useState } from 'react';
+
+export default function UserDashboard({ userData = [] as Card[] }) {
+  const [balance, setBalance] = useState<number>(() =>
+    Number(userData?.[0]?.balance ?? 0),
+  );
+  const [cardNumber, setCardNumber] = useState<string>(
+    () => userData?.[0]?.number ?? '',
+  );
+  useEffect(() => {
+    setBalance(Number(userData?.[0]?.balance ?? 0));
+    setCardNumber(userData?.[0]?.number ?? '');
+  }, [userData]);
+
   const [showCardNumberTooltip, setShowCardNumberTooltip] = useState(false);
   const hoverTimeout = useRef<number | null>(null);
 
@@ -31,12 +32,13 @@ export default function UserDashboard({ userData, transactions }: Props) {
     }, 1000);
   };
 
-  const formatCard = (value: string) => {
-    return value
-      .replace(/\D/g, '')
-      .replace(/(.{4})/g, '$1 ')
-      .trim();
-  };
+  // const formatCard = (value: string) => {
+  //   return value
+  //     .replace(/\D/g, '')
+  //     .replace(/(.{4})/g, '$1 ')
+  //     .trim();
+  // };
+  // const mainCard = userData[0] ?? { balance: 0, number: '' };
 
   return (
     <AuthenticatedLayout>
@@ -44,99 +46,12 @@ export default function UserDashboard({ userData, transactions }: Props) {
 
       <div className="flex overflow-hidden rounded p-2 shadow">
         <SidebarMenu />
-        <main className="grow p-4">
-          {
-            <div
-              className="card position-relative mx-auto mb-4 p-4"
-              style={{ maxWidth: '320px' }}
-            >
-              <div className="d-flex justify-content-between align-items-start">
-                <div>
-                  {/* {mainCard && ( */}
-                  {true && (
-                    <>
-                      <div className="text-muted">Головна картка</div>
-                      <div className="fs-3 fw-bold">
-                        {new Intl.NumberFormat('en-US', {
-                          style: 'currency',
-                          currency: 'USD',
-                        }).format(Number(mainCard.balance))}
-                      </div>
-                      <div
-                        className="small position-relative text-muted"
-                        onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave}
-                      >
-                         **** **** **** {mainCard.number.slice(-4)}
-                      </div>
-                    </>
-                  )}
-                </div>
-                <i className="bi bi-credit-card fs-5 text-muted"></i>
-              </div>
-            </div>
-          }
-          {
-            <div className="card p-4">
-              <h2 className="fs-5 fw-semibold mb-3">Транзакції</h2>
-              <div
-                className="vstack gap-3 overflow-auto"
-                style={{
-                  maxHeight: '400px',
-                  paddingRight: '6px',
-                }}
-              >
-                {transactions.map((tx) => (
-                  <div
-                    key={tx.id}
-                    className="d-flex justify-content-between align-items-center bg-light rounded border p-3"
-                  >
-                    <div className="w-100">
-                      <div className="d-flex justify-content-between align-items-center mb-2">
-                        <div className="fw-medium">
-                          {tx.label}
-                          <span
-                            className={`badge text-uppercase ms-2 ${
-                              tx.type === 'Надіслано'
-                                ? 'bg-danger'
-                                : tx.type === 'Отримано'
-                                  ? 'bg-success'
-                                  : 'bg-primary'
-                            }`}
-                          >
-                            {tx.type}
-                          </span>
-                        </div>
-                        <div className="small text-muted">
-                          {new Date(tx.date).toLocaleDateString()}
-                        </div>
-                      </div>
-
-                      {tx.description && (
-                        <div className="small text-muted mb-1">
-                          {tx.description}
-                        </div>
-                      )}
-
-                      {tx.status && (
-                        <div className="small text-muted mb-2">{tx.status}</div>
-                      )}
-
-                      <div
-                        className={`fw-bold text-end ${
-                          tx.amount < 0 ? 'text-danger' : 'text-success'
-                        }`}
-                      >
-                        {tx.amount > 0 ? '+' : '-'}$
-                        {Math.abs(tx.amount).toFixed(2)}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          }
-        </main>
+        <ul>
+          {userData.map((item) => (
+            // The 'key' prop is important for performance and identifying elements
+            <li key={item.id}>{item.number}</li>
+          ))}
+        </ul>
       </div>
 
       <footer className="footer">© 2025 Bank. Всі права захищені.</footer>

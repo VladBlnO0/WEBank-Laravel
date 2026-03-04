@@ -19,8 +19,12 @@ class Transaction extends Model
         'account_id',
         'type',
         'amount',
-        'status',
         'description',
+    ];
+
+    protected array $sortable = [
+        'amount',
+        'created_at',
     ];
 
     public function belongsToCard(): BelongsTo
