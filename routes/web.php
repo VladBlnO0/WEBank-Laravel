@@ -8,15 +8,14 @@ use Inertia\Inertia;
 Route::get('/', function () {
     return redirect()->route('login');
 });
-
-// Public login page (Inertia)
 Route::get('/login', function () {
     return Inertia::render('Auth/Login');
 })->name('login')->middleware('guest');
 
-// Protected routes for authenticated users
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\UserDashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/user-dashboard', [App\Http\Controllers\UserDashboardController::class, 'index'])->name('user-dashboard');
 
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -30,11 +30,6 @@
     .input {
         @apply block w-full rounded-md border border-gray-300 p-2 text-gray-500 shadow-sm focus:border-gray-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-500 dark:focus:ring-blue-600;
     }
-
-    .footer {
-        @apply bg-white p-3 text-sm text-gray-500 dark:bg-gray-900;
-    }
-
     .input-error {
         @apply block w-full rounded-md p-2 text-red-500 shadow-sm;
     }

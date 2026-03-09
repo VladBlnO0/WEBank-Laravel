@@ -17,27 +17,27 @@ class UserDashboardController extends Controller
         $user = Auth::user();
 
         /**
-         * @var object
+         * @var object $cards
          */
         $cards = $user->hasCards;
 
         $userCardIds = $cards->pluck('id');
-        // $transactions = Transaction::whereIn('from_card_id', $userCardIds)
-        //     ->orWhereIn('to_card_id', $userCardIds)
-        //     ->latest()
-        //     ->get()
-        //     ->map(function ($transaction) use ($userCardIds) {
-        //         $isSent = $userCardIds->contains($transaction->from_card_id);
+         $transactions = Transaction::whereIn('from_card_id', $userCardIds)
+             ->orWhereIn('to_card_id', $userCardIds)
+             ->latest()
+             ->get()
+             ->map(function ($transaction) use ($userCardIds) {
+                 $isSent = $userCardIds->contains($transaction->from_card_id);
 
-        //         return [
-        //             'id' => $transaction->id,
-        //             'label' => $transaction->description ?? 'Transaction',
-        //             'type' => $isSent ? 'Надіслано' : 'Отримано',
-        //             'date' => $transaction->created_at->toDateString(),
-        //             'description' => $transaction->description,
-        //             'amount' => $isSent ? -$transaction->amount : $transaction->amount,
-        //         ];
-        //     });
+                 return [
+                     'id' => $transaction->id,
+                     'label' => $transaction->description ?? 'Transaction',
+                     'type' => $isSent ? 'Надіслано' : 'Отримано',
+                     'date' => $transaction->created_at->toDateString(),
+                     'description' => $transaction->description,
+                     'amount' => $isSent ? -$transaction->amount : $transaction->amount,
+                 ];
+             });
 
         $userData = $cards->map(fn ($card) => [
             'id' => $card->id,
@@ -47,7 +47,7 @@ class UserDashboardController extends Controller
 
         return Inertia::render('User/UserDashboard', [
             'userData' => $userData,
-            // 'transactions' => $transactions,
+             'transactions' => $transactions,
         ]);
     }
 }

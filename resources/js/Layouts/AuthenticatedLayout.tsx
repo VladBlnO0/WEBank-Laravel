@@ -1,5 +1,6 @@
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
+import Footer from '@/Components/Footer';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import type { User } from '@/types';
@@ -16,7 +17,7 @@ export default function Authenticated({
     useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+    <div className="bg-gray-100 dark:bg-gray-900">
       <nav className="border-b border-gray-100 bg-white dark:border-gray-700 dark:bg-gray-800">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 justify-between">
@@ -38,8 +39,8 @@ export default function Authenticated({
 
               <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                 <NavLink
-                  href={route('dashboard')}
-                  active={route().current('dashboard')}
+                  href={route('user-dashboard')}
+                  active={route().current('user-dashboard')}
                 >
                   User Dashboard
                 </NavLink>
@@ -174,7 +175,10 @@ export default function Authenticated({
         </header>
       )}
 
-      <main>{children}</main>
+      <div className="flex flex-col">
+        <main className="grow">{children}</main>
+        <Footer />
+      </div>
     </div>
   );
 }

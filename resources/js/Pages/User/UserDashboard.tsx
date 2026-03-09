@@ -53,8 +53,6 @@ export default function UserDashboard({ userData = [] as Card[] }) {
           ))}
         </ul>
       </div>
-
-      <footer className="footer">© 2025 Bank. Всі права захищені.</footer>
     </AuthenticatedLayout>
   );
 }
