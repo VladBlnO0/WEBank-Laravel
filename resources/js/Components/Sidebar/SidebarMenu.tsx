@@ -1,7 +1,8 @@
 import { Link } from '@inertiajs/react';
+
 export default function SidebarMenu() {
   return (
-    <aside className="flex min-h-[90vh] w-62.5 shrink-0 flex-col gap-10 rounded bg-gray-300 p-4 align-top">
+    <aside className="pb-sm-4 w-1xs flex min-h-[90vh] shrink-0 flex-col gap-10 bg-gray-300 p-4 align-top">
       <Link href="/" className="btn-sidebar flex items-center gap-3 text-start">
         {/* https://icons.getbootstrap.com/icons/bank2/ */}
         <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
@@ -41,12 +42,7 @@ export default function SidebarMenu() {
         className="btn-sidebar flex items-center gap-3 text-start"
       >
         {/* https://icons.getbootstrap.com/icons/credit-card/ */}
-        <svg
-          width="20"
-          height="20"
-          fill="currentColor"
-          viewBox="0 0 16 16"
-        >
+        <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
           <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1z" />
           <path d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z" />
         </svg>

@@ -17,9 +17,6 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $users = User::factory(10)->create();
-        User::factory()->create([
-           'email' => '1@1',
-       ]);
         $providers = ServiceProvider::factory(10)->create();
 
         $users->each(function ($user) use ($providers) {

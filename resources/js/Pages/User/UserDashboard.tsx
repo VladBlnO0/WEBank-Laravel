@@ -44,7 +44,7 @@ export default function UserDashboard({ userData = [] as Card[] }) {
     <AuthenticatedLayout>
       <Head title="User Dashboard" />
 
-      <div className="flex overflow-hidden rounded p-2 shadow">
+      <div className="flex overflow-hidden rounded  shadow">
         <SidebarMenu />
         <ul>
           {userData.map((item) => (

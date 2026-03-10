@@ -17,15 +17,22 @@ export default function Authenticated({
     useState(false);
 
   return (
-    <div className="bg-gray-100 dark:bg-gray-900">
+    <div className="flex min-h-screen flex-col bg-gray-100 dark:bg-gray-900">
       <nav className="border-b border-gray-100 bg-white dark:border-gray-700 dark:bg-gray-800">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 justify-between">
             <div className="flex">
+
+
+
               <div className="flex shrink-0 items-center">
-                <Link href="/">
+              <div className="hidden sm:ms-6 sm:flex sm:items-center">
+              <div className="relative ms-3">
+                <Dropdown>
+                  <Dropdown.Trigger>
+
                   <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
-                </Link>
+
               </div>
 
               <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
@@ -34,6 +41,24 @@ export default function Authenticated({
                   active={route().current('dashboard')}
                 >
                   Dashboard
+                </NavLink>
+              </div>
+
+              <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <NavLink
+                  href={route('user-dashboard')}
+                  active={route().current('user-dashboard')}
+                >
+                  User Dashboard
+                </NavLink>
+              </div>
+
+              <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <NavLink
+                  href={route('user-dashboard')}
+                  active={route().current('user-dashboard')}
+                >
+                  User Dashboard
                 </NavLink>
               </div>
 
@@ -175,10 +200,12 @@ export default function Authenticated({
         </header>
       )}
 
-      <div className="flex flex-col">
-        <main className="grow">{children}</main>
+      <main className="flex-1 overflow-auto">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          {children}
+        </div>
         <Footer />
-      </div>
+      </main>
     </div>
   );
 }
