@@ -24,22 +24,22 @@
 
 @layer base {
     .label {
-        @apply mb-1 block font-medium text-gray-700 dark:text-gray-300;
+        @apply mb-1 block font-medium text-gray-700 ;
     }
 
     .input {
-        @apply block w-full rounded-md border border-gray-300 p-2 text-gray-500 shadow-sm focus:border-gray-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-500 dark:focus:ring-blue-600;
+        @apply block w-full rounded-md border border-gray-300 p-2 text-gray-500 shadow-sm focus:border-gray-500 focus:ring-blue-500  ;
     }
     .input-error {
         @apply block w-full rounded-md p-2 text-red-500 shadow-sm;
     }
 
     .input-filter-l {
-        @apply rounded-t-md rounded-l-md rounded-r-none border border-gray-200 text-sm font-medium text-gray-600 placeholder:text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:placeholder:text-gray-600;
+        @apply rounded-t-md rounded-l-md rounded-r-none border border-gray-200 text-sm font-medium text-gray-600 placeholder:text-gray-400;
     }
 
     .input-filter-r {
-        @apply rounded-t-md rounded-l-none rounded-r-md border border-l-0 border-gray-200 text-sm font-medium text-gray-600 placeholder:text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:placeholder:text-gray-600;
+        @apply rounded-t-md rounded-l-none rounded-r-md border border-l-0 border-gray-200 text-sm font-medium text-gray-600 placeholder:text-gray-400;
     }
 
     .btn-primary {
@@ -60,7 +60,7 @@
         @apply rounded-lg px-4 py-2 font-semibold transition-colors duration-200;
     }
     .btn-outline {
-        @apply rounded-md border-2 border-gray-300 p-2 px-4 shadow-sm hover:border-gray-400 hover:bg-gray-50 dark:border-gray-800 dark:hover:border-gray-700 dark:hover:bg-gray-800;
+        @apply rounded-md border-2 border-gray-300 p-2 px-4 shadow-sm hover:border-gray-400 hover:bg-gray-50 ;
         @apply inline-flex items-center justify-center rounded px-4 py-2 font-semibold text-white;
         @apply rounded-lg px-4 py-2 font-semibold transition-colors duration-200;
     }

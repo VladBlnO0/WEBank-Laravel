@@ -22,7 +22,7 @@ class CardFactory extends Factory
         return [
             'user_id' => User::factory(),
 
-            'pan' => $this->faker->numerify('##########'),
+            'pan' => $this->faker->numerify('################'),
             'cvv' => $this->faker->numerify('###'),
             'pin_hash' => static::$pin_hash ??= Hash::make('pin'),
             'expire_date' => Carbon::now(),

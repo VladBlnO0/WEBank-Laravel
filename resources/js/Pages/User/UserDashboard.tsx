@@ -1,23 +1,21 @@
 import BankCard from '@/Components/BankCard';
-import SidebarMenu from '@/Components/Sidebar/SidebarMenu';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Card } from '@/types';
 import { Head } from '@inertiajs/react';
-import { useEffect, useRef, useState } from 'react';
 export default function UserDashboard({ userData = [] as Card[] }) {
-  const [balance, setBalance] = useState<number>(() =>
-    Number(userData?.[0]?.balance ?? 0),
-  );
-  const [cardNumber, setCardNumber] = useState<string>(
-    () => userData?.[0]?.number ?? '',
-  );
-  useEffect(() => {
-    setBalance(Number(userData?.[0]?.balance ?? 0));
-    setCardNumber(userData?.[0]?.number ?? '');
-  }, [userData]);
+  // const [balance, setBalance] = useState<number>(() =>
+  //   Number(userData?.[0]?.balance ?? 0),
+  // );
+  // const [cardNumber, setCardNumber] = useState<string>(
+  //   () => userData?.[0]?.number ?? '',
+  // );
+  // useEffect(() => {
+  //   setBalance(Number(userData?.[0]?.balance ?? 0));
+  //   setCardNumber(userData?.[0]?.number ?? '');
+  // }, [userData]);
 
-  const [showCardNumberTooltip, setShowCardNumberTooltip] = useState(false);
-  const hoverTimeout = useRef<number | null>(null);
+  // const [showCardNumberTooltip, setShowCardNumberTooltip] = useState(false);
+  // const hoverTimeout = useRef<number | null>(null);
 
   // const handleMouseEnter = () => {
 
@@ -41,20 +39,24 @@ export default function UserDashboard({ userData = [] as Card[] }) {
   // const mainCard = userData[0] ?? { balance: 0, number: '' };
 
   return (
-    <AuthenticatedLayout>
+    <AuthenticatedLayout
+      header={
+        <h2 className="text-xl leading-tight font-semibold text-gray-800">
+          User Dashboard
+        </h2>
+      }
+    >
       <Head title="User Dashboard" />
-
-      <div className="flex overflow-hidden rounded shadow">
-        <SidebarMenu />
-        <ul>
+      <div className="pb-sm-4 w-1xs flex min-h-[90vh] shrink-0 flex-col gap-10 overflow-hidden rounded bg-gray-300 p-4 align-top shadow">
+        <ul className="flex flex-col gap-4 p-4">
           {userData.map((item) => (
-            // The 'key' prop is important for performance and identifying elements
-            <li key={item.id}>{item.number}</li>
+            <li key={item.id}>
+              <BankCard cardNumber={item.number} />
+            </li>
           ))}
         </ul>
-        <div className="flex flex-col gap-4 p-4">
-          <BankCard />
-          <BankCard />
+        <div>
+          <i className="bi bi-bank2" aria-label="bank"></i>
         </div>
       </div>
     </AuthenticatedLayout>

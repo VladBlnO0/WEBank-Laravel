@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class, 'user_id')->constrained('users');
 
-            $table->string('pan', 10);
+            $table->string('pan', 16);
             $table->string('cvv', 3);
             $table->string('pin_hash', 64);
             $table->date('expire_date');

@@ -39,7 +39,7 @@ export default function Modal({
         className="fixed inset-0 z-50 flex transform items-center overflow-y-auto px-4 py-6 transition-all sm:px-0"
         onClose={close}
       >
-        <div className="absolute inset-0 bg-gray-500/75 dark:bg-gray-900/75" />
+        <div className="absolute inset-0 bg-gray-500/75 " />
         <TransitionChild
           enter="ease-out duration-300"
           enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
@@ -49,7 +49,7 @@ export default function Modal({
           leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
         >
           <DialogPanel
-            className={`z-1 mb-6 transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:mx-auto sm:w-full dark:bg-gray-800 ${maxWidthClass}`}
+            className={`z-1 mb-6 transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:mx-auto sm:w-full  ${maxWidthClass}`}
           >
             {children}
           </DialogPanel>

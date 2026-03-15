@@ -50,4 +50,8 @@ class UserDashboardController extends Controller
              'transactions' => $transactions,
         ]);
     }
+    public function show()
+    {
+        return inertia('User/UserDashboard');
+    }
 }
