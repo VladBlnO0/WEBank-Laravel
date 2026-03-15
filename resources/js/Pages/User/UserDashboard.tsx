@@ -1,9 +1,9 @@
+import BankCard from '@/Components/BankCard';
 import SidebarMenu from '@/Components/Sidebar/SidebarMenu';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Card } from '@/types';
 import { Head } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
-
 export default function UserDashboard({ userData = [] as Card[] }) {
   const [balance, setBalance] = useState<number>(() =>
     Number(userData?.[0]?.balance ?? 0),
@@ -19,18 +19,18 @@ export default function UserDashboard({ userData = [] as Card[] }) {
   const [showCardNumberTooltip, setShowCardNumberTooltip] = useState(false);
   const hoverTimeout = useRef<number | null>(null);
 
-  const handleMouseEnter = () => {
-    // @ts-ignore
-    clearTimeout(hoverTimeout.current);
-    setShowCardNumberTooltip(true);
-  };
+  // const handleMouseEnter = () => {
 
-  const handleMouseLeave = () => {
-    // @ts-ignore
-    hoverTimeout.current = setTimeout(() => {
-      setShowCardNumberTooltip(false);
-    }, 1000);
-  };
+  //   clearTimeout(hoverTimeout.current);
+  //   setShowCardNumberTooltip(true);
+  // };
+
+  // const handleMouseLeave = () => {
+
+  //   hoverTimeout.current = setTimeout(() => {
+  //     setShowCardNumberTooltip(false);
+  //   }, 1000);
+  // };
 
   // const formatCard = (value: string) => {
   //   return value
@@ -44,7 +44,7 @@ export default function UserDashboard({ userData = [] as Card[] }) {
     <AuthenticatedLayout>
       <Head title="User Dashboard" />
 
-      <div className="flex overflow-hidden rounded  shadow">
+      <div className="flex overflow-hidden rounded shadow">
         <SidebarMenu />
         <ul>
           {userData.map((item) => (
@@ -52,6 +52,10 @@ export default function UserDashboard({ userData = [] as Card[] }) {
             <li key={item.id}>{item.number}</li>
           ))}
         </ul>
+        <div className="flex flex-col gap-4 p-4">
+          <BankCard />
+          <BankCard />
+        </div>
       </div>
     </AuthenticatedLayout>
   );

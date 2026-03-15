@@ -55,6 +55,7 @@ export default function UpdateProfileInformation({
             }
             required
             autoComplete="email"
+            ref={undefined}
           />
 
           <InputError className="mt-2" message={errors.email} />

@@ -1,21 +1,13 @@
 import clsx from 'clsx';
-import {
-  forwardRef,
-  InputHTMLAttributes,
+import React, {
   useEffect,
   useImperativeHandle,
   useRef,
 } from 'react';
 
-export default forwardRef(function TextInput(
-  {
-    type = 'text',
-    className = '',
-    isFocused = false,
-    ...props
-  }: InputHTMLAttributes<HTMLInputElement> & { isFocused?: boolean },
-  ref,
-) {
+export default function TextInput(
+  { ref, type = 'text', className = '', isFocused = false, ...props },
+): React.JSX.Element {
   const localRef = useRef<HTMLInputElement>(null);
 
   useImperativeHandle(ref, () => ({
@@ -39,4 +31,4 @@ export default forwardRef(function TextInput(
       ref={localRef}
     />
   );
-});
+};

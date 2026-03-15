@@ -5,7 +5,7 @@ import {
   Dispatch,
   PropsWithChildren,
   SetStateAction,
-  useContext,
+  use,
   useState,
 } from 'react';
 
@@ -27,14 +27,14 @@ const Dropdown = ({ children }: PropsWithChildren) => {
   };
 
   return (
-    <DropDownContext.Provider value={{ open, setOpen, toggleOpen }}>
+    <DropDownContext value={{ open, setOpen, toggleOpen }}>
       <div className="relative">{children}</div>
-    </DropDownContext.Provider>
+    </DropDownContext>
   );
 };
 
 const Trigger = ({ children }: PropsWithChildren) => {
-  const { open, setOpen, toggleOpen } = useContext(DropDownContext);
+  const { open, setOpen, toggleOpen } = use(DropDownContext);
 
   return (
     <>
@@ -60,7 +60,7 @@ const Content = ({
   width?: '48';
   contentClasses?: string;
 }>) => {
-  const { open, setOpen } = useContext(DropDownContext);
+  const { open, setOpen } = use(DropDownContext);
 
   let alignmentClasses = 'origin-top';
 

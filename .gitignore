@@ -21,7 +21,7 @@ npm-debug.log
 yarn-error.log
 /auth.json
 .prettierignore
-/node_modules
+node_modules
 /public/build
 /public/hot
 /public/storage
