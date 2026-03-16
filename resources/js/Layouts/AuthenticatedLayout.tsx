@@ -16,7 +16,10 @@ export default function Authenticated({
 
   return (
     <div className="flex min-h-screen flex-col bg-gray-100">
-      <nav className="sticky top-0 z-50">
+      <nav
+        className="sticky top-0 z-50"
+        onMouseLeave={() => setShowingNavigationDropdown(() => false)}
+      >
         <div className="border-b border-gray-100 bg-white shadow-md">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 justify-between">
@@ -28,6 +31,11 @@ export default function Authenticated({
               <div className="-me-2 flex items-center">
                 <button
                   onClick={() =>
+                    setShowingNavigationDropdown(
+                      (previousState) => !previousState,
+                    )
+                  }
+                  onMouseEnter={() =>
                     setShowingNavigationDropdown(
                       (previousState) => !previousState,
                     )

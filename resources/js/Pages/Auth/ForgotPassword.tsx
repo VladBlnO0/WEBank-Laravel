@@ -40,7 +40,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
             value={data.email}
             className="mt-1 block w-full"
             isFocused={true}
-            onChange={(e) => setData('email', e.target.value)}
+            onChange={(e: { target: { value: string; }; }) => setData('email', e.target.value)}
             ref={undefined}
           />
 

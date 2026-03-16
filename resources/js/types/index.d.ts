@@ -20,14 +20,23 @@ export type PageProps<
   ziggy: Config & { location: string };
 };
 
-export type Card = { id?: number; balance: number; number: string };
+export type CardData = {
+  id?: number;
+  number: string;
+  balance: string | number;
+  expire_date?: Date;
+  status?: string;
+  type?: string;
+  limit_amount?: number;
+  cvv?: string;
+};
 export type Tx = {
   id: number;
   from_card_id?: number;
   to_card_id?: number;
   label: string;
   type: string;
-  date: string;
+  date: Date;
   description?: string;
   amount: number;
 };

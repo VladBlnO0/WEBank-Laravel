@@ -65,7 +65,9 @@ export default function Login({
             value={data.password}
             className="mt-1 block w-full"
             autoComplete="current-password"
-            onChange={(e) => setData('password', e.target.value)}
+            onChange={(e: { target: { value: string } }) =>
+              setData('password', e.target.value)
+            }
             ref={undefined}
           />
 
@@ -77,7 +79,7 @@ export default function Login({
             <Checkbox
               name="remember"
               checked={data.remember}
-              onChange={(e) =>
+              onChange={(e: { target: { checked: boolean } }) =>
                 setData('remember', (e.target.checked || false) as false)
               }
             />

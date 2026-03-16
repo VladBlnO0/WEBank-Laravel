@@ -1,11 +1,10 @@
 import BankCard from '@/Components/BankCard';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Card } from '@/types';
+import { CardData } from '@/types';
 import { Head } from '@inertiajs/react';
-export default function UserDashboard({ userData = [] as Card[] }) {
-  // const [balance, setBalance] = useState<number>(() =>
-  //   Number(userData?.[0]?.balance ?? 0),
-  // );
+import { useState } from 'react';
+export default function UserDashboard({ userData }: { userData: CardData[] }) {
+  const [cards, setCards] = useState<CardData[]>(() => userData ?? []);
   // const [cardNumber, setCardNumber] = useState<string>(
   //   () => userData?.[0]?.number ?? '',
   // );
@@ -38,6 +37,35 @@ export default function UserDashboard({ userData = [] as Card[] }) {
   // };
   // const mainCard = userData[0] ?? { balance: 0, number: '' };
 
+  const formatData = (value: any) =>
+    new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(Number(value || 0));
+
+  function formatCardNumber(value: string) {
+    return value
+      .replace(/\D/g, '')
+      .replace(/(.{4})/g, '$1 ')
+      .trim();
+  }
+
+  const cardElements = userData.map((card) => (
+    <li key={card.id}>
+      <div>
+        <BankCard card={card} />
+        <div>
+          <p className="text-xs text-gray-500">Balance</p>
+          <p>{formatData(card.balance)}</p>
+        </div>
+        <div>
+          <p className="text-xs text-gray-500">Limit</p>
+          <p>{formatData(card.limit_amount)}</p>
+        </div>
+      </div>
+    </li>
+  ));
+
   return (
     <AuthenticatedLayout
       header={
@@ -47,17 +75,37 @@ export default function UserDashboard({ userData = [] as Card[] }) {
       }
     >
       <Head title="User Dashboard" />
-      <div className="pb-sm-4 w-1xs flex min-h-[90vh] shrink-0 flex-col gap-10 overflow-hidden rounded bg-gray-300 p-4 align-top shadow">
+
+      {/* <div className="pb-sm-4 w-1xs flex min-h-[90vh] shrink-0 flex-col gap-10 overflow-hidden rounded bg-gray-300 p-4 align-top shadow">
+        <div></div>
         <ul className="flex flex-col gap-4 p-4">
-          {userData.map((item) => (
+          {userData.card.map((item) => (
             <li key={item.id}>
-              <BankCard cardNumber={item.number} />
+              <BankCard
+                card={{
+                  ...item,
+                }}
+              />
             </li>
           ))}
         </ul>
         <div>
-          <i className="bi bi-bank2" aria-label="bank"></i>
+          <p>userData: {JSON.stringify(userData)}</p>
         </div>
+        <div>
+          <p className="text-xs text-gray-300">Balance</p>
+          <p className="text-lg font-semibold">{formattedBalance}</p>
+        </div>
+      </div> */}
+      <div className="space-y-6">
+        {userData.length === 0 ? (
+          <p>No cards found.</p>
+        ) : (
+          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {cardElements}
+          </ul>
+        )}
+        <div></div>
       </div>
     </AuthenticatedLayout>
   );
