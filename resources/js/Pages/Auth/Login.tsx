@@ -46,7 +46,7 @@ export default function Login({
             name="email"
             value={data.email}
             className="mt-1 block w-full"
-            autoComplete="username"
+            autoComplete="email"
             isFocused={true}
             onChange={(e) => setData('email', e.target.value)}
             ref={undefined}
@@ -97,7 +97,7 @@ export default function Login({
             </Link>
           )}
 
-          <PrimaryButton className="ms-4" disabled={processing}>
+          <PrimaryButton className="ms-4" disabled={processing} type="submit">
             Log in
           </PrimaryButton>
         </div>

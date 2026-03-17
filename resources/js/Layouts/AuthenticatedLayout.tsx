@@ -4,12 +4,13 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import type { User } from '@/types';
 import { Transition, TransitionChild } from '@headlessui/react';
 import { usePage } from '@inertiajs/react';
-import { PropsWithChildren, ReactNode, useState } from 'react';
+import { PropsWithChildren, ReactNode, useRef, useState } from 'react';
 export default function Authenticated({
   header,
   children,
 }: PropsWithChildren<{ header?: ReactNode }>) {
   const user: User = usePage().props.auth.user;
+  const closeTimer = useRef<number | null>(null);
 
   const [showingNavigationDropdown, setShowingNavigationDropdown] =
     useState(false);
@@ -18,7 +19,17 @@ export default function Authenticated({
     <div className="flex min-h-screen flex-col bg-gray-100">
       <nav
         className="sticky top-0 z-50"
-        onMouseLeave={() => setShowingNavigationDropdown(() => false)}
+        onMouseEnter={() => {
+          if (closeTimer.current) {
+            clearTimeout(closeTimer.current);
+            closeTimer.current = null;
+          }
+        }}
+        onMouseLeave={() => {
+          closeTimer.current = window.setTimeout(() => {
+            setShowingNavigationDropdown(false);
+          }, 100);
+        }}
       >
         <div className="border-b border-gray-100 bg-white shadow-md">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -128,6 +139,15 @@ export default function Authenticated({
 
                   <div className="mt-3 space-y-1">
                     <ResponsiveNavLink
+                      href={route('faq')}
+                      active={route().current('faq')}
+                    >
+                      <div className="flex gap-3">
+                        <i className="bi bi-question-circle"></i>
+                        <p>FAQ</p>
+                      </div>
+                    </ResponsiveNavLink>
+                    <ResponsiveNavLink
                       href={route('profile.edit')}
                       active={route().current('profile.edit')}
                     >
@@ -155,16 +175,18 @@ export default function Authenticated({
       </nav>
       {showingNavigationDropdown && (
         <div
-          className="fixed inset-0 z-40 bg-gray-500/75"
-          onClick={() => setShowingNavigationDropdown(false)}
+          className="fixed inset-0 z-40 bg-gray-500/75 transition-opacity duration-1000"
+          onClick={() => {
+            setShowingNavigationDropdown(false);
+          }}
         />
       )}
       <main className="flex-1 overflow-auto">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           {children}
         </div>
-        <Footer />
       </main>
+      <Footer />
     </div>
   );
 }

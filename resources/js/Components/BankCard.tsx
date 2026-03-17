@@ -1,5 +1,5 @@
 import { CardData } from '@/types';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export default function BankCard({
   card,
@@ -10,9 +10,8 @@ export default function BankCard({
   className?: string;
   onClick?: () => void;
 }) {
-
-
   const [showDigits, setShowDigits] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(false);
 
   // const digits = card.number.replace(/\s+/g, '').padEnd(16, '•');
   // const groups = digits.match(/.{1,4}/g) || [];
@@ -30,64 +29,98 @@ export default function BankCard({
   });
   const formatted = formatter.format(date);
 
-  useEffect(() => {
-    if (!showDigits) return;
-    const t = setTimeout(() => setShowDigits(false), 5000);
-    return () => clearTimeout(t);
-  }, [showDigits]);
-
   const displayGroups = showDigits ? digitsGroups : cardGroups;
-  const toggle = () => setShowDigits((s) => !s);
+  function toggle() {
+    navigator.clipboard.writeText(card.number);
+  }
+  const handleClick = () => {
+    setIsFlipped(!isFlipped);
+  };
+
   return (
     <div
       role={onClick ? 'button' : undefined}
-      onClick={onClick}
+      onClick={onClick || handleClick}
       tabIndex={onClick ? 0 : -1}
       aria-label={`Card ${cardGroups[0]} ending ${cardGroups[3]}`}
       className={
-        `relative h-62.5 w-112.5 transform overflow-hidden rounded-lg bg-linear-to-r from-slate-900 to-slate-800 text-white shadow-2xl transition hover:scale-105 ` +
+        `relative h-62.5 w-112.5 transform text-white transition-transform duration-500 will-change-transform perspective-[1000px] hover:scale-105 hover:delay-200 ` +
         className
       }
     >
-      <div className="pointer-events-none absolute -top-10 -right-12 z-0 h-40 w-40 rounded-full bg-blue-800/80 blur-lg" />
-      <div className="pointer-events-none absolute -bottom-12 -left-10 z-0 h-36 w-36 rounded-full bg-green-800/70 blur-lg" />
-
-      <div className="relative z-10 flex h-full flex-col justify-between p-6">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3 font-bold">
-            <i className="bi bi-credit-card-fill text-[2.5rem]" aria-hidden />
-            <div className="text-lg font-medium text-gray-200">
-              {card.type?.toLocaleUpperCase()}
+      <div
+        className={`relative h-full w-full transition-transform duration-700 transform-3d ${
+          isFlipped ? 'transform-[rotateY(180deg)]' : ''
+        }`}
+      >
+        {/* Front of the card */}
+        <div className="absolute inset-0 z-10 flex h-full flex-col justify-between overflow-hidden rounded-lg bg-linear-to-r from-slate-900 to-slate-600 p-6 shadow-2xl backface-hidden">
+          <div className="flex items-start justify-between">
+            <div className="flex items-center gap-3 font-bold">
+              <i className="bi bi-credit-card-fill text-[2.5rem]" aria-hidden />
+              <div className="text-lg font-medium text-gray-200">
+                {card.type?.toLocaleUpperCase()}
+              </div>
             </div>
           </div>
-        </div>
 
-
-        <div
-          className="mt-2 text-center tracking-widest"
-          role="button"
-          tabIndex={0}
-          onClick={toggle}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
+          <div
+            className="mt-2 text-center tracking-widest"
+            role="button"
+            tabIndex={0}
+            onClick={(e) => {
               toggle();
-            }
-          }}
-          aria-pressed={showDigits}
-          aria-label={showDigits ? 'Hide card number' : 'Show card number'}
-        >
-          <div className="mb-1.5 flex justify-center gap-4 text-xl text-[2.1rem] font-bold">
-            <span>{displayGroups[0] ?? '••••'}</span>
-            <span>{displayGroups[1] ?? '••••'}</span>
-            <span>{displayGroups[2] ?? '••••'}</span>
-            <span>{displayGroups[3] ?? '••••'}</span>
+              e.stopPropagation();
+            }}
+            onMouseEnter={() => setShowDigits(true)}
+            onMouseLeave={() => setShowDigits(false)}
+            aria-pressed={showDigits}
+            aria-label={showDigits ? 'Hide card number' : 'Show card number'}
+          >
+            <div className="mb-1.5 flex justify-center gap-4 text-xl text-[2.1rem] font-bold">
+              {[0, 1, 2].map((i) => (
+                <span
+                  key={i}
+                  className="relative inline-block w-[6ch] text-center font-mono"
+                >
+                  <span
+                    className={`block transition-opacity duration-100 ${showDigits ? 'opacity-0' : 'opacity-100'}`}
+                  >
+                    {cardGroups[i] ?? '••••'}
+                  </span>
+                  <span
+                    className={`absolute inset-0 transition-opacity duration-100 ${showDigits ? 'opacity-100' : 'opacity-0'}`}
+                  >
+                    {digitsGroups[i] ?? '••••'}
+                  </span>
+                </span>
+              ))}
+              <span className="relative inline-block w-[6ch] text-center font-mono">
+                {displayGroups[3]}
+              </span>
+            </div>
+          </div>
+
+          <div
+            className="mt-2 flex font-medium text-gray-300"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <p>Exp: </p>
+            <p> {formatted ?? '/'}</p>
           </div>
         </div>
-
-        <div className="text-wrapper flex text-xs text-[2.1rem] font-medium text-gray-300">
-          <p>Exp: </p>
-          <p> {formatted ?? '/'}</p>
+        {/* Back of the card */}
+        <div className="absolute inset-0 flex transform-[rotateY(180deg)] items-center justify-center rounded-lg bg-red-500 shadow-lg backface-hidden">
+          <h1
+            className="text-2xl font-bold text-white"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            Back Side
+          </h1>
         </div>
       </div>
     </div>

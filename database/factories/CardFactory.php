@@ -31,7 +31,7 @@ class CardFactory extends Factory
             'status' => $this->faker->randomElement(\App\Enums\Status::class),
 
             'balance' => $this->faker->randomFloat(2, 0, 10000),
-            'limit_amount' => $this->faker->randomFloat(2, 0, 10000),
+            'limit_amount' => $this->faker->randomNumber(2, 10000),
 
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),

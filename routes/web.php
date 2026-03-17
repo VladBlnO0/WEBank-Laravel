@@ -15,8 +15,12 @@ Route::get('/dashboard', function () {
 })->name('dashboard')->middleware('auth');
 Route::middleware('auth')->group(function () {
     Route::get('/user-dashboard', [App\Http\Controllers\UserDashboardController::class, 'index'])->name('user-dashboard');
-    Route::get('/user-transfer', [App\Http\Controllers\UserTransferController::class, 'index'])->name('user-transfer');
-    Route::get('/user-services', [App\Http\Controllers\UserServicesController::class, 'index'])->name('user-services');
+    Route::get('/user-transfer', [App\Http\Controllers\UserTransferController::class, 'show'])->name('user-transfer');
+    Route::get('/user-services', [App\Http\Controllers\UserServicesController::class, 'show'])->name('user-services');
+
+    Route::get('/faq', function () {
+        return Inertia::render('FAQ');
+    })->name('faq');
 
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

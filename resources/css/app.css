@@ -24,11 +24,11 @@
 
 @layer base {
     .label {
-        @apply mb-1 block font-medium text-gray-700 ;
+        @apply mb-1 block font-medium text-gray-700;
     }
 
     .input {
-        @apply block w-full rounded-md border border-gray-300 p-2 text-gray-500 shadow-sm focus:border-gray-500 focus:ring-blue-500  ;
+        @apply block w-full rounded-md border border-gray-300 p-2 text-gray-500 shadow-sm focus:border-gray-500 focus:ring-blue-500;
     }
     .input-error {
         @apply block w-full rounded-md p-2 text-red-500 shadow-sm;
@@ -60,13 +60,13 @@
         @apply rounded-lg px-4 py-2 font-semibold transition-colors duration-200;
     }
     .btn-outline {
-        @apply rounded-md border-2 border-gray-300 p-2 px-4 shadow-sm hover:border-gray-400 hover:bg-gray-50 ;
+        @apply rounded-md border-2 border-gray-300 p-2 px-4 shadow-sm hover:border-gray-400 hover:bg-gray-50;
         @apply inline-flex items-center justify-center rounded px-4 py-2 font-semibold text-white;
         @apply rounded-lg px-4 py-2 font-semibold transition-colors duration-200;
     }
 }
-@utility card {
-    @layer components {
+@layer components {
+    .card {
         @apply rounded-lg bg-white p-6 shadow-xl;
     }
 }

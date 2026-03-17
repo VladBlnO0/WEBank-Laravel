@@ -30,7 +30,10 @@ export type CardData = {
   limit_amount?: number;
   cvv?: string;
 };
-export type Tx = {
+export type TransactionsList = {
+  transactions: Tran[];
+};
+export type Tran = {
   id: number;
   from_card_id?: number;
   to_card_id?: number;
