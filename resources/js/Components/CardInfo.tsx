@@ -35,16 +35,17 @@ export default function CardInfo({
           </NavigationButton>
         </div>
       </div>
-      <div className="relative right-0 left-0 z-50 mx-auto mt-8 w-full max-w-100 items-center justify-center rounded-2xl bg-white p-2 px-4 shadow sm:rounded-lg sm:p-8 sm:px-6 lg:px-8">
-        <div className="bg-gray-200 p-2 px-4 shadow sm:rounded-lg sm:p-8 sm:px-6 lg:px-8">
-          <p className="text-gray-500">Balance:</p>
-          <p className="text-lg font-bold">{formatToLocal(card.balance)}</p>
-        </div>
-        <div className="mt-2 bg-gray-200 p-2 px-4 pt-4 shadow sm:rounded-lg sm:p-8 sm:px-6 lg:px-8">
-          <p className="text-gray-500">Limit:</p>
-          <p className="text-lg font-bold">
-            {formatToLocal(card.limit_amount)}
+      <div className="relative right-0 left-0 mx-auto mt-8 w-full max-w-100 items-center justify-center rounded-2xl bg-white shadow sm:rounded-lg sm:p-8 sm:px-6 lg:px-8">
+        <div className="bg-gray-100 shadow sm:rounded-lg sm:p-8 sm:px-6 lg:px-8">
+          <p className="text-lg">
+            Balance: <strong>{formatToLocal(card.balance)}</strong>
           </p>
+        </div>
+        <div className="mt-2 flex items-center justify-between bg-gray-100 pt-4 shadow sm:rounded-lg sm:p-8 sm:px-6 lg:px-8">
+          <p className="text-lg">
+            Limit: <strong>{formatToLocal(card.limit_amount)}</strong>
+          </p>
+          <i className="bi bi-gear-fill text-xl text-gray-800"></i>
         </div>
       </div>
     </>

@@ -1,72 +1,105 @@
-@import 'tailwindcss';
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
-@source '../**/*.ts';
-@source '../**/*.jsx';
-@source '../**/*.tsx';
-@source './resources/js/**/*.vue';
+@import "tailwindcss";
+@source "../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php";
+@source "../../storage/framework/views/*.php";
+@source "../**/*.blade.php";
+@source "../**/*.js";
+@source "../**/*.ts";
+@source "../**/*.jsx";
+@source "../**/*.tsx";
+@source "./resources/js/**/*.vue";
 
-@plugin '@tailwindcss/forms';
+@plugin "@tailwindcss/forms";
 
 @theme {
-    /* Colors */
-    --color-brand: #2d4b8d;
-    --color-brand-light: #4b8bbe;
-    --color-gray-blueish: #b3c0c8;
-    --color-gray-whiteish: #e7e8ea;
-    --color-nice-black: #1a1b1f;
+  /* Colors */
+  --color-brand: #2d4b8d;
+  --color-brand-light: #4b8bbe;
+  --color-gray-blueish: #b3c0c8;
+  --color-gray-whiteish: #e7e8ea;
+  --color-nice-black: #1a1b1f;
 
-    /* Typography */
-    --font-sans: Figtree, system-ui, sans-serif;
+  /* Typography */
+  --font-sans: Figtree, system-ui, sans-serif;
 }
 
 @layer base {
-    .label {
-        @apply mb-1 block font-medium text-gray-700;
-    }
+  .label {
+    @apply mb-1 block font-medium text-gray-700;
+  }
 
-    .input {
-        @apply block w-full rounded-md border border-gray-300 p-2 text-gray-500 shadow-sm focus:border-gray-500 focus:ring-blue-500;
-    }
-    .input-error {
-        @apply block w-full rounded-md p-2 text-red-500 shadow-sm;
-    }
+  .input {
+    @apply block w-full rounded-md border border-gray-300 p-2 text-gray-500 shadow-sm focus:border-gray-500 focus:ring-blue-500;
+  }
+  .input-error {
+    @apply block w-full rounded-md p-2 text-red-500 shadow-sm;
+  }
 
-    .input-filter-l {
-        @apply rounded-t-md rounded-l-md rounded-r-none border border-gray-200 text-sm font-medium text-gray-600 placeholder:text-gray-400;
-    }
+  .input-filter-l {
+    @apply rounded-t-md rounded-l-md rounded-r-none border border-gray-200 text-sm font-medium text-gray-600 placeholder:text-gray-400;
+  }
 
-    .input-filter-r {
-        @apply rounded-t-md rounded-l-none rounded-r-md border border-l-0 border-gray-200 text-sm font-medium text-gray-600 placeholder:text-gray-400;
-    }
+  .input-filter-r {
+    @apply rounded-t-md rounded-l-none rounded-r-md border border-l-0 border-gray-200 text-sm font-medium text-gray-600 placeholder:text-gray-400;
+  }
 
-    .btn-primary {
-        @apply bg-blue-600 text-white hover:bg-blue-700;
-        @apply inline-flex items-center justify-center rounded px-4 py-2 font-semibold text-white;
-        @apply rounded-lg px-4 py-2 font-semibold transition-colors duration-200;
-    }
+  .btn-primary {
+    @apply bg-blue-600 text-white hover:bg-blue-700;
+    @apply inline-flex items-center justify-center rounded px-4 py-2 font-semibold text-white;
+    @apply rounded-lg px-4 py-2 font-semibold transition-colors duration-200;
+  }
 
-    .btn-sidebar {
-        @apply w-full bg-gray-600 hover:bg-gray-700 hover:focus:bg-blue-700;
-        @apply inline-flex items-center justify-center rounded px-4 py-2 font-semibold text-white;
-        @apply rounded-lg px-4 py-2 font-semibold transition-colors duration-200;
-    }
+  .btn-sidebar {
+    @apply w-full bg-gray-600 hover:bg-gray-700 hover:focus:bg-blue-700;
+    @apply inline-flex items-center justify-center rounded px-4 py-2 font-semibold text-white;
+    @apply rounded-lg px-4 py-2 font-semibold transition-colors duration-200;
+  }
 
-    .btn-normal {
-        @apply bg-gray-600 hover:bg-blue-700;
-        @apply inline-flex items-center justify-center rounded px-4 py-2 font-semibold text-white;
-        @apply rounded-lg px-4 py-2 font-semibold transition-colors duration-200;
-    }
-    .btn-outline {
-        @apply rounded-md border-2 border-gray-300 p-2 px-4 shadow-sm hover:border-gray-400 hover:bg-gray-50;
-        @apply inline-flex items-center justify-center rounded px-4 py-2 font-semibold text-white;
-        @apply rounded-lg px-4 py-2 font-semibold transition-colors duration-200;
-    }
+  .btn-normal {
+    @apply bg-gray-600 hover:bg-blue-700;
+    @apply inline-flex items-center justify-center rounded px-4 py-2 font-semibold text-white;
+    @apply rounded-lg px-4 py-2 font-semibold transition-colors duration-200;
+  }
+  .btn-outline {
+    @apply rounded-md border-2 border-gray-300 p-2 px-4 shadow-sm hover:border-gray-400 hover:bg-gray-50;
+    @apply inline-flex items-center justify-center rounded px-4 py-2 font-semibold text-white;
+    @apply rounded-lg px-4 py-2 font-semibold transition-colors duration-200;
+  }
 }
 @layer components {
-    .card {
-        @apply rounded-lg bg-white p-6 shadow-xl;
-    }
+  .card {
+    @apply rounded-lg bg-white p-6 shadow-xl;
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  /* Custom scrollbar for WebKit browsers */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 10px; /* width of the vertical scrollbar */
+    height: 10px; /* height of the horizontal scrollbar */
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1; /* light gray track color */
+    border-radius: 10px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #888; /* darker gray thumb color */
+    border-radius: 10px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #555; /* even darker gray on hover */
+  }
 }

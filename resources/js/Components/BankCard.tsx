@@ -58,9 +58,9 @@ export default function BankCard({
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3 font-bold">
               <i className="bi bi-credit-card-fill text-[2.5rem]" aria-hidden />
-              <div className="text-lg font-medium text-gray-200">
+              <span className="text-lg font-medium text-gray-200">
                 {card.type?.toLocaleUpperCase()}
-              </div>
+              </span>
             </div>
           </div>
 
@@ -111,16 +111,25 @@ export default function BankCard({
             <p> {formatted ?? '/'}</p>
           </div>
         </div>
-        {/* Back of the card */}
         <div className="absolute inset-0 flex transform-[rotateY(180deg)] items-center justify-center rounded-lg bg-red-500 shadow-lg backface-hidden">
-          <h1
-            className="text-2xl font-bold text-white"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            Back Side
-          </h1>
+          <div className="absolute inset-0 flex flex-col justify-between rounded-lg bg-linear-to-br from-slate-800 to-slate-900 shadow-lg backface-hidden">
+            <div className="mt-6 h-10.5 w-full bg-black/90" />
+
+            <div className="mx-6 mb-8 flex items-center justify-between rounded-sm bg-white/90 p-2 shadow-inner">
+              <div className="h-8 w-2/3 bg-white/70" />
+
+              <div className="flex flex-col items-end gap-1">
+                <div className="text-[10px] text-slate-600 uppercase">CVV</div>
+                <div className="w-14 rounded-sm bg-slate-900/80 px-2 py-1 text-center text-sm font-semibold tracking-widest text-white">
+                  {card.cvv ?? '•••'}
+                </div>
+              </div>
+            </div>
+
+            <div className="left-0 mx-6 mb-4 flex justify-end text-slate-200/70">
+              <span className="bi bi-gear-fill text-xl opacity-70"></span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Enums\TransactionType;
 use App\Models\Transaction;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -14,7 +13,7 @@ class TransactionFactory extends Factory
     {
         return [
 
-            'type' => $this->faker->randomElement(TransactionType::class),
+            'type' => $this->faker->randomElement(\App\Enums\TransactionType::class),
             'amount' => $this->faker->randomFloat(2, 10, 5000),
             'description' => $this->faker->sentence(),
 

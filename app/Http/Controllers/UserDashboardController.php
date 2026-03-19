@@ -48,7 +48,7 @@ class UserDashboardController extends Controller
                     return [
                         'id' => $transaction->id,
                         'label' => $transaction->description ?? 'Transaction',
-                        'type' => $isSent,
+                        'type' => $transaction->type,
                         'date' => $transaction->created_at->toDateString(),
                         'description' => $transaction->description,
                         'amount' => $isSent ? -$transaction->amount : $transaction->amount,

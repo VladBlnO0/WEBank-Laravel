@@ -1,9 +1,9 @@
-import CardInfo from '@/Components/CardInfo';
-import Transactions from '@/Components/Transactions';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { type CardData, type Tran } from '@/types';
-import { Head } from '@inertiajs/react';
-import { useState } from 'react';
+import CardInfo from "@/Components/CardInfo";
+import Transactions from "@/Components/Transactions";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { type CardData, type Tran } from "@/types";
+import { Head } from "@inertiajs/react";
+import { useState } from "react";
 
 export default function UserDashboard({
   userData,
@@ -95,7 +95,7 @@ export default function UserDashboard({
       </div>
 
       <div className="card mx-auto mt-10 sm:px-6 lg:px-8">
-        <div className="flex max-h-150 flex-col gap-3 overflow-auto">
+        <div className="custom-scrollbar flex max-h-160 flex-col gap-3 overflow-auto overflow-y-scroll">
           {cards.length === 0 ? (
             <p>No transactions found</p>
           ) : (

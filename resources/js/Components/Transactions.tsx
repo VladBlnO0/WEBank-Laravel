@@ -1,4 +1,4 @@
-import { type Tran } from '@/types';
+import { type Tran } from "@/types";
 
 export default function Transactions({
   transactions,
@@ -14,43 +14,35 @@ export default function Transactions({
           transactions.map((tran) => (
             <li
               key={tran.id}
-              className="d-flex justify-content-between align-items-center bg-light rounded border p-3"
+              className="width-full mt-2 bg-gray-100 pt-4 shadow sm:rounded-lg sm:p-8 sm:px-6 lg:px-8"
             >
-              <div className="w-100">
-                <div className="d-flex justify-content-between align-items-center mb-2">
-                  <div className="fw-medium">
-                    {tran.label}
-                    <span
-                      className={`badge text-uppercase ms-2 ${
-                        tran.label === 'Надіслано'
-                          ? 'bg-danger'
-                          : tran.label === 'Отримано'
-                            ? 'bg-success'
-                            : 'bg-primary'
-                      }`}
-                    >
-                      {tran.label}
-                    </span>
-                  </div>
-                  <div className="text-muted small">
+              <div className="flex w-full rounded-lg border-2 border-gray-300 p-2">
+                <div className="flex flex-col gap-2">
+                  <p
+                    className={`uppercase ${
+                      tran.type === "payment"
+                        ? "text-red-500"
+                        : tran.type === "transfer"
+                          ? "text-orange-500"
+                          : "text-green-500"
+                    }`}
+                  >
+                    {tran.type}
+                  </p>
+                  <div className="text-gray-500">
                     {new Date(tran.date).toLocaleDateString()}
                   </div>
+                  {tran.description && (
+                    <div className="mb-1">{tran.description}</div>
+                  )}
                 </div>
-
-                {tran.description && (
-                  <div className="text-muted small mb-1">
-                    {tran.description}
+                <div className="ml-auto flex items-center">
+                  <div
+                    className={`text-xl font-bold ${tran.amount < 0 ? "text-red-500" : "text-green-500"}`}
+                  >
+                    {tran.amount > 0 ? "+" : "-"}$
+                    {Math.abs(tran.amount).toFixed(2)}
                   </div>
-                )}
-                {tran.type && (
-                  <div className="text-muted small mb-2">{tran.type}</div>
-                )}
-
-                <div
-                  className={`fw-bold text-end ${tran.amount < 0 ? 'text-danger' : 'text-success'}`}
-                >
-                  {tran.amount > 0 ? '+' : '-'}$
-                  {Math.abs(tran.amount).toFixed(2)}
                 </div>
               </div>
             </li>
