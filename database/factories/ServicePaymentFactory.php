@@ -19,8 +19,6 @@ class ServicePaymentFactory extends Factory
             'amount' => $this->faker->randomFloat(2, 10, 5000),
             'next_date' => Carbon::now()->endOfMonth(),
             'is_payed' => $this->faker->boolean(50),
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
         ];
     }
 }

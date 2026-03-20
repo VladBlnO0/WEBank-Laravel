@@ -1,9 +1,11 @@
-import { CardData } from '@/types';
-import { useState } from 'react';
+import Mastercard from "@/../../public/assets/icons/mastercard-svgrepo-com.svg";
+import Visa from "@/../../public/assets/icons/visa-3-svgrepo-com.svg";
+import { CardData } from "@/types";
+import { useState } from "react";
 
 export default function BankCard({
   card,
-  className = '',
+  className = "",
   onClick,
 }: {
   card: CardData;
@@ -17,32 +19,41 @@ export default function BankCard({
   // const groups = digits.match(/.{1,4}/g) || [];
   // const cardNumber = groups.map((group) => group.slice().padStart(4, '•'));
 
-  const digits = card.number.replace(/\D/g, '');
+  const digits = card.number.replace(/\D/g, "");
   const digitsGroups = digits.match(/.{1,4}/g) || [];
-  const masked = digits.slice(0, -4).replace(/./g, '•') + digits.slice(-4);
+  const masked = digits.slice(0, -4).replace(/./g, "•") + digits.slice(-4);
   const cardGroups = masked.match(/.{1,4}/g) || [];
 
-  const date = new Date(card.expire_date || '');
-  const formatter = new Intl.DateTimeFormat('en-US', {
-    year: '2-digit',
-    month: '2-digit',
+  const date = new Date(card.expire_date || "");
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    year: "2-digit",
+    month: "2-digit",
   });
   const formatted = formatter.format(date);
 
   const displayGroups = showDigits ? digitsGroups : cardGroups;
   function toggle() {
+    showDigits ? setShowDigits(false) : setShowDigits(true);
     navigator.clipboard.writeText(card.number);
   }
   const handleClick = () => {
     setIsFlipped(!isFlipped);
   };
 
+  const iconMap = {
+    mastercard: Mastercard,
+    visa: Visa,
+  };
+  function CardIcon({ card }: { card: CardData }) {
+    const Icon = iconMap[card.payment_network as keyof typeof iconMap];
+    return Icon;
+  }
   return (
     <div
-      role={onClick ? 'button' : undefined}
+      role={onClick ? "button" : undefined}
       onClick={onClick || handleClick}
       tabIndex={onClick ? 0 : -1}
-      aria-label={`Card ${cardGroups[0]} ending ${cardGroups[3]}`}
+      aria-label={`Card ending ${cardGroups[3]}`}
       className={
         `relative h-62.5 w-112.5 transform text-white transition-transform duration-500 will-change-transform perspective-[1000px] hover:scale-105 hover:delay-200 ` +
         className
@@ -50,7 +61,7 @@ export default function BankCard({
     >
       <div
         className={`relative h-full w-full transition-transform duration-700 transform-3d ${
-          isFlipped ? 'transform-[rotateY(180deg)]' : ''
+          isFlipped ? "transform-[rotateY(180deg)]" : ""
         }`}
       >
         {/* Front of the card */}
@@ -59,8 +70,13 @@ export default function BankCard({
             <div className="flex items-center gap-3 font-bold">
               <i className="bi bi-credit-card-fill text-[2.5rem]" aria-hidden />
               <span className="text-lg font-medium text-gray-200">
-                {card.type?.toLocaleUpperCase()}
+                <img
+                  src={CardIcon({ card })}
+                  alt={card.payment_network}
+                  className="size-10"
+                />
               </span>
+              <span>{card.type?.toUpperCase()}</span>
             </div>
           </div>
 
@@ -72,30 +88,16 @@ export default function BankCard({
               toggle();
               e.stopPropagation();
             }}
-            onMouseEnter={() => setShowDigits(true)}
-            onMouseLeave={() => setShowDigits(false)}
             aria-pressed={showDigits}
-            aria-label={showDigits ? 'Hide card number' : 'Show card number'}
+            aria-label={showDigits ? "Hide card number" : "Show card number"}
           >
-            <div className="mb-1.5 flex justify-center gap-4 text-xl text-[2.1rem] font-bold">
-              {[0, 1, 2].map((i) => (
-                <span
-                  key={i}
-                  className="relative inline-block w-[6ch] text-center font-mono"
-                >
-                  <span
-                    className={`block transition-opacity duration-100 ${showDigits ? 'opacity-0' : 'opacity-100'}`}
-                  >
-                    {cardGroups[i] ?? '••••'}
-                  </span>
-                  <span
-                    className={`absolute inset-0 transition-opacity duration-100 ${showDigits ? 'opacity-100' : 'opacity-0'}`}
-                  >
-                    {digitsGroups[i] ?? '••••'}
-                  </span>
+            <div className="mb-1.5 flex justify-center gap-4 text-4xl font-bold">
+              {Array.from({ length: 3 }, (_, i) => (
+                <span key={i} className="inline-block text-center font-mono">
+                  {displayGroups[i] ?? "••••"}
                 </span>
               ))}
-              <span className="relative inline-block w-[6ch] text-center font-mono">
+              <span className="inline-block text-center font-mono">
                 {displayGroups[3]}
               </span>
             </div>
@@ -108,7 +110,7 @@ export default function BankCard({
             }}
           >
             <p>Exp: </p>
-            <p> {formatted ?? '/'}</p>
+            <p> {formatted ?? "/"}</p>
           </div>
         </div>
         <div className="absolute inset-0 flex transform-[rotateY(180deg)] items-center justify-center rounded-lg bg-red-500 shadow-lg backface-hidden">
@@ -121,7 +123,7 @@ export default function BankCard({
               <div className="flex flex-col items-end gap-1">
                 <div className="text-[10px] text-slate-600 uppercase">CVV</div>
                 <div className="w-14 rounded-sm bg-slate-900/80 px-2 py-1 text-center text-sm font-semibold tracking-widest text-white">
-                  {card.cvv ?? '•••'}
+                  {card.cvv ?? "•••"}
                 </div>
               </div>
             </div>

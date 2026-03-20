@@ -1,9 +1,9 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\User;
 
 return new class extends Migration
 {
@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('pin_hash', 64);
             $table->date('expire_date');
             $table->string('type', 10);
-            $table->string('status', 10);
+            $table->string('payment_network', 15);
 
             // balance with 15 digits in total and 2 decimal places
             $table->decimal('balance', 15, 2);

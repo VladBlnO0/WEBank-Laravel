@@ -21,10 +21,10 @@ export default function Transactions({
                   <p
                     className={`uppercase ${
                       tran.type === "payment"
-                        ? "text-red-500"
+                        ? "text-red-600"
                         : tran.type === "transfer"
-                          ? "text-orange-500"
-                          : "text-green-500"
+                          ? "text-orange-600"
+                          : "text-green-600"
                     }`}
                   >
                     {tran.type}
@@ -38,7 +38,7 @@ export default function Transactions({
                 </div>
                 <div className="ml-auto flex items-center">
                   <div
-                    className={`text-xl font-bold ${tran.amount < 0 ? "text-red-500" : "text-green-500"}`}
+                    className={`text-xl font-bold ${tran.amount < 0 ? "text-red-700" : "text-green-700"}`}
                   >
                     {tran.amount > 0 ? "+" : "-"}$
                     {Math.abs(tran.amount).toFixed(2)}

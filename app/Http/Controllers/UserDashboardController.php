@@ -41,6 +41,7 @@ class UserDashboardController extends Controller
                 'status' => $card->status,
                 'limit_amount' => $card->limit_amount,
                 'type' => $card->type,
+                'payment_network' => $card->payment_network,
                 'cvv' => $card->cvv,
                 'transactions' => $cardTransactions->map(function ($transaction) use ($card) {
                     $isSent = $transaction->from_card_id === $card->id;

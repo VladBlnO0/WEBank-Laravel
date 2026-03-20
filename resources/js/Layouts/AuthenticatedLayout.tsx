@@ -139,15 +139,6 @@ export default function Authenticated({
 
                   <div className="mt-3 space-y-1">
                     <ResponsiveNavLink
-                      href={route('faq')}
-                      active={route().current('faq')}
-                    >
-                      <div className="flex gap-3">
-                        <i className="bi bi-question-circle"></i>
-                        <p>FAQ</p>
-                      </div>
-                    </ResponsiveNavLink>
-                    <ResponsiveNavLink
                       href={route('profile.edit')}
                       active={route().current('profile.edit')}
                     >

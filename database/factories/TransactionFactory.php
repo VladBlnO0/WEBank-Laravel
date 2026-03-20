@@ -16,8 +16,6 @@ class TransactionFactory extends Factory
             'type' => $this->faker->randomElement(\App\Enums\TransactionType::class),
             'amount' => $this->faker->randomFloat(2, 10, 5000),
             'description' => $this->faker->sentence(),
-
-            'created_at' => $this->faker->dateTimeThisYear(),
         ];
     }
 }

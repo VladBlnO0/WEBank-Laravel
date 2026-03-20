@@ -1,4 +1,4 @@
-import { Config } from 'ziggy-js';
+import { Config } from "ziggy-js";
 /**
  * Authenticated user interface.
  */
@@ -26,6 +26,7 @@ export type CardData = {
   balance: string | number;
   expire_date?: Date;
   status?: string;
+  payment_network: string;
   type?: string;
   limit_amount?: number;
   cvv?: string;
@@ -42,4 +43,16 @@ export type Tran = {
   date: Date;
   description?: string;
   amount: number;
+};
+export type ServiceProvider = {
+  name: string;
+  category: string;
+  edrpou: string;
+};
+export type ServicePayment = {
+  amount: number;
+  next_date: Date;
+  is_payed: boolean;
+  due_date: Date;
+  service_provider_id: number;
 };

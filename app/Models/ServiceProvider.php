@@ -17,6 +17,5 @@ class ServiceProvider extends Model
     protected $fillable = [
         'name',
         'category',
-        'edrpou',
     ];
 }

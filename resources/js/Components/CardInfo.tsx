@@ -1,7 +1,7 @@
-import NavigationButton from '@/Components/NavigationButton';
-import { CardData } from '@/types';
-import { formatToLocal } from '@/utils/formatData';
-import BankCard from './BankCard';
+import NavigationButton from "@/Components/NavigationButton";
+import { CardData } from "@/types";
+import { formatToLocal } from "@/utils/formatData";
+import BankCard from "./BankCard";
 export default function CardInfo({
   card,
   onNext,

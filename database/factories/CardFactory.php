@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\CardType;
 use App\Models\Card;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -27,14 +28,11 @@ class CardFactory extends Factory
             'pin_hash' => static::$pin_hash ??= Hash::make('pin'),
             'expire_date' => Carbon::now(),
 
-            'type' => $this->faker->randomElement(\App\Enums\CardType::class),
-            'status' => $this->faker->randomElement(\App\Enums\Status::class),
+            'type' => $this->faker->randomElement(['debit', 'credit']),
+            'payment_network' => $this->faker->randomElement(CardType::class),
 
             'balance' => $this->faker->randomFloat(2, 0, 10000),
             'limit_amount' => $this->faker->randomNumber(2, 10000),
-
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
         ];
     }
 }

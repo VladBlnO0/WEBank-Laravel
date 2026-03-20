@@ -4,6 +4,6 @@ namespace App\Enums;
 
 enum CardType: string
 {
-    case DEBIT = 'debit';
-    case CREDIT = 'credit';
+    case VISA = 'visa';
+    case MASTERCARD = 'mastercard';
 }
