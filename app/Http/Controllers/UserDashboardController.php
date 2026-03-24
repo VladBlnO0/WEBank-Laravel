@@ -23,7 +23,7 @@ class UserDashboardController extends Controller
 
         $userCardIds = $cards->pluck('id');
 
-        $allTransactions = Transaction::whereIn('from_card_id', $userCardIds)
+        $allTransactions = Transaction::whereIn(column: 'from_card_id', values: $userCardIds, boolean: 'or', not: false)
             ->orWhereIn('to_card_id', $userCardIds)
             ->latest()
             ->get();

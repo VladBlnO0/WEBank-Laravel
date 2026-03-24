@@ -44,15 +44,3 @@ export type Tran = {
   description?: string;
   amount: number;
 };
-export type ServiceProvider = {
-  name: string;
-  category: string;
-  edrpou: string;
-};
-export type ServicePayment = {
-  amount: number;
-  next_date: Date;
-  is_payed: boolean;
-  due_date: Date;
-  service_provider_id: number;
-};

@@ -3,8 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Card;
-use App\Models\ServicePayment;
-use App\Models\ServiceProvider;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -17,26 +15,20 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $users = User::factory(10)->create();
-        $providers = ServiceProvider::factory(10)->create();
 
-        $users->each(function ($user) use ($providers) {
+        $users->each(function ($user) {
             Card::factory(rand(1, 2))->create([
                 'user_id' => $user->id,
             ]);
         });
 
-        $users->each(function ($user) use ($providers) {
+        $users->each(function ($user) {
             $cards = $user->hasCards;
 
-            $cards->each(function ($card) use ($providers) {
+            $cards->each(function ($card) {
                 Transaction::factory(rand(2, 4))->create([
                     'from_card_id' => $card->id,
-                    'to_card_id' => Card::where('id', '!=', $card->id)->inRandomOrder()->first()?->id,
-                ]);
-
-                ServicePayment::factory(rand(2, 4))->create([
-                    'card_id' => $card->id,
-                    'service_provider_id' => $providers->random()->id,
+                    'to_card_id' => Card::where(column: 'id', operator: '!=', value: $card->id, boolean: null)->inRandomOrder(seed: null)->first()?->id,
                 ]);
             });
         });

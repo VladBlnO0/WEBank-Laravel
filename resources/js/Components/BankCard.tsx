@@ -76,7 +76,7 @@ export default function BankCard({
                   className="size-10"
                 />
               </span>
-              <span>{card.type?.toUpperCase()}</span>
+              <span className="select-none">{card.type?.toUpperCase()}</span>
             </div>
           </div>
 
@@ -109,27 +109,27 @@ export default function BankCard({
               e.stopPropagation();
             }}
           >
-            <p>Exp: </p>
+            <p className="select-none">Exp: </p>
             <p> {formatted ?? "/"}</p>
           </div>
         </div>
-        <div className="absolute inset-0 flex transform-[rotateY(180deg)] items-center justify-center rounded-lg bg-red-500 shadow-lg backface-hidden">
+        <div className="absolute inset-0 flex transform-[rotateY(180deg)] items-center justify-center rounded-lg shadow-lg backface-hidden">
           <div className="absolute inset-0 flex flex-col justify-between rounded-lg bg-linear-to-br from-slate-800 to-slate-900 shadow-lg backface-hidden">
-            <div className="mt-6 h-10.5 w-full bg-black/90" />
+            <div className="mt-10 h-10.5 w-full bg-black" />
 
-            <div className="mx-6 mb-8 flex items-center justify-between rounded-sm bg-white/90 p-2 shadow-inner">
-              <div className="h-8 w-2/3 bg-white/70" />
-
-              <div className="flex flex-col items-end gap-1">
-                <div className="text-[10px] text-slate-600 uppercase">CVV</div>
-                <div className="w-14 rounded-sm bg-slate-900/80 px-2 py-1 text-center text-sm font-semibold tracking-widest text-white">
+            <div className="mx-6 mb-2 flex items-center justify-between rounded-sm bg-white/90 p-2 shadow-inner ">
+              <div className="h-8 w-full bg-white/70" />
+              <div className="ml-2 flex items-center">
+                <p className="mr-2 text-slate-600 select-none">CVV</p>
+                <div
+                  className="w-14 rounded-sm bg-slate-900/80 px-2 py-1 text-center text-sm font-semibold tracking-widest text-white"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
                   {card.cvv ?? "•••"}
                 </div>
               </div>
-            </div>
-
-            <div className="left-0 mx-6 mb-4 flex justify-end text-slate-200/70">
-              <span className="bi bi-gear-fill text-xl opacity-70"></span>
             </div>
           </div>
         </div>

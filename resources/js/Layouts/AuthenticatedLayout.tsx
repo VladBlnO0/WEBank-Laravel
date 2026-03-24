@@ -1,10 +1,10 @@
-import ApplicationLogo from '@/Components/ApplicationLogo';
-import Footer from '@/Components/Footer';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import type { User } from '@/types';
-import { Transition, TransitionChild } from '@headlessui/react';
-import { usePage } from '@inertiajs/react';
-import { PropsWithChildren, ReactNode, useRef, useState } from 'react';
+import ApplicationLogo from "@/Components/ApplicationLogo";
+import Footer from "@/Components/Footer";
+import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
+import type { User } from "@/types";
+import { Transition, TransitionChild } from "@headlessui/react";
+import { usePage } from "@inertiajs/react";
+import { PropsWithChildren, ReactNode, useRef, useState } from "react";
 export default function Authenticated({
   header,
   children,
@@ -16,7 +16,7 @@ export default function Authenticated({
     useState(false);
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-100">
+    <div className="flex min-h-screen flex-col">
       <nav
         className="sticky top-0 z-50"
         onMouseEnter={() => {
@@ -61,7 +61,7 @@ export default function Authenticated({
                   >
                     <path
                       className={
-                        !showingNavigationDropdown ? 'inline-flex' : 'hidden'
+                        !showingNavigationDropdown ? "inline-flex" : "hidden"
                       }
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -70,7 +70,7 @@ export default function Authenticated({
                     />
                     <path
                       className={
-                        showingNavigationDropdown ? 'inline-flex' : 'hidden'
+                        showingNavigationDropdown ? "inline-flex" : "hidden"
                       }
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -94,12 +94,12 @@ export default function Authenticated({
           >
             <div className="absolute top-16 right-0 left-0 z-50 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
               <div
-                className={`${showingNavigationDropdown ? 'block' : 'hidden'} mt-2 overflow-hidden rounded-md border border-gray-100 bg-white shadow-lg`}
+                className={`${showingNavigationDropdown ? "block" : "hidden"} mt-2 overflow-hidden rounded-md border border-gray-100 bg-white shadow-lg`}
               >
                 <div className="space-y-1 pt-2 pb-3">
                   <ResponsiveNavLink
-                    href={route('user-dashboard')}
-                    active={route().current('user-dashboard')}
+                    href={route("user-dashboard")}
+                    active={route().current("user-dashboard")}
                   >
                     <div className="flex gap-3">
                       <i className="bi bi-bank2"></i>
@@ -108,21 +108,12 @@ export default function Authenticated({
                   </ResponsiveNavLink>
 
                   <ResponsiveNavLink
-                    href={route('user-transfer')}
-                    active={route().current('user-transfer')}
+                    href={route("user-transfer")}
+                    active={route().current("user-transfer")}
                   >
                     <div className="flex gap-3">
                       <i className="bi bi-arrow-repeat"></i>
                       <p>Transfer</p>
-                    </div>
-                  </ResponsiveNavLink>
-                  <ResponsiveNavLink
-                    href={route('user-services')}
-                    active={route().current('user-services')}
-                  >
-                    <div className="flex gap-3">
-                      <i className="bi bi-credit-card"></i>
-                      <p>Services</p>
                     </div>
                   </ResponsiveNavLink>
                 </div>
@@ -139,8 +130,8 @@ export default function Authenticated({
 
                   <div className="mt-3 space-y-1">
                     <ResponsiveNavLink
-                      href={route('profile.edit')}
-                      active={route().current('profile.edit')}
+                      href={route("profile.edit")}
+                      active={route().current("profile.edit")}
                     >
                       <div className="flex gap-3">
                         <i className="bi bi-person"></i>
@@ -149,7 +140,7 @@ export default function Authenticated({
                     </ResponsiveNavLink>
                     <ResponsiveNavLink
                       method="post"
-                      href={route('logout')}
+                      href={route("logout")}
                       as="button"
                     >
                       <div className="flex gap-3">
