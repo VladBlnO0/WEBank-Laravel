@@ -1,5 +1,6 @@
 import ApplicationLogo from "@/Components/ApplicationLogo";
 import Footer from "@/Components/Footer";
+import NavLink from "@/Components/NavLink";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import type { User } from "@/types";
 import { Transition, TransitionChild } from "@headlessui/react";
@@ -36,17 +37,32 @@ export default function Authenticated({
             <div className="flex h-16 justify-between">
               <div className="flex items-center gap-4">
                 <ApplicationLogo className="sticky block h-10 w-auto fill-current text-green-700" />
-                <div className="hidden sm:block">{header}</div>
+                <NavLink
+                  href={route("user-dashboard")}
+                  active={route().current("user-dashboard")}
+                >
+                  <div className="flex gap-3 text-base">
+                    <p>Dashboard</p>
+                  </div>
+                </NavLink>
+
+                <NavLink
+                  href={route("user-transfer")}
+                  active={route().current("user-transfer")}
+                >
+                  <div className="flex gap-3 text-base">
+                    <p>Transfer</p>
+                  </div>
+                </NavLink>
               </div>
 
-              <div className="-me-2 flex items-center">
+              <div className="font-sm -me-2 flex items-center text-base text-gray-800">
+                <div className="mr-2">
+                  <div>{user.name}</div>
+                  <div>{user.email}</div>
+                </div>
                 <button
                   onClick={() =>
-                    setShowingNavigationDropdown(
-                      (previousState) => !previousState,
-                    )
-                  }
-                  onMouseEnter={() =>
                     setShowingNavigationDropdown(
                       (previousState) => !previousState,
                     )
@@ -96,39 +112,8 @@ export default function Authenticated({
               <div
                 className={`${showingNavigationDropdown ? "block" : "hidden"} mt-2 overflow-hidden rounded-md border border-gray-100 bg-white shadow-lg`}
               >
-                <div className="space-y-1 pt-2 pb-3">
-                  <ResponsiveNavLink
-                    href={route("user-dashboard")}
-                    active={route().current("user-dashboard")}
-                  >
-                    <div className="flex gap-3">
-                      <i className="bi bi-bank2"></i>
-                      <p>Dashboard</p>
-                    </div>
-                  </ResponsiveNavLink>
-
-                  <ResponsiveNavLink
-                    href={route("user-transfer")}
-                    active={route().current("user-transfer")}
-                  >
-                    <div className="flex gap-3">
-                      <i className="bi bi-arrow-repeat"></i>
-                      <p>Transfer</p>
-                    </div>
-                  </ResponsiveNavLink>
-                </div>
-
-                <div className="border-t border-gray-200 pt-4 pb-1">
-                  <div className="px-4">
-                    <div className="text-base font-medium text-gray-800">
-                      {user.name}
-                    </div>
-                    <div className="text-sm font-medium text-gray-500">
-                      {user.email}
-                    </div>
-                  </div>
-
-                  <div className="mt-3 space-y-1">
+                <div>
+                  <div className="mt-3 mb-1 space-y-1">
                     <ResponsiveNavLink
                       href={route("profile.edit")}
                       active={route().current("profile.edit")}
@@ -138,7 +123,9 @@ export default function Authenticated({
                         <p>Profile</p>
                       </div>
                     </ResponsiveNavLink>
+                    <div className="border-t border-gray-300" />
                     <ResponsiveNavLink
+                      className="text-red-700"
                       method="post"
                       href={route("logout")}
                       as="button"

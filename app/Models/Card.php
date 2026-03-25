@@ -42,8 +42,16 @@ class Card extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function hasTransactions(): HasMany
+    public function sentTransactions(): HasMany
     {
-        return $this->hasMany(Transaction::class);
+        return $this->hasMany(Transaction::class, 'from_card_id');
+    }
+
+    /**
+     * Get the transactions received by this card.
+     */
+    public function receivedTransactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class, 'to_card_id');
     }
 }

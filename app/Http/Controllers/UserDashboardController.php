@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Transaction;
+use App\Http\Resources\CardDashboardResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -19,52 +19,15 @@ class UserDashboardController extends Controller
         /**
          * @var object $cards
          */
-        $cards = $user->hasCards;
-
-        $userCardIds = $cards->pluck('id');
-
-        $allTransactions = Transaction::whereIn(column: 'from_card_id', values: $userCardIds, boolean: 'or', not: false)
-            ->orWhereIn('to_card_id', $userCardIds)
-            ->latest()
+        $cards = $user->hasCards()
+            ->with([
+                'sentTransactions:id,from_card_id,to_card_id,type,amount,created_at',
+                'receivedTransactions:id,from_card_id,to_card_id,type,amount,created_at',
+            ])
             ->get();
 
-        $userData = $cards->map(function ($card) use ($allTransactions) {
-            $cardTransactions = $allTransactions->filter(function ($transaction) use ($card) {
-                return $transaction->from_card_id === $card->id || $transaction->to_card_id === $card->id;
-            });
-
-            return [
-                'id' => $card->id,
-                'balance' => $card->balance,
-                'number' => $card->pan,
-                'expire_date' => $card->expire_date,
-                'status' => $card->status,
-                'limit_amount' => $card->limit_amount,
-                'type' => $card->type,
-                'payment_network' => $card->payment_network,
-                'cvv' => $card->cvv,
-                'transactions' => $cardTransactions->map(function ($transaction) use ($card) {
-                    $isSent = $transaction->from_card_id === $card->id;
-
-                    return [
-                        'id' => $transaction->id,
-                        'label' => $transaction->description ?? 'Transaction',
-                        'type' => $transaction->type,
-                        'date' => $transaction->created_at->toDateString(),
-                        'description' => $transaction->description,
-                        'amount' => $isSent ? -$transaction->amount : $transaction->amount,
-                    ];
-                })->values()->all(),
-            ];
-        })->values()->all();
-
         return Inertia::render('User/UserDashboard', [
-            'userData' => $userData,
+            'userData' => CardDashboardResource::collection($cards),
         ]);
-    }
-
-    public function show()
-    {
-        return inertia('User/UserDashboard');
     }
 }

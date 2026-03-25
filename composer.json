@@ -20,7 +20,6 @@
         "barryvdh/laravel-ide-helper": "^3",
         "fakerphp/faker": "^1",
         "fruitcake/laravel-debugbar": "^4",
-        "laravel/boost": "^2",
         "laravel/pail": "^1",
         "laravel/pint": "^1",
         "laravel/sail": "^1",

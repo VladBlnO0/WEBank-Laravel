@@ -19,7 +19,6 @@ class Transaction extends Model
         'account_id',
         'type',
         'amount',
-        'description',
     ];
 
     protected array $sortable = [
@@ -30,5 +29,15 @@ class Transaction extends Model
     public function belongsToCard(): BelongsTo
     {
         return $this->belongsTo(Card::class);
+    }
+
+    public function fromCard(): BelongsTo
+    {
+        return $this->belongsTo(Card::class, 'from_card_id');
+    }
+
+    public function toCard(): BelongsTo
+    {
+        return $this->belongsTo(Card::class, 'to_card_id');
     }
 }

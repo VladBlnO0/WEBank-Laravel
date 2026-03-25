@@ -55,7 +55,7 @@ export default function BankCard({
       tabIndex={onClick ? 0 : -1}
       aria-label={`Card ending ${cardGroups[3]}`}
       className={
-        `relative h-62.5 w-112.5 transform text-white transition-transform duration-500 will-change-transform perspective-[1000px] hover:scale-105 hover:delay-200 ` +
+        `relative h-62.5 w-112.5 transform text-white transition-transform duration-500 will-change-transform perspective-[1000px]  ` +
         className
       }
     >
