@@ -23,7 +23,7 @@ export type PageProps<
 export type CardData = {
   id?: number;
   number: string;
-  balance: string | number;
+  balance: number;
   expire_date?: Date;
   status?: string;
   payment_network: string;

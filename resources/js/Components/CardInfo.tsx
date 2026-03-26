@@ -41,12 +41,6 @@ export default function CardInfo({
             Balance: <strong>{formatToLocal(card.balance)}</strong>
           </p>
         </div>
-        <div className="mt-2 flex items-center justify-between bg-gray-100 pt-4 shadow sm:rounded-lg sm:p-8 sm:px-6 lg:px-8">
-          <p className="text-lg">
-            Limit: <strong>{formatToLocal(card.limit_amount)}</strong>
-          </p>
-          <i className="bi bi-gear-fill text-xl text-gray-800"></i>
-        </div>
       </div>
     </>
   );

@@ -23,7 +23,6 @@ class CardDashboardResource extends JsonResource
             'number' => $this->pan,
             'expire_date' => $this->expire_date,
             'status' => $this->status,
-            'limit_amount' => $this->limit_amount,
             'type' => $this->type,
             'payment_network' => $this->payment_network,
             'cvv' => $this->cvv,

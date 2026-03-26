@@ -1,17 +1,14 @@
-function formatToLocal(value: any) {
-  if (typeof value === 'number') {
-    return value.toLocaleString('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    });
-  }
-  return String(value);
+function formatToLocal(value: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(value);
 }
 
 function formatCardNumber(value: string) {
   return value
-    .replace(/\D/g, '')
-    .replace(/(.{4})/g, '$1 ')
+    .replace(/\D/g, "")
+    .replace(/(.{4})/g, "$1 ")
     .trim();
 }
 export { formatCardNumber, formatToLocal };

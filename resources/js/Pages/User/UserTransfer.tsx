@@ -3,11 +3,18 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import type { CardData, Tran } from "@/types";
 import { Head } from "@inertiajs/react";
 import { useState } from "react";
+import CardInfo from "@/Components/CardInfo";
+
 export default function UserTransfer({
   userData,
 }: {
-  userData: (CardData & { transactions: Tran[] })[];
+  userData:
+    | { data: (CardData & { transactions: Tran[] })[] }
+    | (CardData & { transactions: Tran[] })[];
 }) {
+  const cards = Array.isArray(userData) ? userData : (userData?.data ?? []);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
   const [card, setCard] = useState("");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
@@ -42,8 +49,8 @@ export default function UserTransfer({
     e.preventDefault();
     setError("");
 
-    const userBalance = parseFloat(userData.balance ?? 0);
-    const senderCard = userData[0]?.number;
+    const userBalance = parseFloat(cards[currentIndex].balance);
+    const senderCard = cards[currentIndex]?.number;
 
     const amountDB = parseFloat(amount);
 
@@ -51,22 +58,22 @@ export default function UserTransfer({
     const cardNumberDB = senderCard?.replace(/\D/g, "") ?? "";
 
     if (!cardNumberForDB || cardNumberForDB.length !== 16) {
-      setError("Номер картки повинен містити 16 цифр.");
+      setError("Card number must contain 16 digits.");
       return;
     }
 
     if (cardNumberDB === cardNumberForDB) {
-      setError("Неможливо надіслати кошти на власну картку.");
+      setError("Cannot send money to your own card.");
       return;
     }
 
     if (isNaN(amountDB) || amountDB <= 0) {
-      setError("Введіть коректну суму.");
+      setError("Please enter a valid amount.");
       return;
     }
 
     if (amountDB > userBalance) {
-      setError("Недостатньо коштів на рахунку.");
+      setError("Insufficient funds in your account.");
       return;
     }
 
@@ -77,7 +84,17 @@ export default function UserTransfer({
       description,
     });
   };
+  const handleNext = () => {
+    if (currentIndex < cards.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    }
+  };
 
+  const handlePrev = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
   return (
     <AuthenticatedLayout
       header={
@@ -95,12 +112,26 @@ export default function UserTransfer({
             style={{ maxWidth: 700 }}
             onSubmit={handleSubmit}
           >
-            <h4 className="mb-4">Переказ коштів</h4>
+            <h4 className="mb-4">Transfer</h4>
 
             {error && <InputError message={error} className="mb-4" />}
-
+            <div className="space-y-6">
+              {cards.length === 0 ? (
+                <p>No cards found</p>
+              ) : (
+                <>
+                  <CardInfo
+                    card={cards[currentIndex]}
+                    onNext={handleNext}
+                    onPrev={handlePrev}
+                    isFirst={currentIndex === 0}
+                    isLast={currentIndex === cards.length - 1}
+                  />
+                </>
+              )}
+            </div>
             <div className="mb-3">
-              <label className="form-label">Номер картки</label>
+              <label className="form-label">Card number</label>
               <div className="input-group">
                 <span className="input-group-text">
                   <i className="bi bi-credit-card"></i>
@@ -150,7 +181,7 @@ export default function UserTransfer({
                 type="submit"
                 className="btn btn-dark rounded-xl bg-green-500 text-xl text-white hover:bg-green-600"
               >
-                <p className="my-1 mr-2 ml-2">Надіслати</p>
+                <p className="my-1 mr-2 ml-2">Send</p>
               </button>
             </div>
           </form>

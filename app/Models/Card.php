@@ -23,8 +23,8 @@ class Card extends Model
         'pin_hash',
         'expire_date',
         'type',
+        'payment_network',
         'status',
-        'limit_amount',
     ];
 
     /**

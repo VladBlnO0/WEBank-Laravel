@@ -22,7 +22,7 @@ Route::get('/dashboard', function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/user-dashboard', [UserDashboardController::class, 'index'])->name('user-dashboard');
-    Route::get('/user-transfer', [UserTransferController::class, 'show'])->name('user-transfer');
+    Route::get('/user-transfer', [UserTransferController::class, 'index'])->name('user-transfer');
 
     Route::get('/faq', function () {
         return Inertia::render('FAQ');

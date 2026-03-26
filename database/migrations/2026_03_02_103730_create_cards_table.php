@@ -23,9 +23,7 @@ return new class extends Migration
             $table->string('type', 10);
             $table->string('payment_network', 15);
 
-            // balance with 15 digits in total and 2 decimal places
             $table->decimal('balance', 15, 2);
-            $table->decimal('limit_amount', 15, 2);
 
             $table->timestamps();
         });

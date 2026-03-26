@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CardDashboardResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -18,26 +19,10 @@ class UserTransferController extends Controller
         /**
          * @var object $cards
          */
-        $cards = $user->hasCards;
-
-        $userData = $cards->map(function ($card) {
-            return [
-                'id' => $card->id,
-                'balance' => $card->balance,
-                'number' => $card->pan,
-                'expire_date' => $card->expire_date,
-                'status' => $card->status,
-                'limit_amount' => $card->limit_amount,
-            ];
-        })->values()->all();
+        $cards = $user->hasCards()->get();
 
         return Inertia::render('User/UserTransfer', [
-            'userData' => $userData,
+            'userData' => CardDashboardResource::collection($cards),
         ]);
-    }
-
-    public function show()
-    {
-        return inertia('User/UserTransfer');
     }
 }

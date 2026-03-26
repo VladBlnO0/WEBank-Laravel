@@ -31,8 +31,7 @@ class CardFactory extends Factory
             'type' => $this->faker->randomElement(['debit', 'credit']),
             'payment_network' => $this->faker->randomElement(CardType::class),
 
-            'balance' => $this->faker->randomFloat(2, 0, 10000),
-            'limit_amount' => $this->faker->randomNumber(2, 10000),
+            'balance' => $this->faker->randomFloat(2, 0, 500000),
         ];
     }
 }

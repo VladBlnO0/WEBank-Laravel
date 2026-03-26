@@ -8,9 +8,10 @@ import { useState } from "react";
 export default function UserDashboard({
   userData,
 }: {
-  userData: { data: (CardData & { transactions: Tran[] })[] } | (CardData & { transactions: Tran[] })[];
+  userData:
+    | { data: (CardData & { transactions: Tran[] })[] }
+    | (CardData & { transactions: Tran[] })[];
 }) {
-  // Extract the array whether it is wrapped in 'data' by Laravel Resources or not
   const cards = Array.isArray(userData) ? userData : (userData?.data ?? []);
 
   const [currentIndex, setCurrentIndex] = useState(0);
