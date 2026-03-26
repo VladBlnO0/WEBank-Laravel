@@ -63,7 +63,7 @@ export default function BankCard({
       >
         {/* Front of the card */}
         <div className="absolute inset-0 z-10 flex h-full flex-col justify-between overflow-hidden rounded-lg bg-linear-to-r from-slate-900 to-slate-600 p-6 shadow-2xl backface-hidden">
-          <div className="flex w-full">
+          <div className="flex w-full select-none">
             <div className="flex items-center gap-3 font-bold">
               <i className="bi bi-credit-card-fill text-[2.5rem]" aria-hidden />
               <p className="select-none">{card.type?.toUpperCase()}</p>
@@ -103,30 +103,32 @@ export default function BankCard({
               </span>
             </div>
           </div>
-
           <div
+            className="flex items-center justify-between"
             onClick={(e) => {
               e.stopPropagation();
             }}
           >
-            <p className="font-medium text-gray-300 select-none">
-              Exp:<span className="ml-1 font-bold select-all">{formatted}</span>
-            </p>
+            <div className="flex flex-row items-center gap-1 text-lg">
+              <p className="text-gray-300 select-none">Balance: </p>
+              <p className="font-bold">{formatToLocal(card.balance)}</p>
+            </div>
+            <div className="flex flex-row">
+              <p className="font-medium text-gray-300 select-none">Exp:</p>
+              <span className="ml-1 font-bold select-all">{formatted}</span>
+            </div>
           </div>
-          <p className="text-lg">
-            Balance: <strong>{formatToLocal(card.balance)}</strong>
-          </p>
         </div>
         <div className="absolute inset-0 flex transform-[rotateY(180deg)] items-center justify-center rounded-lg shadow-lg backface-hidden">
           <div className="absolute inset-0 flex flex-col justify-between rounded-lg bg-linear-to-br from-slate-800 to-slate-900 shadow-lg backface-hidden">
             <div className="mt-10 h-10.5 w-full bg-black" />
 
-            <div className="mx-6 mb-2 flex items-center justify-between rounded-sm bg-white/90 p-2 shadow-inner">
+            <div className="mx-6 mb-20 flex items-center justify-between rounded-sm bg-white/90 p-2 shadow-inner">
               <div className="h-8 w-full bg-white/70" />
               <div className="ml-2 flex items-center">
                 <p className="mr-2 text-slate-600 select-none">CVV</p>
                 <div
-                  className="w-14 rounded-sm bg-slate-900/80 px-2 py-1 text-center text-sm font-semibold tracking-widest text-white"
+                  className="h-full w-14 rounded-sm bg-slate-900/80 px-2 py-1 text-center text-sm font-semibold tracking-widest text-white"
                   onClick={(e) => {
                     e.stopPropagation();
                   }}

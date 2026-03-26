@@ -1,4 +1,4 @@
-import CardInfo from "@/Components/CardInfo";
+import FullCard from "@/Components/FullCard";
 import Transactions from "@/Components/Transactions";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { type CardData, type Tran } from "@/types";
@@ -45,7 +45,7 @@ export default function UserDashboard({
           <p>No cards found</p>
         ) : (
           <>
-            <CardInfo
+            <FullCard
               card={cards[currentIndex]}
               onNext={handleNext}
               onPrev={handlePrev}
@@ -56,7 +56,7 @@ export default function UserDashboard({
         )}
       </div>
 
-      <div className="card mx-auto mt-10 sm:px-6 lg:px-8">
+      <div className="mx-auto mt-10 sm:px-6 lg:px-8">
         <div className="custom-scrollbar flex max-h-160 flex-col gap-3 overflow-auto overflow-y-scroll">
           {cards.length === 0 ? (
             <p>No transactions found</p>

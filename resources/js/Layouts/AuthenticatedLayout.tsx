@@ -57,10 +57,14 @@ export default function Authenticated({
               </div>
 
               <div className="font-sm -me-2 flex items-center text-base text-gray-800">
-                <div className="mr-2">
+                <NavLink
+                  href={route("profile.edit")}
+                  className="mr-2"
+                  active={route().current("profile.edit")}
+                >
                   <div>{user.name}</div>
                   <div>{user.email}</div>
-                </div>
+                </NavLink>
                 <button
                   onClick={() =>
                     setShowingNavigationDropdown(
@@ -112,20 +116,44 @@ export default function Authenticated({
               <div
                 className={`${showingNavigationDropdown ? "block" : "hidden"} mt-2 overflow-hidden rounded-md border border-gray-100 bg-white shadow-lg`}
               >
-                <div>
-                  <div className="mt-3 mb-1 space-y-1">
+                <div className="mt-3 mb-1 space-y-1">
+                  <div className="space-y-1 pt-2 pb-3">
+                    <ResponsiveNavLink
+                      href={route("user-dashboard")}
+                      active={route().current("user-dashboard")}
+                    >
+                      <div className="flex gap-3">
+                        <i className="bi bi-bank2"></i>
+                        <p>Dashboard</p>
+                      </div>
+                    </ResponsiveNavLink>
+
+                    <ResponsiveNavLink
+                      href={route("user-transfer")}
+                      active={route().current("user-transfer")}
+                    >
+                      <div className="flex gap-3">
+                        <i className="bi bi-arrow-repeat"></i>
+                        <p>Transfer</p>
+                      </div>
+                    </ResponsiveNavLink>
+                  </div>
+
+                  <div className="border-t border-gray-200 pb-1">
                     <ResponsiveNavLink
                       href={route("profile.edit")}
                       active={route().current("profile.edit")}
                     >
                       <div className="flex gap-3">
                         <i className="bi bi-person"></i>
-                        <p>Profile</p>
+                        <p>
+                          {user.name} {user.email}
+                        </p>
                       </div>
                     </ResponsiveNavLink>
                     <div className="border-t border-gray-300" />
                     <ResponsiveNavLink
-                      className="text-red-700"
+                      className="text-red-500 hover:text-red-700"
                       method="post"
                       href={route("logout")}
                       as="button"
