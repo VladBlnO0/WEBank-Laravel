@@ -16,10 +16,6 @@ Route::get('/login', function () {
     return Inertia::render('Auth/Login');
 })->name('login')->middleware('guest');
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->name('dashboard')->middleware('auth');
-
 Route::middleware('auth')->group(function () {
     Route::get('/user-dashboard', [UserDashboardController::class, 'index'])->name('user-dashboard');
     Route::get('/user-transfer', [UserTransferController::class, 'index'])->name('user-transfer');

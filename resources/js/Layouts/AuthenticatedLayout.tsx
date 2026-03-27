@@ -7,11 +7,10 @@ import { Transition, TransitionChild } from "@headlessui/react";
 import { usePage } from "@inertiajs/react";
 import { PropsWithChildren, ReactNode, useRef, useState } from "react";
 export default function Authenticated({
-  header,
   children,
 }: PropsWithChildren<{ header?: ReactNode }>) {
   const user: User = usePage().props.auth.user;
-  const closeTimer = useRef<number | null>(null);
+  const closeTimerRef = useRef<number | null>(null);
 
   const [showingNavigationDropdown, setShowingNavigationDropdown] =
     useState(false);
@@ -21,13 +20,13 @@ export default function Authenticated({
       <nav
         className="sticky top-0 z-50"
         onMouseEnter={() => {
-          if (closeTimer.current) {
-            clearTimeout(closeTimer.current);
-            closeTimer.current = null;
+          if (closeTimerRef.current) {
+            clearTimeout(closeTimerRef.current);
+            closeTimerRef.current = null;
           }
         }}
         onMouseLeave={() => {
-          closeTimer.current = window.setTimeout(() => {
+          closeTimerRef.current = window.setTimeout(() => {
             setShowingNavigationDropdown(false);
           }, 100);
         }}
