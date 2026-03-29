@@ -1,59 +1,16 @@
 services:
-  app:
-    build:
-      context: .
-      dockerfile: docker/php/Dockerfile
-      args:
-        WWWGROUP: '${WWWGROUP:-1000}'
-        WWWUSER: '${WWWUSER:-1000}'
-    image: 'webank-php/app'
-    extra_hosts:
-      - 'host.docker.internal:host-gateway'
-    ports:
-      - '${APP_PORT:-8080}:8000'
-    environment:
-      WWWUSER: '${WWWUSER:-1000}'
-    volumes:
-      - '.:/var/www/html'
-    working_dir: /var/www/html
-    command: php artisan serve --host=0.0.0.0 --port=8000
-    networks:
-      - app
-    depends_on:
-      - postgres
-      - redis
-      - mailpit
   postgres:
     image: 'postgres:latest'
     ports:
       - '${FORWARD_DB_PORT:-5432}:5432'
     environment:
       POSTGRES_PASSWORD: '${DB_PASSWORD}'
-      POSTGRES_DB: '${DB_DATABASE}'
       POSTGRES_USER: '${DB_USERNAME}'
-    volumes:
-      - 'app-postgres:/var/lib/postgresql'
-      - './docker/postgres/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
-    networks:
-      - app
-    healthcheck:
-      test:
-        - CMD
-        - pg_isready
-        - '-d'
-        - '${DB_DATABASE}'
-        - '-U'
-        - '${DB_USERNAME}'
-      retries: 3
-      timeout: 5s
   redis:
     image: 'redis:alpine'
     ports:
       - '${FORWARD_REDIS_PORT:-6379}:6379'
-    volumes:
-      - 'app-redis:/data'
-    networks:
-      - app
+
     healthcheck:
       test:
         - CMD
@@ -66,28 +23,9 @@ services:
     ports:
       - '${FORWARD_MAILPIT_PORT:-1025}:1025'
       - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
-    networks:
-      - app
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    restart: unless-stopped
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-      PGADMIN_CONFIG_SERVER_MODE: 'True'
-    volumes:
-      - ./servers.json:/pgadmin4/servers.json
+  adminer:
+    image: 'adminer:latest'
     ports:
-      - "5050:80"
+      - '${FORWARD_ADMINER_PORT:-8080}:8080'
     depends_on:
       - postgres
-    networks:
-      - app
-networks:
-  app:
-    driver: bridge
-volumes:
-  app-postgres:
-    driver: local
-  app-redis:
-    driver: local
