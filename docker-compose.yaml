@@ -1,11 +1,12 @@
 services:
   postgres:
-    image: 'postgres:latest'
+    image: 'pgvector/pgvector:pg17'
     ports:
       - '${FORWARD_DB_PORT:-5432}:5432'
     environment:
       POSTGRES_PASSWORD: '${DB_PASSWORD}'
       POSTGRES_USER: '${DB_USERNAME}'
+      POSTGRES_DB: '${DB_DATABASE}'
   redis:
     image: 'redis:alpine'
     ports:

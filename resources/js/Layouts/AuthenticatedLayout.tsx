@@ -1,3 +1,4 @@
+import { AiOperatorChat } from "@/Components/AiOperatorChat";
 import ApplicationLogo from "@/Components/ApplicationLogo";
 import Footer from "@/Components/Footer";
 import NavLink from "@/Components/NavLink";
@@ -6,6 +7,7 @@ import type { User } from "@/types";
 import { Transition, TransitionChild } from "@headlessui/react";
 import { usePage } from "@inertiajs/react";
 import { PropsWithChildren, ReactNode, useRef, useState } from "react";
+
 export default function Authenticated({
   children,
 }: PropsWithChildren<{ header?: ReactNode }>) {
@@ -184,6 +186,8 @@ export default function Authenticated({
           {children}
         </div>
       </main>
+      <AiOperatorChat />
+
       <Footer />
     </div>
   );

@@ -3,7 +3,6 @@ import Transactions from "@/Components/Transactions";
 import { type CardData, type Tran } from "@/types";
 import { Head } from "@inertiajs/react";
 import { useState } from "react";
-
 export default function UserDashboard({
   userData,
 }: {
