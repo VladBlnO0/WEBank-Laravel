@@ -1,7 +1,7 @@
 import Mastercard from "@/../../public/assets/icons/mastercard-svgrepo-com.svg";
 import Visa from "@/../../public/assets/icons/visa-3-svgrepo-com.svg";
 import { CardData } from "@/types";
-import { formatToLocal } from "@/utils/formatData";
+import { formatDate, formatToLocal } from "@/utils/formatData";
 import { useState } from "react";
 
 export default function BankCard({
@@ -24,20 +24,15 @@ export default function BankCard({
   const masked = digitsGroups[0] + "•".repeat(8) + digitsGroups[3];
   const cardGroups = masked.match(/.{1,4}/g) || [];
 
-  const date = new Date(card.expire_date || "");
-  const formatter = new Intl.DateTimeFormat("en-US", {
-    year: "2-digit",
-    month: "2-digit",
-  });
-  const formatted = formatter.format(date);
-
   const displayGroups = showDigits ? digitsGroups : cardGroups;
   function toggle() {
-    showDigits ? setShowDigits(false) : setShowDigits(true);
+    setShowDigits((prev) => !prev);
+  }
+  function copyToClipboard() {
     navigator.clipboard.writeText(card.number);
   }
   const handleClick = () => {
-    setIsFlipped(!isFlipped);
+    setIsFlipped((prev) => !prev);
   };
 
   const iconMap: Record<string, string> = {
@@ -52,7 +47,7 @@ export default function BankCard({
       tabIndex={onClick ? 0 : -1}
       aria-label={`Card ending ${cardGroups[3]}`}
       className={
-        `relative h-62.5 w-112.5 transform text-white transition-transform duration-500 will-change-transform perspective-[1000px] ` +
+        `relative h-62.5 w-112.5 transform text-white will-change-transform perspective-normal ` +
         className
       }
     >
@@ -80,9 +75,10 @@ export default function BankCard({
             role="button"
             tabIndex={0}
             onClick={(e) => {
-              toggle();
+              copyToClipboard();
               e.stopPropagation();
             }}
+            onMouseLeave={() => setShowDigits(false)}
             aria-pressed={showDigits}
             aria-label={showDigits ? "Hide card number" : "Show card number"}
           >
@@ -94,6 +90,7 @@ export default function BankCard({
                 <span
                   key={i + 1}
                   className="inline-block text-center font-mono"
+                  onClick={() => toggle()}
                 >
                   {displayGroups[i + 1] ?? "••••"}
                 </span>
@@ -115,7 +112,9 @@ export default function BankCard({
             </div>
             <div className="flex flex-row">
               <p className="font-medium text-gray-300 select-none">Exp:</p>
-              <span className="ml-1 font-bold select-all">{formatted}</span>
+              <span className="ml-1 font-bold select-all">
+                {formatDate(card.expire_date ? card.expire_date : 0)}
+              </span>
             </div>
           </div>
         </div>

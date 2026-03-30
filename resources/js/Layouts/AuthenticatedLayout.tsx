@@ -26,9 +26,7 @@ export default function Authenticated({
           }
         }}
         onMouseLeave={() => {
-          closeTimerRef.current = window.setTimeout(() => {
-            setShowingNavigationDropdown(false);
-          }, 100);
+          setShowingNavigationDropdown(false);
         }}
       >
         <div className="border-b border-gray-100 bg-white shadow-md">
@@ -120,6 +118,7 @@ export default function Authenticated({
                     <ResponsiveNavLink
                       href={route("user-dashboard")}
                       active={route().current("user-dashboard")}
+                      onClick={() => setShowingNavigationDropdown(false)}
                     >
                       <div className="flex gap-3">
                         <i className="bi bi-bank2"></i>
@@ -130,6 +129,7 @@ export default function Authenticated({
                     <ResponsiveNavLink
                       href={route("user-transfer")}
                       active={route().current("user-transfer")}
+                      onClick={() => setShowingNavigationDropdown(false)}
                     >
                       <div className="flex gap-3">
                         <i className="bi bi-arrow-repeat"></i>
@@ -142,6 +142,7 @@ export default function Authenticated({
                     <ResponsiveNavLink
                       href={route("profile.edit")}
                       active={route().current("profile.edit")}
+                      onClick={() => setShowingNavigationDropdown(false)}
                     >
                       <div className="flex gap-3">
                         <i className="bi bi-person"></i>
@@ -156,6 +157,7 @@ export default function Authenticated({
                       method="post"
                       href={route("logout")}
                       as="button"
+                      onClick={() => setShowingNavigationDropdown(false)}
                     >
                       <div className="flex gap-3">
                         <i className="bi bi-box-arrow-right"></i>

@@ -11,8 +11,8 @@ export default function UpdatePasswordForm({
 }: {
   className?: string;
 }) {
-  const passwordInput = useRef<HTMLInputElement>(null);
-  const currentPasswordInput = useRef<HTMLInputElement>(null);
+  const passwordInputRef = useRef<HTMLInputElement>(null);
+  const currentPasswordInputRef = useRef<HTMLInputElement>(null);
 
   const { data, setData, errors, put, reset, processing, recentlySuccessful } =
     useForm({
@@ -30,12 +30,12 @@ export default function UpdatePasswordForm({
       onError: (errors) => {
         if (errors.password) {
           reset('password', 'password_confirmation');
-          passwordInput.current?.focus();
+          passwordInputRef.current?.focus();
         }
 
         if (errors.current_password) {
           reset('current_password');
-          currentPasswordInput.current?.focus();
+          currentPasswordInputRef.current?.focus();
         }
       },
     });
@@ -57,10 +57,10 @@ export default function UpdatePasswordForm({
 
           <TextInput
             id="current_password"
-            ref={currentPasswordInput}
+            ref={currentPasswordInputRef}
             value={data.current_password}
             onChange={(e: { target: { value: string } }) =>
-              setData('current_password', e.target.value)
+              setData("current_password", e.target.value)
             }
             type="password"
             className="mt-1 block w-full"
@@ -75,10 +75,10 @@ export default function UpdatePasswordForm({
 
           <TextInput
             id="password"
-            ref={passwordInput}
+            ref={passwordInputRef}
             value={data.password}
             onChange={(e: { target: { value: string } }) =>
-              setData('password', e.target.value)
+              setData("password", e.target.value)
             }
             type="password"
             className="mt-1 block w-full"
@@ -98,7 +98,7 @@ export default function UpdatePasswordForm({
             id="password_confirmation"
             value={data.password_confirmation}
             onChange={(e: { target: { value: string } }) =>
-              setData('password_confirmation', e.target.value)
+              setData("password_confirmation", e.target.value)
             }
             type="password"
             className="mt-1 block w-full"

@@ -5,6 +5,18 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @property mixed $cvv
+ * @property mixed $sentTransactions
+ * @property mixed $receivedTransactions
+ * @property mixed $id
+ * @property mixed $balance
+ * @property mixed $status
+ * @property mixed $type
+ * @property mixed $payment_network
+ * @property mixed $expire_date
+ * @property mixed $pan
+ */
 class CardDashboardResource extends JsonResource
 {
     /**

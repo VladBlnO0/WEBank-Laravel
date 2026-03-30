@@ -1,6 +1,5 @@
 import FullCard from "@/Components/FullCard";
 import Transactions from "@/Components/Transactions";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { type CardData, type Tran } from "@/types";
 import { Head } from "@inertiajs/react";
 import { useState } from "react";
@@ -31,13 +30,7 @@ export default function UserDashboard({
   const selectedTransactions = cards[currentIndex]?.transactions ?? [];
 
   return (
-    <AuthenticatedLayout
-      header={
-        <h2 className="text-xl leading-tight font-semibold text-gray-800">
-          User Dashboard
-        </h2>
-      }
-    >
+    <>
       <Head title="User Dashboard" />
 
       <div className="space-y-6">
@@ -65,6 +58,14 @@ export default function UserDashboard({
           )}
         </div>
       </div>
-    </AuthenticatedLayout>
+    </>
   );
 }
+
+UserDashboard.layout = {
+  breadcrumbs: [
+    {
+      title: "User Dashboard",
+    },
+  ],
+};

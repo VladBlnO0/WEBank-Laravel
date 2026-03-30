@@ -1,6 +1,5 @@
 import CardInfo from "@/Components/CardInfo";
 import InputError from "@/Components/InputError";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import type { CardData, Tran } from "@/types";
 import { Head } from "@inertiajs/react";
 import { useState } from "react";
@@ -17,7 +16,7 @@ export default function UserTransfer({
 
   const [card, setCard] = useState("");
   const [amount, setAmount] = useState("");
-  const [description, setDescription] = useState("");
+  const [description] = useState("");
   const [error, setError] = useState("");
 
   const formatCard = (value: string) => {
@@ -95,13 +94,7 @@ export default function UserTransfer({
     }
   };
   return (
-    <AuthenticatedLayout
-      header={
-        <h2 className="text-xl leading-tight font-semibold text-gray-800">
-          Transfer
-        </h2>
-      }
-    >
+    <>
       <Head title="Dashboard" />
 
       <div className="flex overflow-hidden rounded bg-white p-2 shadow">
@@ -177,6 +170,13 @@ export default function UserTransfer({
           </form>
         </main>
       </div>
-    </AuthenticatedLayout>
+    </>
   );
 }
+UserTransfer.layout = {
+  breadcrumbs: [
+    {
+      title: "User Transfer",
+    },
+  ],
+};

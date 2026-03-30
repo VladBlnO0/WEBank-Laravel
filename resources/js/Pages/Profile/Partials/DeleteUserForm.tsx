@@ -13,7 +13,7 @@ export default function DeleteUserForm({
   className?: string;
 }) {
   const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
-  const passwordInput = useRef<HTMLInputElement>(null);
+  const passwordInputRef = useRef<HTMLInputElement>(null);
 
   const {
     data,
@@ -34,10 +34,10 @@ export default function DeleteUserForm({
   const deleteUser: SubmitEventHandler = (e) => {
     e.preventDefault();
 
-    destroy(route('profile.destroy'), {
+    destroy(route("profile.destroy"), {
       preserveScroll: true,
       onSuccess: () => closeModal(),
-      onError: () => passwordInput.current?.focus(),
+      onError: () => passwordInputRef.current?.focus(),
       onFinish: () => reset(),
     });
   };
@@ -86,10 +86,10 @@ export default function DeleteUserForm({
               id="password"
               type="password"
               name="password"
-              ref={passwordInput}
+              ref={passwordInputRef}
               value={data.password}
               onChange={(e: { target: { value: string } }) =>
-                setData('password', e.target.value)
+                setData("password", e.target.value)
               }
               className="mt-1 block w-3/4"
               isFocused

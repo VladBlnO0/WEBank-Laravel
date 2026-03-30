@@ -24,7 +24,7 @@ export type CardData = {
   id?: number;
   number: string;
   balance: number;
-  expire_date?: Date;
+  expire_date?: number;
   status?: string;
   payment_network: string;
   type?: string;

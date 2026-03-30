@@ -28,7 +28,7 @@ export default function FullCard({
           <NavigationButton onClick={handlePrev} disabled={isFirst} className="text-6xl">
             <i className="bi bi-caret-left-fill"></i>
           </NavigationButton>
-          <BankCard card={card} />
+          <BankCard key={card.id} card={card} />
           <NavigationButton onClick={handleNext} disabled={isLast} className="text-6xl">
             <i className="bi bi-caret-right-fill"></i>
           </NavigationButton>

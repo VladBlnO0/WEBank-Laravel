@@ -1,4 +1,3 @@
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { PageProps } from "@/types";
 import { Head } from "@inertiajs/react";
 import UpdatePasswordForm from "./Partials/UpdatePasswordForm";
@@ -9,13 +8,7 @@ export default function Edit({
   status,
 }: PageProps<{ mustVerifyEmail: boolean; status?: string }>) {
   return (
-    <AuthenticatedLayout
-      header={
-        <h2 className="text-xl leading-tight font-semibold text-gray-800">
-          Profile
-        </h2>
-      }
-    >
+    <>
       <Head title="Profile" />
 
       <div className="py-12">
@@ -33,6 +26,14 @@ export default function Edit({
           </div>
         </div>
       </div>
-    </AuthenticatedLayout>
+    </>
   );
 }
+
+Edit.layout = {
+  breadcrumbs: [
+    {
+      title: "Edit Profile",
+    },
+  ],
+};

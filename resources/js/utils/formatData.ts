@@ -11,4 +11,13 @@ function formatCardNumber(value: string) {
     .replace(/(.{4})/g, "$1 ")
     .trim();
 }
-export { formatCardNumber, formatToLocal };
+
+function formatDate(value: number) {
+  const date = new Date(value);
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    year: "2-digit",
+    month: "2-digit",
+  });
+  return formatter.format(date);
+}
+export { formatCardNumber, formatToLocal, formatDate };
