@@ -16,21 +16,34 @@ export default function BankCard({
   const [showDigits, setShowDigits] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
 
-  // const digits = card.number.replace(/\s+/g, '').padEnd(16, '•');
-  // const groups = digits.match(/.{1,4}/g) || [];
-  // const cardNumber = groups.map((group) => group.slice().padStart(4, '•'));
-
-  const digitsGroups = card.number.match(/.{0,4}/g) || [];
-  const masked = digitsGroups[0] + "•".repeat(8) + digitsGroups[3];
-  const cardGroups = masked.match(/.{1,4}/g) || [];
+  const safeNumber = card.number
+    .replace(/\s+/g, "")
+    .padEnd(16, "•")
+    .slice(0, 16);
+  const digitsGroups = safeNumber.match(/.{1,4}/g) || [
+    "••••",
+    "••••",
+    "••••",
+    "••••",
+  ];
+  const masked = `${digitsGroups[0]}${"•".repeat(8)}${digitsGroups[3]}`;
+  const cardGroups = masked.match(/.{1,4}/g) || [
+    "••••",
+    "••••",
+    "••••",
+    "••••",
+  ];
 
   const displayGroups = showDigits ? digitsGroups : cardGroups;
+
   function toggle() {
     setShowDigits((prev) => !prev);
   }
+
   function copyToClipboard() {
     navigator.clipboard.writeText(card.number);
   }
+
   const handleClick = () => {
     setIsFlipped((prev) => !prev);
   };
@@ -47,7 +60,7 @@ export default function BankCard({
       tabIndex={onClick ? 0 : -1}
       aria-label={`Card ending ${cardGroups[3]}`}
       className={
-        `relative h-62.5 w-112.5 transform text-white will-change-transform perspective-normal ` +
+        `relative h-62.5 w-112.5 transform text-white transition-transform duration-300 will-change-transform perspective-normal hover:scale-[1.01] ` +
         className
       }
     >
@@ -56,12 +69,16 @@ export default function BankCard({
           isFlipped ? "transform-[rotateY(180deg)]" : ""
         }`}
       >
-        {/* Front of the card */}
-        <div className="absolute inset-0 z-10 flex h-full flex-col justify-between overflow-hidden rounded-lg bg-linear-to-r from-slate-900 to-slate-600 p-6 shadow-2xl backface-hidden">
-          <div className="flex w-full select-none">
+        <div className="absolute inset-0 z-10 flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-white/20 bg-linear-to-br from-slate-950 via-slate-800 to-slate-600 p-6 shadow-2xl backface-hidden">
+          <div className="pointer-events-none absolute -top-20 -right-20 h-52 w-52 rounded-full bg-emerald-300/20 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-24 -left-20 h-56 w-56 rounded-full bg-cyan-300/15 blur-3xl" />
+
+          <div className="relative flex w-full select-none">
             <div className="flex items-center gap-3 font-bold">
               <i className="bi bi-credit-card-fill text-[2.5rem]" aria-hidden />
-              <p className="select-none">{card.type?.toUpperCase()}</p>
+              <p className="tracking-wide select-none">
+                {card.type?.toUpperCase() || "BANK CARD"}
+              </p>
             </div>
             <img
               src={iconMap[card.payment_network]}
@@ -71,7 +88,7 @@ export default function BankCard({
           </div>
 
           <div
-            className="mt-2 tracking-widest"
+            className="mt-2 cursor-copy tracking-widest"
             role="button"
             tabIndex={0}
             onClick={(e) => {
@@ -82,7 +99,7 @@ export default function BankCard({
             aria-pressed={showDigits}
             aria-label={showDigits ? "Hide card number" : "Show card number"}
           >
-            <div className="mb-1.5 flex justify-center gap-4 text-4xl font-bold">
+            <div className="mb-1.5 flex justify-center gap-4 text-3xl font-bold sm:text-4xl">
               <span className="inline-block text-center font-mono">
                 {displayGroups[0]}
               </span>
@@ -100,14 +117,15 @@ export default function BankCard({
               </span>
             </div>
           </div>
+
           <div
-            className="flex items-center justify-between"
+            className="relative flex items-center justify-between"
             onClick={(e) => {
               e.stopPropagation();
             }}
           >
             <div className="flex flex-row items-center gap-1 text-lg">
-              <p className="text-gray-300 select-none">Balance: </p>
+              <p className="text-gray-300 select-none">Balance:</p>
               <p className="font-bold">{formatToLocal(card.balance)}</p>
             </div>
             <div className="flex flex-row">
@@ -118,8 +136,9 @@ export default function BankCard({
             </div>
           </div>
         </div>
-        <div className="absolute inset-0 flex transform-[rotateY(180deg)] items-center justify-center rounded-lg shadow-lg backface-hidden">
-          <div className="absolute inset-0 flex flex-col justify-between rounded-lg bg-linear-to-br from-slate-800 to-slate-900 shadow-lg backface-hidden">
+
+        <div className="absolute inset-0 flex transform-[rotateY(180deg)] items-center justify-center rounded-2xl shadow-lg backface-hidden">
+          <div className="absolute inset-0 flex flex-col justify-between rounded-2xl border border-white/10 bg-linear-to-br from-slate-800 to-slate-950 shadow-lg backface-hidden">
             <div className="mt-10 h-10.5 w-full bg-black" />
 
             <div className="mx-6 mb-20 flex items-center justify-between rounded-sm bg-white/90 p-2 shadow-inner">

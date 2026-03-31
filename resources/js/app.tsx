@@ -18,8 +18,6 @@ createInertiaApp({
         return [AuthenticatedLayout];
       case name.startsWith("User/"):
         return [AuthenticatedLayout];
-      default:
-        return AuthenticatedLayout;
     }
   },
   progress: {

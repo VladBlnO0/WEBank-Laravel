@@ -5,50 +5,66 @@ export default function Transactions({
 }: {
   transactions: Tran[];
 }) {
+  const currencyFormatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  });
+
   return (
-    <>
-      <ul className="flex flex-col gap-4 p-4">
-        {transactions.length === 0 ? (
-          <p className="text-gray-500">No transactions.</p>
-        ) : (
-          transactions.map((tran) => (
+    <ul className="flex  flex-col gap-3  p-1 sm:p-2">
+      {transactions.length === 0 ? (
+        <p className="p-4 text-sm text-slate-500">No transactions.</p>
+      ) : (
+        transactions.map((tran) => {
+          const isOutgoing = tran.amount < 0;
+          const typeClass =
+            tran.type === "payment"
+              ? "bg-rose-100 text-rose-700"
+              : tran.type === "transfer"
+                ? "bg-amber-100 text-amber-700"
+                : "bg-emerald-100 text-emerald-700";
+
+          return (
             <li
               key={tran.id}
-              className="width-full mt-2 bg-gray-100 pt-4 shadow sm:rounded-lg sm:p-8 sm:px-6 lg:px-8"
+              className="w-full snap-start rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:p-5"
             >
-              <div className="flex w-full rounded-lg border-2 border-gray-300 p-2">
-                <div className="flex flex-col gap-2">
+              <div className="flex flex-wrap items-start gap-3 sm:flex-nowrap">
+                <div className="min-w-0 space-y-2">
                   <p
-                    className={`uppercase ${
-                      tran.type === "payment"
-                        ? "text-red-600"
-                        : tran.type === "transfer"
-                          ? "text-orange-600"
-                          : "text-green-600"
-                    }`}
+                    className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold tracking-wide uppercase ${typeClass}`}
                   >
                     {tran.type}
                   </p>
-                  <div className="text-gray-500">
-                    {new Date(tran.date).toLocaleDateString()}
-                  </div>
+                  <p className="text-sm text-slate-500">
+                    {new Date(tran.date).toLocaleDateString(undefined, {
+                      year: "numeric",
+                      month: "short",
+                      day: "2-digit",
+                    })}
+                  </p>
                   {tran.description && (
-                    <div className="mb-1">{tran.description}</div>
+                    <p className="max-w-lg text-sm text-slate-700">
+                      {tran.description}
+                    </p>
                   )}
                 </div>
-                <div className="ml-auto flex items-center">
-                  <div
-                    className={`text-xl font-bold ${tran.amount < 0 ? "text-red-700" : "text-green-700"}`}
+
+                <div className="ml-auto text-right">
+                  <p
+                    className={`text-xl font-semibold tracking-tight ${
+                      isOutgoing ? "text-rose-700" : "text-emerald-700"
+                    }`}
                   >
-                    {tran.amount > 0 ? "+" : "-"}$
-                    {Math.abs(tran.amount).toFixed(2)}
-                  </div>
+                    {isOutgoing ? "-" : "+"}
+                    {currencyFormatter.format(Math.abs(tran.amount))}
+                  </p>
                 </div>
               </div>
             </li>
-          ))
-        )}
-      </ul>
-    </>
+          );
+        })
+      )}
+    </ul>
   );
 }

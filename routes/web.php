@@ -12,7 +12,7 @@ Route::get('/', function () {
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
     ]);
-});
+})->name('Welcome');
 Route::get('/login', function () {
     return Inertia::render('Auth/Login');
 })->name('login')->middleware('guest');
