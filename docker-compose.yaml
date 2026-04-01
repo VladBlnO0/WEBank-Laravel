@@ -24,6 +24,11 @@ services:
     ports:
       - '${FORWARD_MAILPIT_PORT:-1025}:1025'
       - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
+    volumes:
+      - ./mailpit-data:/data
+    environment:
+      - MP_MAX_MESSAGES=500
+      - MP_DATABASE=/data/mailpit.db
   adminer:
     image: 'adminer:latest'
     ports:

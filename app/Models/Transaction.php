@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -12,11 +14,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $to_card_id
  * @property string $type
  * @property numeric $amount
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Card|null $belongsToCard
- * @property-read \App\Models\Card $fromCard
- * @property-read \App\Models\Card $toCard
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Card|null $belongsToCard
+ * @property-read Card $fromCard
+ * @property-read Card $toCard
+ *
  * @method static \Database\Factories\TransactionFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction newQuery()
@@ -28,6 +31,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereToCardId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Transaction extends Model
@@ -63,5 +67,23 @@ class Transaction extends Model
     public function toCard(): BelongsTo
     {
         return $this->belongsTo(Card::class, 'to_card_id');
+    }
+
+    public function scopeFilter(Builder $query, array $filters): Builder
+    {
+        return $query->when(
+            $filters['amount'] ?? false,
+            fn ($query, $value) => $query->where('amount', '>=', $value)
+
+        )->when(
+            $filters['created_at'] ?? false,
+            fn ($query, $value) => $query->where('created_at', '<=', $value)
+
+        )->when(
+            $filters['type'] ?? false,
+            fn ($query, $value) => ! in_array($value, $this->sortable)
+                ? $query :
+                $query->orderBy($value, $filters['order'] ?? 'desc')
+        );
     }
 }

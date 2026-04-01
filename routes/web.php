@@ -20,6 +20,7 @@ Route::get('/login', function () {
 Route::middleware('auth')->group(function () {
     Route::get('/user-dashboard', [UserDashboardController::class, 'index'])->name('user-dashboard');
     Route::get('/user-transfer', [UserTransferController::class, 'index'])->name('user-transfer');
+    
     Route::post('/ai/operator/chat', [AiOperatorController::class, 'chat'])
         ->middleware('throttle:30,1')
         ->name('ai.operator.chat');

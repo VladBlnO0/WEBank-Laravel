@@ -1,9 +1,7 @@
-import Mastercard from "@/../../public/assets/icons/mastercard-svgrepo-com.svg";
-import Visa from "@/../../public/assets/icons/visa-3-svgrepo-com.svg";
 import { CardData } from "@/types";
 import { formatDate, formatToLocal } from "@/utils/formatData";
 import { useState } from "react";
-
+import PaymentNetwork from "./PaymentNetwork";
 export default function BankCard({
   card,
   className = "",
@@ -48,11 +46,6 @@ export default function BankCard({
     setIsFlipped((prev) => !prev);
   };
 
-  const iconMap: Record<string, string> = {
-    mastercard: Mastercard,
-    visa: Visa,
-  };
-
   return (
     <div
       role={onClick ? "button" : undefined}
@@ -80,10 +73,9 @@ export default function BankCard({
                 {card.type?.toUpperCase() || "BANK CARD"}
               </p>
             </div>
-            <img
-              src={iconMap[card.payment_network]}
-              alt={card.payment_network}
-              className="ml-auto size-10 shrink-0 object-contain"
+            <PaymentNetwork
+              card={card}
+              className="ml-auto size-15 shrink-0 object-contain"
             />
           </div>
 

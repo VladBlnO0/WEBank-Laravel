@@ -1,5 +1,8 @@
 import NavigationButton from "@/Components/NavigationButton";
 import { CardData } from "@/types";
+import { formatToLocal } from "@/utils/formatData";
+import PaymentNetwork from "./PaymentNetwork";
+
 export default function FullCard({
   card,
   onNext,
@@ -32,15 +35,28 @@ export default function FullCard({
           <NavigationButton
             onClick={handlePrev}
             disabled={isFirst}
-            className="text-2xl"
+            className="m-auto text-2xl"
           >
             <i className="bi bi-caret-left-fill"></i>
           </NavigationButton>
-          <p>{cardGroups.join(" ")}</p>
+
+          <section className="bg-white-50 flex h-35 w-80 items-start justify-between gap-4 rounded-2xl border border-white p-6 shadow-md shadow-gray-400 backdrop-blur-md">
+            <div className="flex flex-row items-center gap-3">
+              <span className="h-10 w-15 rounded-md bg-linear-to-br from-slate-950 via-slate-800 to-slate-600 shadow-2xl" />
+              <div className="flex flex-col gap-2">
+                <PaymentNetwork card={card} className="size-10" />
+                <p className="text-xs tracking-[0.14em]">
+                  {cardGroups.join(" ")}
+                </p>
+                <p className="font-bold">{formatToLocal(card.balance)}</p>
+              </div>
+            </div>
+          </section>
+
           <NavigationButton
             onClick={handleNext}
             disabled={isLast}
-            className="text-2xl"
+            className="m-auto text-2xl"
           >
             <i className="bi bi-caret-right-fill"></i>
           </NavigationButton>

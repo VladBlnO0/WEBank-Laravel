@@ -20,4 +20,4 @@ function formatDate(value: number) {
   });
   return formatter.format(date);
 }
-export { formatCardNumber, formatToLocal, formatDate };
+export { formatCardNumber, formatDate, formatToLocal };
