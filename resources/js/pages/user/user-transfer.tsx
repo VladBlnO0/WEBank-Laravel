@@ -1,8 +1,8 @@
-import CardInfo from "@/Components/CardInfo";
-import InputError from "@/Components/InputError";
+import CardInfo from "@/components/card-info";
+import InputError from "@/components/input-error";
 import type { CardData, Tran } from "@/types";
 import { formatToLocal } from "@/utils/formatData";
-import { Head, useForm } from "@inertiajs/react";
+import { Head, useForm, usePage } from "@inertiajs/react";
 import { type ChangeEvent, useState } from "react";
 
 export default function UserTransfer({
@@ -16,19 +16,14 @@ export default function UserTransfer({
   const [currentIndex, setCurrentIndex] = useState(0);
   const selectedCard = cards[currentIndex];
 
-  const { data, setData, post, processing, errors, reset } = useForm({
+  const { data, setData, post, processing, errors } = useForm({
+    from_card_id: selectedCard.id,
     card: "",
     amount: "",
   });
+  const { flash } = usePage<any>().props;
 
   const [error, setError] = useState("");
-
-  const formatCard = (value: string) => {
-    return value
-      .replace(/\D/g, "")
-      .replace(/(.{4})/g, "$1 ")
-      .trim();
-  };
 
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -66,7 +61,9 @@ export default function UserTransfer({
       return;
     }
 
-    post(route("register"), {});
+    post(route("transactions.store"), {
+      preserveScroll: true,
+    });
   };
 
   const handleNext = () => {
@@ -80,6 +77,7 @@ export default function UserTransfer({
       setCurrentIndex(currentIndex - 1);
     }
   };
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
@@ -116,8 +114,6 @@ export default function UserTransfer({
       <div
         className="space-y-7"
         style={{
-          background:
-            "radial-gradient(circle at 85% -10%, #d5f3ea 0%, transparent 30%), radial-gradient(circle at 10% 10%, #fbe3c8 0%, transparent 30%)",
           fontFamily:
             '"Space Grotesk", "IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif',
         }}
@@ -127,6 +123,18 @@ export default function UserTransfer({
             {error && (
               <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3">
                 <InputError message={error} className="m-0" />
+              </div>
+            )}
+
+            {errors.card && (
+              <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3">
+                <InputError message={errors.card} className="m-0" />
+              </div>
+            )}
+
+            {errors.amount && (
+              <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3">
+                <InputError message={errors.amount} className="m-0" />
               </div>
             )}
 
@@ -141,6 +149,7 @@ export default function UserTransfer({
                   </div>
                 ) : (
                   <CardInfo
+                    key={selectedCard.id}
                     card={cards[currentIndex]}
                     onNext={handleNext}
                     onPrev={handlePrev}
@@ -196,8 +205,12 @@ export default function UserTransfer({
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-3 border-t border-slate-200 pt-4">
+              {flash.success && (
+                <div className="alert-success">{flash.success}</div>
+              )}
               <button
                 type="submit"
+                disabled={processing || cards.length === 0}
                 className="rounded-xl bg-emerald-600 px-8 py-3 text-base font-semibold text-white transition hover:-translate-y-0.5 hover:bg-emerald-500"
               >
                 Send transfer

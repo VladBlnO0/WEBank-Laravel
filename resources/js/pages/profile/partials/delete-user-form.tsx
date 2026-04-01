@@ -1,14 +1,14 @@
-import DangerButton from '@/Components/DangerButton';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import Modal from '@/Components/Modal';
-import SecondaryButton from '@/Components/SecondaryButton';
-import TextInput from '@/Components/TextInput';
-import { useForm } from '@inertiajs/react';
-import { SubmitEventHandler, useRef, useState } from 'react';
+import DangerButton from "@/components/danger-button";
+import InputError from "@/components/input-error";
+import InputLabel from "@/components/input-label";
+import Modal from "@/components/modal";
+import SecondaryButton from "@/components/secondary-button";
+import TextInput from "@/components/text-input";
+import { useForm } from "@inertiajs/react";
+import { SubmitEventHandler, useRef, useState } from "react";
 
 export default function DeleteUserForm({
-  className = '',
+  className = "",
 }: {
   className?: string;
 }) {
@@ -24,7 +24,7 @@ export default function DeleteUserForm({
     errors,
     clearErrors,
   } = useForm({
-    password: '',
+    password: "",
   });
 
   const confirmUserDeletion = () => {

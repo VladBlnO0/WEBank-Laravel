@@ -2,8 +2,10 @@ import "../css/app.css";
 
 import { createInertiaApp } from "@inertiajs/react";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import AuthenticatedLayout from "./Layouts/AuthenticatedLayout";
-import GuestLayout from "./Layouts/GuestLayout";
+import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
+import AuthenticatedLayout from "./layouts/authenticated-layout";
+import GuestLayout from "./layouts/guest-layout";
+
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 
 createInertiaApp({
@@ -17,11 +19,11 @@ createInertiaApp({
     switch (true) {
       case name === "welcome" || name === "faq":
         return null;
-      case name.startsWith("Auth/"):
+      case name.startsWith("auth/"):
         return GuestLayout;
-      case name.startsWith("Profile/"):
+      case name.startsWith("profile/"):
         return [AuthenticatedLayout];
-      case name.startsWith("User/"):
+      case name.startsWith("user/"):
         return [AuthenticatedLayout];
     }
   },

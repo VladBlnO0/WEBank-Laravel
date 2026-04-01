@@ -1,7 +1,7 @@
 import { CardData } from "@/types";
 import { formatDate, formatToLocal } from "@/utils/formatData";
 import { useState } from "react";
-import PaymentNetwork from "./PaymentNetwork";
+import PaymentNetwork from "./payment-network";
 export default function BankCard({
   card,
   className = "",

@@ -8,32 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
-/**
- * @property int $id
- * @property int $from_card_id
- * @property int $to_card_id
- * @property string $type
- * @property numeric $amount
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property-read Card|null $belongsToCard
- * @property-read Card $fromCard
- * @property-read Card $toCard
- *
- * @method static \Database\Factories\TransactionFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereAmount($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereFromCardId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereToCardId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereUpdatedAt($value)
- *
- * @mixin \Eloquent
- */
 class Transaction extends Model
 {
     use HasFactory;
@@ -44,7 +18,8 @@ class Transaction extends Model
      * @var array
      */
     protected $fillable = [
-        'account_id',
+        'from_card_id',
+        'to_card_id',
         'type',
         'amount',
     ];

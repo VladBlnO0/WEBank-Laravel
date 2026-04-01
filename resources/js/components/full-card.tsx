@@ -1,5 +1,5 @@
-import BankCard from "@/Components/BankCard";
-import NavigationButton from "@/Components/NavigationButton";
+import BankCard from "@/components/bank-card";
+import NavigationButton from "@/components/navigation-button";
 import { CardData } from "@/types";
 
 export default function FullCard({

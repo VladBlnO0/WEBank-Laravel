@@ -26,7 +26,7 @@ class UserDashboardController extends Controller
             ])
             ->get();
 
-        return Inertia::render('User/UserDashboard', [
+        return Inertia::render('user/user-dashboard', [
             'userData' => CardDashboardResource::collection($cards),
         ]);
     }

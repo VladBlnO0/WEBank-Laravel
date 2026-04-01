@@ -11,7 +11,7 @@ class StoreTransactionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user() !== null;
     }
 
     /**
@@ -22,7 +22,9 @@ class StoreTransactionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'from_card_id' => ['required', 'integer', 'exists:cards,id'],
+            'card' => ['required', 'string', 'regex:/^\d{4}\s?\d{4}\s?\d{4}\s?\d{4}$/'],
+            'amount' => ['required', 'numeric', 'min:0.01', 'max:100001'],
         ];
     }
 }

@@ -21,7 +21,7 @@ class UserTransferController extends Controller
          */
         $cards = $user->hasCards()->get();
 
-        return Inertia::render('User/UserTransfer', [
+        return Inertia::render('user/user-transfer', [
             'userData' => CardDashboardResource::collection($cards),
         ]);
     }

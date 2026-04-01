@@ -1,7 +1,7 @@
-import { AiOperatorChat } from "@/Components/AiOperatorChat";
-import ApplicationLogo from "@/Components/ApplicationLogo";
-import Footer from "@/Components/Footer";
-import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
+import { AiOperatorChat } from "@/components/ai-operator-chat";
+import ApplicationLogo from "@/components/application-logo";
+import Footer from "@/components/footer";
+import ResponsiveNavLink from "@/components/responsive-nav-link";
 import type { User } from "@/types";
 import { Transition, TransitionChild } from "@headlessui/react";
 import { Link, usePage } from "@inertiajs/react";
@@ -14,7 +14,7 @@ export default function Authenticated({
   const [showingNavigationDropdown, setShowingNavigationDropdown] =
     useState(false);
   const route = useRoute();
-  const homeUrl = route("Welcome");
+  const homeUrl = route("welcome");
 
   return (
     <div
@@ -24,7 +24,7 @@ export default function Authenticated({
           "radial-gradient(circle at 15% -5%, #d9efe4 0%, transparent 30%), radial-gradient(circle at 85% 0%, #f4e3ca 0%, transparent 30%), #f5f5ef",
       }}
     >
-      <nav className="sticky top-0 z-50 border-b border-white/70 bg-white/70 shadow-[0_8px_24px_-18px_rgba(15,23,42,0.5)] backdrop-blur-md">
+      <nav className="sticky top-0 z-50 bg-white shadow-[0_8px_24px_-18px_rgba(15,23,42,0.5)] backdrop-blur-md">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-18 items-center justify-between gap-4">
             <div className="flex items-center gap-4">
@@ -36,12 +36,9 @@ export default function Authenticated({
                   <ApplicationLogo className="block h-7 w-auto fill-current" />
                 </span>
                 <span>
-                  <span className="block text-sm font-semibold tracking-tight text-slate-900">
+                  <p className="block text-sm font-semibold tracking-tight text-slate-900">
                     WEBank
-                  </span>
-                  <span className="block text-xs tracking-wide text-slate-500 uppercase">
-                    Secure Area
-                  </span>
+                  </p>
                 </span>
               </Link>
 
@@ -127,43 +124,40 @@ export default function Authenticated({
             </button>
           </div>
         </div>
-
+      </nav>
+      <div className="md:hidden">
         <Transition show={showingNavigationDropdown} leave="duration-100">
           <TransitionChild
-            enter="ease-out duration-300"
-            enterFrom="opacity-0 -translate-y-2"
-            enterTo="opacity-100 translate-y-0"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100 translate-y-0"
-            leaveTo="opacity-0 -translate-y-2"
+            enter="transition-opacity duration-200"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="transition-opacity duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0 "
           >
-            <div className="mx-auto mt-1 w-full max-w-7xl px-4 pb-3 sm:px-6 md:hidden lg:px-8">
-              <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white/95 shadow-lg">
-                <div className="space-y-1 p-2">
-                  <div className="space-y-1">
-                    <ResponsiveNavLink
-                      href={route("user-dashboard")}
-                      active={route().current("user-dashboard")}
-                      onClick={() => setShowingNavigationDropdown(false)}
-                    >
-                      <div className="flex gap-3">
-                        <i className="bi bi-bank2"></i>
-                        <p>Dashboard</p>
-                      </div>
-                    </ResponsiveNavLink>
-
-                    <ResponsiveNavLink
-                      href={route("user-transfer")}
-                      active={route().current("user-transfer")}
-                      onClick={() => setShowingNavigationDropdown(false)}
-                    >
-                      <div className="flex gap-3">
-                        <i className="bi bi-arrow-repeat"></i>
-                        <p>Transfer</p>
-                      </div>
-                    </ResponsiveNavLink>
-                  </div>
-
+            <div className="fixed inset-x-0 top-18 z-50 md:hidden">
+              <div className="mx-auto w-full max-w-7xl sm:px-6 lg:px-8">
+                <div className="overflow-hidden border border-slate-200 bg-white/95 shadow-lg">
+                  <ResponsiveNavLink
+                    href={route("user-dashboard")}
+                    active={route().current("user-dashboard")}
+                    onClick={() => setShowingNavigationDropdown(false)}
+                  >
+                    <div className="flex gap-3">
+                      <i className="bi bi-bank2"></i>
+                      <p>Dashboard</p>
+                    </div>
+                  </ResponsiveNavLink>
+                  <ResponsiveNavLink
+                    href={route("user-transfer")}
+                    active={route().current("user-transfer")}
+                    onClick={() => setShowingNavigationDropdown(false)}
+                  >
+                    <div className="flex gap-3">
+                      <i className="bi bi-arrow-repeat"></i>
+                      <p>Transfer</p>
+                    </div>
+                  </ResponsiveNavLink>
                   <div className="border-t border-slate-200 pt-1">
                     {user && (
                       <>
@@ -200,8 +194,7 @@ export default function Authenticated({
             </div>
           </TransitionChild>
         </Transition>
-      </nav>
-
+      </div>
       {showingNavigationDropdown && (
         <div
           className="fixed inset-0 z-40 bg-slate-700/30 transition-opacity duration-300 md:hidden"

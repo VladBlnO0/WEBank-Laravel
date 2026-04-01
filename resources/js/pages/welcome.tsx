@@ -1,5 +1,5 @@
-import ApplicationLogo from "@/Components/ApplicationLogo";
-import Footer from "@/Components/Footer";
+import ApplicationLogo from "@/components/application-logo";
+import Footer from "@/components/footer";
 import { PageProps } from "@/types/index";
 import { Head, Link } from "@inertiajs/react";
 

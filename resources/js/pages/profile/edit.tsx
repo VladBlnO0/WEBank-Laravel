@@ -1,7 +1,7 @@
 import { PageProps } from "@/types";
 import { Head } from "@inertiajs/react";
-import UpdatePasswordForm from "./Partials/UpdatePasswordForm";
-import UpdateProfileInformationForm from "./Partials/UpdateProfileInformationForm";
+import UpdatePasswordForm from "./partials/update-password-form";
+import UpdateProfileInformationForm from "./partials/update-profile-informationForm";
 
 export default function Edit({
   mustVerifyEmail,

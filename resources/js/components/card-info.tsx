@@ -1,7 +1,7 @@
-import NavigationButton from "@/Components/NavigationButton";
+import NavigationButton from "@/components/navigation-button";
 import { CardData } from "@/types";
 import { formatToLocal } from "@/utils/formatData";
-import PaymentNetwork from "./PaymentNetwork";
+import PaymentNetwork from "./payment-network";
 
 export default function FullCard({
   card,

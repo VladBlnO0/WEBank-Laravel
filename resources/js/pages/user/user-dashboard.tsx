@@ -1,6 +1,7 @@
-import FullCard from "@/Components/FullCard";
-import Transactions from "@/Components/Transactions";
+import FullCard from "@/components/full-card";
+import Transactions from "@/components/transactions";
 import { type CardData, type Tran } from "@/types";
+import { formatToLocal } from "@/utils/formatData";
 import { Head } from "@inertiajs/react";
 import { useState } from "react";
 
@@ -38,11 +39,6 @@ export default function UserDashboard({
     .filter((tran) => tran.amount < 0)
     .reduce((sum, tran) => sum + Math.abs(tran.amount), 0);
 
-  const formatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  });
-
   return (
     <>
       <Head title="User Dashboard" />
@@ -50,44 +46,18 @@ export default function UserDashboard({
       <div
         className="space-y-7"
         style={{
-          background:
-            "radial-gradient(circle at 90% 10%, #d5f3ea 0%, transparent 33%), radial-gradient(circle at 10% 20%, #fbe3c8 0%, transparent 34%)",
           fontFamily:
             '"Space Grotesk", "IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif',
         }}
       >
-        <section className="rounded-3xl border border-white/80 bg-white/70 p-6 shadow-sm backdrop-blur-sm sm:p-8">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <p className="text-xs font-semibold tracking-[0.16em] text-slate-500 uppercase">
-                Personal finance hub
-              </p>
-              <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900">
-                Your account dashboard
-              </h1>
-              <p className="mt-2 text-sm text-slate-600">
-                Track card balances and review your latest activity in one view.
-              </p>
-            </div>
-            <div className="rounded-2xl bg-slate-900 px-4 py-3 text-white shadow">
-              <p className="text-xs tracking-[0.14em] text-slate-300 uppercase">
-                Active card
-              </p>
-              <p className="mt-1 text-sm font-semibold">
-                {cards.length === 0
-                  ? "No card selected"
-                  : `${currentIndex + 1} of ${cards.length}`}
-              </p>
-            </div>
-          </div>
-
+        <section className="rounded-2xl border border-white/80 bg-white/70 p-6 shadow-sm sm:p-8">
           <div className="mt-6 grid gap-3 sm:grid-cols-3">
             <article className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
               <p className="text-xs font-medium tracking-[0.14em] text-slate-500 uppercase">
                 Current balance
               </p>
               <p className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">
-                {formatter.format(balance)}
+                {formatToLocal(balance)}
               </p>
             </article>
 
@@ -96,7 +66,7 @@ export default function UserDashboard({
                 Incoming
               </p>
               <p className="mt-2 text-2xl font-semibold tracking-tight text-emerald-900">
-                {formatter.format(income)}
+                {formatToLocal(income)}
               </p>
             </article>
 
@@ -105,7 +75,7 @@ export default function UserDashboard({
                 Outgoing
               </p>
               <p className="mt-2 text-2xl font-semibold tracking-tight text-rose-900">
-                {formatter.format(spent)}
+                {formatToLocal(spent)}
               </p>
             </article>
           </div>
