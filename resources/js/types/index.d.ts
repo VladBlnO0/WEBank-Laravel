@@ -46,3 +46,8 @@ export type Tran = {
   description?: string;
   amount: number;
 };
+export interface PaginationProps {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}

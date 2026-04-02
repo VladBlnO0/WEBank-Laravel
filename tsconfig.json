@@ -15,14 +15,16 @@
             "@/*": ["./resources/js/*"]
         },
         "strictNullChecks": true,
-        "types": ["vite/client"]
+        "types": ["vite/client"],
+        "typeRoots": ["./node_modules/@types", "./resources/js/types"]
     },
     "include": [
         "resources/js/**/*.ts",
         "resources/js/**/*.tsx",
         "resources/js/**/*.d.ts",
         "**/*.ts",
-        "**/*.tsx"
+        "**/*.tsx",
+        "resources/js/app.jsx"
     ],
     "exclude": ["vendor", "node_modules"]
 }

@@ -3,7 +3,7 @@ import InputError from "@/components/input-error";
 import type { CardData, Tran } from "@/types";
 import { formatToLocal } from "@/utils/formatData";
 import { Head, useForm, usePage } from "@inertiajs/react";
-import { type ChangeEvent, useState } from "react";
+import React, { type ChangeEvent, useState } from "react";
 
 export default function UserTransfer({
   userData,
@@ -21,7 +21,7 @@ export default function UserTransfer({
     card: "",
     amount: "",
   });
-  const { flash } = usePage<any>().props;
+  const { flash } = usePage<never>().props;
 
   const [error, setError] = useState("");
 

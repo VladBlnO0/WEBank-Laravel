@@ -5,11 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Resources\CardDashboardResource;
 use App\Http\Resources\CardTransactionResource;
 use App\Models\Card;
-use App\Models\User;
 use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use Illuminate\Http\Request;
 
 class UserDashboardController extends Controller
 {

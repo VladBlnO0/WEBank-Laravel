@@ -3,6 +3,7 @@ import "../css/app.css";
 import { createInertiaApp } from "@inertiajs/react";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
+import "preline";
 import AuthenticatedLayout from "./layouts/authenticated-layout";
 import GuestLayout from "./layouts/guest-layout";
 
@@ -28,11 +29,8 @@ createInertiaApp({
     }
   },
   progress: {
-    // The color of the progress bar...
     color: "#29d",
-    // Whether to include the default NProgress styles...
     includeCSS: true,
-    // Whether the NProgress spinner will be shown...
     showSpinner: true,
   },
 });

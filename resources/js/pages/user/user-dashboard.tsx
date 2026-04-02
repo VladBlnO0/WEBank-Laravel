@@ -1,5 +1,5 @@
 import FullCard from "@/components/full-card";
-import Pagination from "@/components/Pagination";
+import Pagination from "@/components/pagination";
 import Transactions from "@/components/transactions";
 import { type CardData, type PaginatedResponse, type Tran } from "@/types";
 import { formatToLocal } from "@/utils/formatData";
@@ -14,6 +14,7 @@ export default function UserDashboard({
     | { data: (CardData & { transactions: Tran[] })[] }
     | (CardData & { transactions: Tran[] })[];
 }) {
+  //ESLint: The 'cards' conditional could make the dependencies of useMemo Hook (at line 26) change on every render. To fix this, wrap the initialization of 'cards' in its own useMemo() Hook. (@eslint-react/exhaustive-deps)
   const cards = Array.isArray(userData) ? userData : (userData?.data ?? []);
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -40,6 +41,7 @@ export default function UserDashboard({
 
   useEffect(() => {
     if (selectedCard) {
+      //ESLint: Do not call the 'set' function 'setLoadingTransactions' of 'useState' synchronously in an effect. This can lead to unnecessary re-renders and performance issues. (@eslint-react/set-state-in-effect)
       setLoadingTransactions(true);
       // The 'route' function is from Ziggy, which makes Laravel routes available in JS.
 
@@ -81,25 +83,6 @@ export default function UserDashboard({
             '"Space Grotesk", "IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif',
         }}
       >
-        {/* <section className="mx-auto w-full max-w-7xl px-6 pb-6 lg:px-8">
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {featureCards.map((feature, index) => (
-              <article
-                key={feature.title}
-                className="animate-fade-up rounded-2xl border border-slate-200/70 bg-white/85 p-5 shadow-sm backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg"
-                style={{ animationDelay: `${300 + index * 100}ms` }}
-              >
-                <h2 className="text-lg font-semibold tracking-tight text-slate-900">
-                  {feature.title}
-                </h2>
-                <p className="mt-3 text-sm leading-relaxed text-slate-600">
-                  {feature.copy}
-                </p>
-              </article>
-            ))}
-          </div>
-        </section> */}
-
         <section className="animate-fade-up mx-auto w-full max-w-7xl rounded-2xl border border-white/80 bg-white/70 p-6 shadow-sm transition duration-300 sm:p-8">
           <p className="text-xs font-semibold tracking-[0.18em] text-slate-500 uppercase">
             Account snapshot
