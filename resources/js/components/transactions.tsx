@@ -11,7 +11,7 @@ export default function Transactions({
   });
 
   return (
-    <ul className="flex  flex-col gap-3  p-1 sm:p-2">
+    <ul className="flex flex-col gap-3 p-1 sm:p-2">
       {transactions.length === 0 ? (
         <p className="p-4 text-sm text-slate-500">No transactions.</p>
       ) : (
@@ -27,7 +27,7 @@ export default function Transactions({
           return (
             <li
               key={tran.id}
-              className="w-full snap-start rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:p-5"
+              className="w-full rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm transition hover:shadow-lg sm:p-5"
             >
               <div className="flex flex-wrap items-start gap-3 sm:flex-nowrap">
                 <div className="min-w-0 space-y-2">

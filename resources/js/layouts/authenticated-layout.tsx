@@ -14,7 +14,6 @@ export default function Authenticated({
   const [showingNavigationDropdown, setShowingNavigationDropdown] =
     useState(false);
   const route = useRoute();
-  const homeUrl = route("welcome");
 
   return (
     <div
@@ -28,10 +27,7 @@ export default function Authenticated({
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-18 items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <Link
-                href={homeUrl}
-                className="flex items-center gap-3 rounded-2xl px-2 py-1"
-              >
+              <div className="flex items-center gap-3 rounded-2xl px-2 py-1">
                 <span className="rounded-xl bg-emerald-100 p-2 text-emerald-800">
                   <ApplicationLogo className="block h-7 w-auto fill-current" />
                 </span>
@@ -40,7 +36,7 @@ export default function Authenticated({
                     WEBank
                   </p>
                 </span>
-              </Link>
+              </div>
 
               <div className="hidden items-center gap-2 md:flex">
                 <Link
@@ -126,18 +122,18 @@ export default function Authenticated({
         </div>
       </nav>
       <div className="md:hidden">
-        <Transition show={showingNavigationDropdown} leave="duration-100">
+        <Transition show={showingNavigationDropdown} leave="duration-200">
           <TransitionChild
             enter="transition-opacity duration-200"
             enterFrom="opacity-0"
             enterTo="opacity-100"
             leave="transition-opacity duration-200"
             leaveFrom="opacity-100"
-            leaveTo="opacity-0 "
+            leaveTo="opacity-0"
           >
             <div className="fixed inset-x-0 top-18 z-50 md:hidden">
               <div className="mx-auto w-full max-w-7xl sm:px-6 lg:px-8">
-                <div className="overflow-hidden border border-slate-200 bg-white/95 shadow-lg">
+                <div className="overflow-hidden border border-slate-200 bg-white shadow-lg">
                   <ResponsiveNavLink
                     href={route("user-dashboard")}
                     active={route().current("user-dashboard")}

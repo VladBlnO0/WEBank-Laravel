@@ -30,6 +30,8 @@ export type CardData = {
   type?: string;
   limit_amount?: number;
   cvv?: string;
+  monthly_inflow: number;
+  monthly_outflow: number;
 };
 export type TransactionsList = {
   transactions: Tran[];

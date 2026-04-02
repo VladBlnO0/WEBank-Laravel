@@ -9,12 +9,6 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-    ]);
-})->name('welcome');
-Route::get('/login', function () {
     return Inertia::render('auth/login');
 })->name('login')->middleware('guest');
 
@@ -26,6 +20,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/ai/operator/chat', [AiOperatorController::class, 'chat'])
         ->middleware('throttle:30,1')
         ->name('ai.operator.chat');
+    Route::get('cards/{card}/transactions', [UserDashboardController::class, 'transactions'])->name('cards.transactions');
 
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

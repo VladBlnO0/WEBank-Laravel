@@ -110,7 +110,6 @@ export default function UserTransfer({
   return (
     <>
       <Head title="Transfer" />
-
       <div
         className="space-y-7"
         style={{
@@ -118,7 +117,7 @@ export default function UserTransfer({
             '"Space Grotesk", "IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif',
         }}
       >
-        <section className="rounded-3xl border border-white/80 bg-white/80 p-5 shadow-sm backdrop-blur-sm sm:p-7">
+        <section className="animate-fade-up rounded-3xl border border-white/80 bg-white/80 p-5 shadow-sm backdrop-blur-sm transition duration-300 sm:p-7">
           <form className="space-y-5" onSubmit={handleSubmit}>
             {error && (
               <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3">
@@ -219,6 +218,24 @@ export default function UserTransfer({
           </form>
         </section>
       </div>
+      <style>{`
+        .animate-fade-up {
+          opacity: 0;
+          transform: translateY(18px);
+          animation: fadeUp 700ms cubic-bezier(0.2, 0.7, 0.25, 1) forwards;
+        }
+
+        @keyframes fadeUp {
+          from {
+            opacity: 0;
+            transform: translateY(18px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
     </>
   );
 }

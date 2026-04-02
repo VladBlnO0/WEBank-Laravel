@@ -1,5 +1,6 @@
 import { CardData } from "@/types";
 import { formatDate, formatToLocal } from "@/utils/formatData";
+import clsx from "clsx";
 import { useState } from "react";
 import PaymentNetwork from "./payment-network";
 export default function BankCard({
@@ -52,17 +53,17 @@ export default function BankCard({
       onClick={onClick || handleClick}
       tabIndex={onClick ? 0 : -1}
       aria-label={`Card ending ${cardGroups[3]}`}
-      className={
-        `relative h-62.5 w-112.5 transform text-white transition-transform duration-300 will-change-transform perspective-normal hover:scale-[1.01] ` +
-        className
-      }
+      className={clsx(
+        `group relative transform text-white transition-transform duration-300 will-change-transform select-none perspective-normal sm:h-48 sm:w-96 md:h-56 md:w-md lg:h-64 lg:w-120`,
+        className,
+      )}
     >
       <div
         className={`relative h-full w-full transition-transform duration-600 transform-3d ${
           isFlipped ? "transform-[rotateY(180deg)]" : ""
         }`}
       >
-        <div className="absolute inset-0 z-10 flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-white/20 bg-linear-to-br from-slate-950 via-slate-800 to-slate-600 p-6 shadow-2xl backface-hidden">
+        <div className="absolute inset-0 flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-white/20 bg-linear-to-br from-slate-950 via-slate-800 to-slate-600 p-6 shadow-2xl backface-hidden">
           <div className="pointer-events-none absolute -top-20 -right-20 h-52 w-52 rounded-full bg-emerald-300/20 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-24 -left-20 h-56 w-56 rounded-full bg-cyan-300/15 blur-3xl" />
 

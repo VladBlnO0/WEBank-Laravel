@@ -1,5 +1,5 @@
 import { HTMLAttributes } from 'react';
-
+import clsx from "clsx";
 export default function InputError({
     message,
     className = '',
@@ -8,7 +8,7 @@ export default function InputError({
     return message ? (
         <p
             {...props}
-            className={'text-sm text-red-600  ' + className}
+            className={clsx('text-sm text-red-600  ', className)}
         >
             {message}
         </p>

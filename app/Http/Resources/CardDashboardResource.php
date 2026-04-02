@@ -24,10 +24,8 @@ class CardDashboardResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $transactions = $this->sentTransactions
-            ->concat($this->receivedTransactions)
-            ->sortByDesc('created_at')
-            ->values();
+        $monthlyOutflow = $this->sentTransactions->sum('amount');
+        $monthlyInflow = $this->receivedTransactions->sum('amount');
 
         return [
             'id' => $this->id,
@@ -38,18 +36,9 @@ class CardDashboardResource extends JsonResource
             'type' => $this->type,
             'payment_network' => $this->payment_network,
             'cvv' => $this->cvv,
-            'transactions' => CardTransactionResource::collection(
-                $transactions->map(function ($transaction) {
-                    $transaction->setAttribute(
-                        'amount',
-                        $transaction->from_card_id === $this->id
-                            ? -$transaction->amount
-                            : $transaction->amount
-                    );
-
-                    return $transaction;
-                })
-            ),
+            'monthly_inflow' => $monthlyInflow,
+            'monthly_outflow' => $monthlyOutflow,
+            'transactions' => [], // Transactions will be loaded asynchronously
         ];
     }
 }

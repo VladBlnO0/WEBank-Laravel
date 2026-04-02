@@ -17,7 +17,7 @@ createInertiaApp({
     ),
   layout: (name) => {
     switch (true) {
-      case name === "welcome" || name === "faq":
+      case name === "faq":
         return null;
       case name.startsWith("auth/"):
         return GuestLayout;
@@ -28,6 +28,11 @@ createInertiaApp({
     }
   },
   progress: {
-    color: "#4B5563",
+    // The color of the progress bar...
+    color: "#29d",
+    // Whether to include the default NProgress styles...
+    includeCSS: true,
+    // Whether the NProgress spinner will be shown...
+    showSpinner: true,
   },
 });
