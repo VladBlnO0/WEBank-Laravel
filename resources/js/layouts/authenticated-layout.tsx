@@ -7,6 +7,7 @@ import { Transition, TransitionChild } from "@headlessui/react";
 import { Link, usePage } from "@inertiajs/react";
 import { PropsWithChildren, ReactNode, useState } from "react";
 import { useRoute } from "ziggy-js";
+
 export default function Authenticated({
   children,
 }: PropsWithChildren<{ header?: ReactNode }>) {
@@ -16,13 +17,7 @@ export default function Authenticated({
   const route = useRoute();
 
   return (
-    <div
-      className="flex min-h-screen flex-col"
-      style={{
-        background:
-          "radial-gradient(circle at 15% -5%, #d9efe4 0%, transparent 30%), radial-gradient(circle at 85% 0%, #f4e3ca 0%, transparent 30%), #f5f5ef",
-      }}
-    >
+    <div className="flex min-h-screen flex-col bg-mauve-100">
       <nav className="sticky top-0 z-50 bg-white shadow-[0_8px_24px_-18px_rgba(15,23,42,0.5)] backdrop-blur-md">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-18 items-center justify-between gap-4">
@@ -66,12 +61,13 @@ export default function Authenticated({
               {user && (
                 <Link
                   href={route("profile.edit")}
-                  className="rounded-2xl border border-slate-200 bg-white/90 px-4 py-2 text-right text-sm transition hover:border-slate-300"
+                  className={`rounded-xl px-4 py-2 text-sm transition ${
+                    route().current("profile.edit")
+                      ? "bg-slate-900 text-white"
+                      : "text-slate-700 hover:bg-slate-100"
+                  }`}
                 >
-                  <div className="font-semibold text-slate-900">
-                    {user.name}
-                  </div>
-                  <div className="text-xs text-slate-500">{user.email}</div>
+                  {user.email}
                 </Link>
               )}
               <Link
@@ -165,7 +161,7 @@ export default function Authenticated({
                           <div className="flex gap-3">
                             <i className="bi bi-person"></i>
                             <p>
-                              {user.name} {user.email}
+                              {user.email}
                             </p>
                           </div>
                         </ResponsiveNavLink>

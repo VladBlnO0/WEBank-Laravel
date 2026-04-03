@@ -7,8 +7,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * @property mixed $cvv
- * @property mixed $sentTransactions
- * @property mixed $receivedTransactions
  * @property mixed $id
  * @property mixed $balance
  * @property mixed $status
@@ -16,6 +14,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property mixed $payment_network
  * @property mixed $expire_date
  * @property mixed $pan
+ * @property mixed $monthly_inflow
+ * @property mixed $monthly_outflow
  */
 class CardDashboardResource extends JsonResource
 {
@@ -24,9 +24,6 @@ class CardDashboardResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $monthlyOutflow = $this->sentTransactions->sum('amount');
-        $monthlyInflow = $this->receivedTransactions->sum('amount');
-
         return [
             'id' => $this->id,
             'balance' => $this->balance,
@@ -36,9 +33,8 @@ class CardDashboardResource extends JsonResource
             'type' => $this->type,
             'payment_network' => $this->payment_network,
             'cvv' => $this->cvv,
-            'monthly_inflow' => $monthlyInflow,
-            'monthly_outflow' => $monthlyOutflow,
-            'transactions' => [], // Transactions will be loaded asynchronously
+            'monthly_inflow' => (float) ($this->monthly_inflow ?? 0),
+            'monthly_outflow' => (float) ($this->monthly_outflow ?? 0),
         ];
     }
 }

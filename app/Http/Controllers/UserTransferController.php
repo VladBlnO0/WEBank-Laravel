@@ -19,7 +19,16 @@ class UserTransferController extends Controller
         /**
          * @var object $cards
          */
-        $cards = $user->hasCards()->get();
+        $now = now();
+
+        $cards = $user->hasCards()
+            ->withSum([
+                'sentTransactions as monthly_outflow' => fn ($query) => $query->whereMonth('created_at', $now->month)->whereYear('created_at', $now->year),
+            ], 'amount')
+            ->withSum([
+                'receivedTransactions as monthly_inflow' => fn ($query) => $query->whereMonth('created_at', $now->month)->whereYear('created_at', $now->year),
+            ], 'amount')
+            ->get();
 
         return Inertia::render('user/user-transfer', [
             'userData' => CardDashboardResource::collection($cards),

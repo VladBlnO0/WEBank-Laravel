@@ -35,7 +35,7 @@ export default function FullCard({
           <NavigationButton
             onClick={handlePrev}
             disabled={isFirst}
-            className="m-auto text-2xl"
+            className="text-2xl"
           >
             <i className="bi bi-caret-left-fill"></i>
           </NavigationButton>
@@ -56,7 +56,7 @@ export default function FullCard({
           <NavigationButton
             onClick={handleNext}
             disabled={isLast}
-            className="m-auto text-2xl"
+            className="text-2xl"
           >
             <i className="bi bi-caret-right-fill"></i>
           </NavigationButton>

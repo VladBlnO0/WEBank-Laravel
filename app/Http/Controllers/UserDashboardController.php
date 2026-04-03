@@ -2,64 +2,47 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\CardDashboardResource;
-use App\Http\Resources\CardTransactionResource;
-use App\Models\Card;
 use App\Models\Transaction;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class UserDashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request): Response
     {
-        /**
-         * @var User|null $user
-         */
-        $user = Auth::user();
+        $user = $request->user();
+
         $now = now();
 
-        /**
-         * @var object $cards
-         */
         $cards = $user->hasCards()
-            ->with([
-                'sentTransactions' => fn ($query) => $query->whereMonth('created_at', $now->month)->whereYear('created_at', $now->year),
-                'receivedTransactions' => fn ($query) => $query->whereMonth('created_at', $now->month)->whereYear('created_at', $now->year),
-            ])
-            ->get();
+            ->with(['sentTransactions', 'receivedTransactions']);
+
+        $cardIds = $user->hasCards()->pluck('id')->toArray();
+
+        $allTransactions = Transaction::query()
+            ->where(function ($query) use ($cardIds) {
+                $query->whereIn('from_card_id', $cardIds)
+                    ->orWhereIn('to_card_id', $cardIds);
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        $thisMonthOutflowTotal = Transaction::query()
+            ->where('from_card_id', $cardIds)
+            ->currentMonth()
+            ->sum('amount');
+
+        $thisMonthInflowTotal = Transaction::query()
+            ->where('to_card_id', $cardIds)
+            ->currentMonth()
+            ->sum('amount');
 
         return Inertia::render('user/user-dashboard', [
-            'userData' => CardDashboardResource::collection($cards),
+            'cards' => $cards,
+            'allTransactions' => $allTransactions,
+            'thisMonthOutflowTotal' => $thisMonthOutflowTotal,
+            'thisMonthInflowTotal' => $thisMonthInflowTotal,
         ]);
-    }
-
-    public function transactions(Card $card)
-    {
-        if ($card->user_id !== Auth::id()) {
-            abort(403);
-        }
-
-        $transactions = Transaction::where(function ($query) use ($card) {
-            $query->where('from_card_id', $card->id)
-                ->orWhere('to_card_id', $card->id);
-        })
-            ->latest('created_at')
-            ->paginate(5)
-            ->withQueryString();
-
-        $transactions->getCollection()->transform(function (Transaction $transaction) use ($card) {
-            $transaction->setAttribute(
-                'amount',
-                $transaction->from_card_id === $card->id
-                    ? -$transaction->amount
-                    : $transaction->amount
-            );
-
-            return $transaction;
-        });
-
-        return CardTransactionResource::collection($transactions);
     }
 }

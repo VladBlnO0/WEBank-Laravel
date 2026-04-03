@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use App\Enums\TransactionType;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
+use App\Http\Resources\CardTransactionResource;
 use App\Models\Card;
 use App\Models\Transaction;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -16,19 +17,33 @@ class TransactionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Card $card)
     {
-        // $filters = $request->only([
-        //     'amount',
-        //     'type',
-        // ]);
+        if ($card->user_id !== Auth::id()) {
+            abort(403);
+        }
 
-        // return inertia(
-        //     'transaction/index-page', [
-        //         'filters' => $filters,
-        //         'transaction' => Transaction::latest('created_at')->filter($filters)->paginate(10)->withQueryString(),
-        //     ]
-        // );
+        $transactions = Transaction::where(function ($query) use ($card) {
+            $query->where('from_card_id', $card->id)
+                ->orWhere('to_card_id', $card->id);
+        })
+            ->select(['id', 'from_card_id', 'to_card_id', 'type', 'amount', 'created_at'])
+            ->latest('created_at')
+            ->paginate(5)
+            ->withQueryString();
+
+        $transactions->getCollection()->transform(function (Transaction $transaction) use ($card) {
+            $transaction->setAttribute(
+                'amount',
+                $transaction->from_card_id === $card->id
+                  ? -$transaction->amount
+                  : $transaction->amount
+            );
+
+            return $transaction;
+        });
+
+        return CardTransactionResource::collection($transactions);
     }
 
     /**
@@ -86,7 +101,7 @@ class TransactionController extends Controller
 
             $senderCard->decrement('balance', $amount);
             $recipientCard->increment('balance', $amount);
-
+            // Change to save(new Transaction())
             Transaction::create([
                 'from_card_id' => $senderCard->id,
                 'to_card_id' => $recipientCard->id,
@@ -94,6 +109,7 @@ class TransactionController extends Controller
                 'amount' => $amount,
             ]);
         });
+        // return redirect()->back()->with('success', 'Image was deleted!');
 
         return back()->with('success', 'Transfer completed successfully.');
     }

@@ -2,11 +2,49 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property string $pan
+ * @property string $cvv
+ * @property string $pin_hash
+ * @property Carbon $expire_date
+ * @property string $type
+ * @property string $payment_network
+ * @property numeric $balance
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read User|null $belongToUser
+ * @property-read Collection<int, Transaction> $receivedTransactions
+ * @property-read int|null $received_transactions_count
+ * @property-read Collection<int, Transaction> $sentTransactions
+ * @property-read int|null $sent_transactions_count
+ *
+ * @method static \Database\Factories\CardFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Card newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Card newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Card query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Card whereBalance($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Card whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Card whereCvv($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Card whereExpireDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Card whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Card wherePan($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Card wherePaymentNetwork($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Card wherePinHash($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Card whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Card whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Card whereUserId($value)
+ *
+ * @mixin \Eloquent
+ */
 class Card extends Model
 {
     use HasFactory;
@@ -20,7 +58,6 @@ class Card extends Model
         'account_id',
         'pan',
         'cvv',
-        'pin_hash',
         'expire_date',
         'type',
         'payment_network',

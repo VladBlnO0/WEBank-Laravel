@@ -1,26 +1,36 @@
-import FullCard from "@/components/full-card";
+import BankCard from "@/components/bank-card";
+import NavigationButton from "@/components/navigation-button";
 import Pagination from "@/components/pagination";
 import Transactions from "@/components/transactions";
-import { type CardData, type PaginatedResponse, type Tran } from "@/types";
+import { type CardData, type Tran } from "@/types";
 import { formatToLocal } from "@/utils/formatData";
 import { Head } from "@inertiajs/react";
-import axios from "axios";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 export default function UserDashboard({
-  userData,
+  cards,
+  allTransactions,
+  thisMonthTransactions,
 }: {
-  userData:
-    | { data: (CardData & { transactions: Tran[] })[] }
-    | (CardData & { transactions: Tran[] })[];
+  userData: { data: CardData[] } | CardData[];
+  selectedCardId?: number;
+  transactions?: { data: Tran[]; meta?: any; links?: any } | null;
 }) {
-  //ESLint: The 'cards' conditional could make the dependencies of useMemo Hook (at line 26) change on every render. To fix this, wrap the initialization of 'cards' in its own useMemo() Hook. (@eslint-react/exhaustive-deps)
-  const cards = Array.isArray(userData) ? userData : (userData?.data ?? []);
+  const cards = useMemo(
+    () => (Array.isArray(userData) ? userData : (userData?.data ?? [])),
+    [userData],
+  );
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [transactions, setTransactions] =
-    useState<PaginatedResponse<Tran> | null>(null);
-  const [loadingTransactions, setLoadingTransactions] = useState(true);
+  const initialIndex = useMemo(() => {
+    if (!selectedCardId) {
+      return 0;
+    }
+
+    const index = cards.findIndex((card) => card.id === selectedCardId);
+    return index >= 0 ? index : 0;
+  }, [cards, selectedCardId]);
+
+  const [currentIndex, setCurrentIndex] = useState(initialIndex);
 
   const selectedCard = useMemo(
     () => cards[currentIndex],
@@ -39,39 +49,13 @@ export default function UserDashboard({
     }
   };
 
-  useEffect(() => {
-    if (selectedCard) {
-      //ESLint: Do not call the 'set' function 'setLoadingTransactions' of 'useState' synchronously in an effect. This can lead to unnecessary re-renders and performance issues. (@eslint-react/set-state-in-effect)
-      setLoadingTransactions(true);
-      // The 'route' function is from Ziggy, which makes Laravel routes available in JS.
-
-      axios
-        .get(route("cards.transactions", { card: selectedCard.id }))
-        .then((response) => {
-          setTransactions(response.data);
-          setLoadingTransactions(false);
-        });
-    }
-  }, [selectedCard]);
-
-  const handlePageChange = (page: number) => {
-    if (!selectedCard || loadingTransactions) return;
-    setLoadingTransactions(true);
-
-    axios
-      .get(route("cards.transactions", { card: selectedCard.id, page }))
-      .then((response) => {
-        setTransactions(response.data);
-        setLoadingTransactions(false);
-      });
-  };
-
   const balance = selectedCard?.balance ?? 0;
   const income = selectedCard?.monthly_inflow ?? 0;
   const spent = selectedCard?.monthly_outflow ?? 0;
 
-  const paginatedTransactions = transactions?.data ?? [];
-
+  const isFirst: boolean = currentIndex === 0;
+  const isLast: boolean = currentIndex === cards.length - 1;
+  const paginatedTransactions: Tran[] = transactions?.data ?? [];
   return (
     <>
       <Head title="User Dashboard" />
@@ -123,13 +107,31 @@ export default function UserDashboard({
             <p className="text-lg font-medium text-slate-700">No cards found</p>
           </div>
         ) : (
-          <FullCard
-            card={selectedCard}
-            onNext={handleNext}
-            onPrev={handlePrev}
-            isFirst={currentIndex === 0}
-            isLast={currentIndex === cards.length - 1}
-          />
+          <div className="relative z-20 mx-auto flex w-full items-center justify-center gap-2 sm:gap-4 lg:gap-6">
+            {cards.length > 1 && (
+              <NavigationButton
+                onClick={handlePrev}
+                disabled={isFirst}
+                className="group rounded-2xl border border-slate-300 bg-white/90 p-3 text-2xl shadow-sm hover:border-slate-400 hover:bg-white disabled:opacity-30 sm:text-4xl"
+              >
+                <i className="bi bi-caret-left-fill transition hover:-translate-x-0.5" />
+              </NavigationButton>
+            )}
+
+            <div className="relative z-30">
+              <BankCard key={selectedCard.id} card={selectedCard} />
+            </div>
+
+            {cards.length > 1 && (
+              <NavigationButton
+                onClick={handleNext}
+                disabled={isLast}
+                className="group rounded-2xl border border-slate-300 bg-white/90 p-3 text-2xl shadow-sm hover:border-slate-400 hover:bg-white disabled:opacity-30 sm:text-4xl"
+              >
+                <i className="bi bi-caret-right-fill transition hover:translate-x-0.5" />
+              </NavigationButton>
+            )}
+          </div>
         )}
       </section>
 
@@ -139,7 +141,7 @@ export default function UserDashboard({
             Recent transactions
           </h2>
           <p className="text-xs font-medium tracking-[0.14em] text-slate-500 uppercase">
-            {transactions?.meta.total ?? 0} records
+            {transactions?.data?.length ?? 0} records
           </p>
         </div>
 
@@ -149,25 +151,21 @@ export default function UserDashboard({
               <p className="text-lg font-medium text-slate-700">
                 No transactions found
               </p>
-              <p className="mt-2 text-sm text-slate-500">
-                Your latest movements will appear here once activity starts.
-              </p>
             </div>
-          ) : loadingTransactions ? (
+          ) : transactions === null ? (
             <div className="p-8 text-center text-slate-600">
               Loading transactions...
             </div>
           ) : (
             <>
-              <Transactions transactions={paginatedTransactions} />
-              {transactions &&
-                transactions.meta.total > transactions.meta.per_page && (
-                  <Pagination
-                    currentPage={transactions.meta.current_page}
-                    totalPages={transactions.meta.last_page}
-                    onPageChange={handlePageChange}
-                  />
-                )}
+              <div className="flex min-h-170 flex-col gap-3">
+                <Transactions transactions={paginatedTransactions} />
+
+                <Pagination
+                  meta={transactions?.meta}
+                  className="fixed bottom-10 w-full"
+                />
+              </div>
             </>
           )}
         </div>

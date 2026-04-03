@@ -27,10 +27,10 @@ export default function Transactions({
           return (
             <li
               key={tran.id}
-              className="w-full rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm transition hover:shadow-lg sm:p-5"
+              className="w-full items-center rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm transition hover:shadow-lg sm:p-5"
             >
-              <div className="flex flex-wrap items-start gap-3 sm:flex-nowrap">
-                <div className="min-w-0 space-y-2">
+              <div className="flex">
+                <div className="mt-3 min-w-0 space-y-2">
                   <p
                     className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold tracking-wide uppercase ${typeClass}`}
                   >
@@ -50,7 +50,7 @@ export default function Transactions({
                   )}
                 </div>
 
-                <div className="ml-auto text-right">
+                <div className="ml-auto flex items-center">
                   <p
                     className={`text-xl font-semibold tracking-tight ${
                       isOutgoing ? "text-rose-700" : "text-emerald-700"

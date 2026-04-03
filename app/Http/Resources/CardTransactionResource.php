@@ -14,7 +14,6 @@ class CardTransactionResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'label' => $this->description ?? 'Transaction',
             'type' => $this->type,
             'date' => $this->created_at->toDateString(),
             'amount' => $this->amount,

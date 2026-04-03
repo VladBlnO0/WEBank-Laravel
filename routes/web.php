@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\AiOperatorController;
+use App\Http\Controllers\CardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\UserTransferController;
+use App\Http\Controllers\UserDashboardController;
+
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -20,12 +22,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/ai/operator/chat', [AiOperatorController::class, 'chat'])
         ->middleware('throttle:30,1')
         ->name('ai.operator.chat');
-    Route::get('cards/{card}/transactions', [UserDashboardController::class, 'transactions'])->name('cards.transactions');
+    Route::get('cards/{card}/transactions', [TransactionController::class, 'index'])->name('cards.transactions');
 
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+
+    });
+
 
 require __DIR__.'/auth.php';

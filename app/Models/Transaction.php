@@ -8,6 +8,33 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
+/**
+ * @property int $id
+ * @property int $from_card_id
+ * @property int $to_card_id
+ * @property string $type
+ * @property numeric $amount
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Card|null $belongsToCard
+ * @property-read Card $fromCard
+ * @property-read Card $toCard
+ *
+ * @method static \Database\Factories\TransactionFactory factory($count = null, $state = [])
+ * @method static Builder<static>|Transaction filter(array $filters)
+ * @method static Builder<static>|Transaction newModelQuery()
+ * @method static Builder<static>|Transaction newQuery()
+ * @method static Builder<static>|Transaction query()
+ * @method static Builder<static>|Transaction whereAmount($value)
+ * @method static Builder<static>|Transaction whereCreatedAt($value)
+ * @method static Builder<static>|Transaction whereFromCardId($value)
+ * @method static Builder<static>|Transaction whereId($value)
+ * @method static Builder<static>|Transaction whereToCardId($value)
+ * @method static Builder<static>|Transaction whereType($value)
+ * @method static Builder<static>|Transaction whereUpdatedAt($value)
+ *
+ * @mixin \Eloquent
+ */
 class Transaction extends Model
 {
     use HasFactory;
@@ -28,6 +55,14 @@ class Transaction extends Model
         'amount',
         'created_at',
     ];
+    /**
+     * Scope a query to only include transactions from the current month.
+     */
+    public function scopeCurrentMonth(Builder $query): Builder
+    {
+        return $query->whereMonth('created_at', now()->month)
+                     ->whereYear('created_at', now()->year);
+    }
 
     public function belongsToCard(): BelongsTo
     {

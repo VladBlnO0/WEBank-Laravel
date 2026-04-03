@@ -18,7 +18,6 @@ return new class extends Migration
 
             $table->string('pan', 16);
             $table->string('cvv', 3);
-            $table->string('pin_hash', 64);
             $table->date('expire_date');
             $table->string('type', 10);
             $table->string('payment_network', 15);
