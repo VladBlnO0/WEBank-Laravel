@@ -44,16 +44,16 @@ export default function Authenticated({
                 >
                   Dashboard
                 </Link>
-                {/* <Link
-                  href={route("transfer")}
+                <Link
+                  href={route("transfer.index")}
                   className={`rounded-xl px-4 py-2 text-sm font-medium transition ${
-                    route().current("transfer")
+                    route().current("transfer.index")
                       ? "bg-slate-900 text-white"
                       : "text-slate-700 hover:bg-slate-100"
                   }`}
                 >
                   Transfer
-                </Link> */}
+                </Link>
               </div>
             </div>
 
@@ -140,16 +140,16 @@ export default function Authenticated({
                       <p>Dashboard</p>
                     </div>
                   </ResponsiveNavLink>
-                  {/* <ResponsiveNavLink
-                    href={route("user.transfer")}
-                    active={route().current("user.transfer")}
+                  <ResponsiveNavLink
+                    href={route("transfer.index")}
+                    active={route().current("transfer.index")}
                     onClick={() => setShowingNavigationDropdown(false)}
                   >
                     <div className="flex gap-3">
                       <i className="bi bi-arrow-repeat"></i>
                       <p>Transfer</p>
                     </div>
-                  </ResponsiveNavLink> */}
+                  </ResponsiveNavLink>
                   <div className="border-t border-slate-200 pt-1">
                     {user && (
                       <>
@@ -160,9 +160,7 @@ export default function Authenticated({
                         >
                           <div className="flex gap-3">
                             <i className="bi bi-person"></i>
-                            <p>
-                              {user.email}
-                            </p>
+                            <p>{user.email}</p>
                           </div>
                         </ResponsiveNavLink>
                         <div className="border-t border-slate-200" />

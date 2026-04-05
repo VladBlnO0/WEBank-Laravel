@@ -19,32 +19,18 @@ export type PageProps<
 
 export type CardData = {
   id: number;
-  number: string;
+  pan: string;
+  cvv?: string;
+  expire_date?: string;
   balance: number;
-  expire_date?: number;
-  status?: string;
   payment_network: string;
   type?: string;
-  limit_amount?: number;
-  cvv?: string;
-  monthly_inflow: number;
-  monthly_outflow: number;
 };
-export type TransactionsList = {
-  transactions: Tran[];
-};
-export type Tran = {
+export type Transaction = {
   id: number;
   from_card_id?: number;
   to_card_id?: number;
-  label: string;
   type: string;
-  date: string;
-  description?: string;
   amount: number;
+  created_at: string;
 };
-export interface PaginationProps {
-  currentPage: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
-}

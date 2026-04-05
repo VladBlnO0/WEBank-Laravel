@@ -2,28 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Transaction;
+
 class TransactionMadeController extends Controller
 {
-    public function __invoke(Offer $offer)
+    public function __invoke(Transaction $transaction)
     {
-        $listing = $offer->listing;
-        // $this->authorize('update', $listing);
-        Gate::authorize('update', $listing);
-
-        // Accept selected offer
-        $offer->update(['accepted_at' => now()]);
-
-        $listing->sold_at = now();
-        $listing->save();
-
-        // Reject all other offers
-        $listing->offers()->except($offer)
-            ->update(['rejected_at' => now()]);
+        $transaction->update(['made_at' => now()]);
 
         return redirect()->back()
             ->with(
                 'success',
-                "Offer #{$offer->id} accepted, other offers rejected"
+                "Transaction #{$transaction->id} made"
             );
     }
 }

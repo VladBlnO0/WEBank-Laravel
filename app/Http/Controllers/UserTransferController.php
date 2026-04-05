@@ -2,36 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\CardDashboardResource;
+use App\Models\Card;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class UserTransferController extends Controller
 {
     public function index()
     {
+        Gate::authorize('viewAny', Card::class);
+
         /**
          * @var User|null $user
          */
         $user = Auth::user();
 
-        /**
-         * @var object $cards
-         */
-        $now = now();
+        $cards = $user->cards()->get();
 
-        $cards = $user->hasCards()
-            ->withSum([
-                'sentTransactions as monthly_outflow' => fn ($query) => $query->whereMonth('created_at', $now->month)->whereYear('created_at', $now->year),
-            ], 'amount')
-            ->withSum([
-                'receivedTransactions as monthly_inflow' => fn ($query) => $query->whereMonth('created_at', $now->month)->whereYear('created_at', $now->year),
-            ], 'amount')
-            ->get();
+        $allTransactions = Transaction::query()
+            ->forUser($user)
+            ->latest('created_at')
+            ->paginate(5)
+            ->withQueryString();
 
         return Inertia::render('user/transfer', [
-            'userData' => CardDashboardResource::collection($cards),
+            'cards' => $cards,
+            'allTransactions' => $allTransactions,
+
         ]);
     }
 }

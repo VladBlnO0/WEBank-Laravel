@@ -3,73 +3,29 @@ import NavigationButton from "@/components/navigation-button";
 import Pagination from "@/components/pagination";
 import PaymentNetwork from "@/components/payment-network";
 import Transactions from "@/components/transactions";
-import type { CardData, PageProps, Tran } from "@/types";
+import type { CardData, Transaction } from "@/types";
 import { formatToLocal } from "@/utils/formatData";
-import { Head, useForm, usePage } from "@inertiajs/react";
-import React, { type ChangeEvent, useState } from "react";
+import { Head, useForm } from "@inertiajs/react";
+import { useState } from "react";
 
-export default function Transfer({
-  userData,
-  selectedCard,
-  transactions,
-}: {
-  userData: { data: CardData[] } | CardData[];
-  selectedCard: CardData;
-  transactions?: { data: Tran[]; meta?: any; links?: any } | null;
-}) {
-  const cards = Array.isArray(userData) ? userData : (userData?.data ?? []);
+type PaginatedData<T> = {
+  data: T[];
+  links: never[];
+  meta?: never;
+  current_page?: number;
+  last_page?: number;
+  per_page?: number;
+  total?: number;
+};
+
+interface DashboardProps {
+  cards: CardData[];
+  allTransactions?: PaginatedData<Transaction> | null;
+}
+
+export default function Transfer({ cards, allTransactions }: DashboardProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-
-  const { data, setData, post, processing, errors } = useForm({
-    from_card_id: selectedCard.id,
-    to_card: "",
-    amount: "",
-  });
-  const { flash } =
-    usePage<PageProps<{ flash?: { success?: string } }>>().props;
-
-  const [error, setError] = useState("");
-
-  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError("");
-
-    if (!selectedCard) {
-      setError("No sender card available.");
-      return;
-    }
-
-    const userBalance = selectedCard.balance;
-    const senderCard = selectedCard.number;
-
-    const amountDB = parseFloat(data.amount);
-    const cardNumberForDB = data.to_card.replace(/\s/g, "");
-    const cardNumberDB = senderCard?.replace(/\D/g, "") ?? "";
-
-    if (!cardNumberForDB || cardNumberForDB.length !== 16) {
-      setError("Card number must contain 16 digits.");
-      return;
-    }
-
-    if (cardNumberDB === cardNumberForDB) {
-      setError("Cannot send money to your own card.");
-      return;
-    }
-
-    if (isNaN(amountDB) || amountDB <= 0) {
-      setError("Please enter a valid amount.");
-      return;
-    }
-
-    if (amountDB > userBalance) {
-      setError("Insufficient funds in your account.");
-      return;
-    }
-
-    post(route("transactions.store"), {
-      preserveScroll: true,
-    });
-  };
+  const selectedCard = cards[currentIndex];
 
   const handleNext = () => {
     if (currentIndex < cards.length - 1) {
@@ -83,36 +39,87 @@ export default function Transfer({
     }
   };
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const { data, setData, post, processing, errors } = useForm({
+    from_card_id: selectedCard.id,
+    to_card: "",
+    amount: "",
+  });
+  // const { flash } =
+  //   usePage<PageProps<{ flash?: { success?: string } }>>().props;
 
-    if (name === "to_card") {
-      const formatted = value
-        .replace(/\D/g, "")
-        .replace(/(.{4})/g, "$1 ")
-        .trim();
-      setData((prev) => ({ ...prev, to_card: formatted }));
-      return;
-    }
+  const [error, setError] = useState("");
 
-    if (name === "amount") {
-      if (value === "") {
-        setData((prev) => ({ ...prev, amount: "" }));
-        return;
-      }
-      const isValid = /^\d*\.?\d{0,2}$/.test(value);
-      const parsed = parseFloat(value);
-      const max = 100001;
-      if (isValid && (isNaN(parsed) || parsed <= max)) {
-        setData((prev) => ({ ...prev, amount: value }));
-      }
-      return;
-    }
+  // const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   setError("");
 
-    setData((prev) => ({ ...prev, [name]: value }));
-  };
-  const digitsGroups = selectedCard.number.match(/.{0,4}/g) || [];
-  const paginatedTransactions: Tran[] = transactions?.data ?? [];
+  //   if (!selectedCard) {
+  //     setError("No sender card available.");
+  //     return;
+  //   }
+
+  //   const userBalance = selectedCard.balance;
+  //   const senderCard = selectedCard.number;
+
+  //   const amountDB = parseFloat(data.amount);
+  //   const cardNumberForDB = data.to_card.replace(/\s/g, "");
+  //   const cardNumberDB = senderCard?.replace(/\D/g, "") ?? "";
+
+  //   if (!cardNumberForDB || cardNumberForDB.length !== 16) {
+  //     setError("Card number must contain 16 digits.");
+  //     return;
+  //   }
+
+  //   if (cardNumberDB === cardNumberForDB) {
+  //     setError("Cannot send money to your own card.");
+  //     return;
+  //   }
+
+  //   if (isNaN(amountDB) || amountDB <= 0) {
+  //     setError("Please enter a valid amount.");
+  //     return;
+  //   }
+
+  //   if (amountDB > userBalance) {
+  //     setError("Insufficient funds in your account.");
+  //     return;
+  //   }
+
+  //   post(route("transactions.store"), {
+  //     preserveScroll: true,
+  //   });
+  // };
+
+  // const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  //   const { name, value } = e.target;
+
+  //   if (name === "to_card") {
+  //     const formatted = value
+  //       .replace(/\D/g, "")
+  //       .replace(/(.{4})/g, "$1 ")
+  //       .trim();
+  //     setData((prev) => ({ ...prev, to_card: formatted }));
+  //     return;
+  //   }
+
+  //   if (name === "amount") {
+  //     if (value === "") {
+  //       setData((prev) => ({ ...prev, amount: "" }));
+  //       return;
+  //     }
+  //     const isValid = /^\d*\.?\d{0,2}$/.test(value);
+  //     const parsed = parseFloat(value);
+  //     const max = 100001;
+  //     if (isValid && (isNaN(parsed) || parsed <= max)) {
+  //       setData((prev) => ({ ...prev, amount: value }));
+  //     }
+  //     return;
+  //   }
+
+  //   setData((prev) => ({ ...prev, [name]: value }));
+  // };
+  const digitsGroups = selectedCard.pan.match(/.{0,4}/g) || [];
+  const paginatedTransactions: Transaction[] = allTransactions?.data ?? [];
 
   const masked = digitsGroups[0] + "•".repeat(8) + digitsGroups[3];
   const cardGroups = masked.match(/.{1,4}/g) || [];
@@ -129,7 +136,7 @@ export default function Transfer({
         }}
       >
         <section className="animate-fade-up rounded-3xl border border-white/80 bg-white/80 p-5 shadow-sm backdrop-blur-sm transition duration-300 sm:p-7">
-          <form className="space-y-5" onSubmit={handleSubmit}>
+          <form className="space-y-5">
             {error && (
               <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3">
                 <InputError message={error} className="m-0" />
@@ -213,7 +220,7 @@ export default function Transfer({
                     maxLength={19}
                     required
                     value={data.to_card}
-                    onChange={handleChange}
+                    // onChange={handleChange}
                   />
                 </div>
               </div>
@@ -232,7 +239,7 @@ export default function Transfer({
                     placeholder="0.00"
                     required
                     value={data.amount}
-                    onChange={handleChange}
+                    // onChange={handleChange}
                   />
                 </div>
                 <p className="mt-1 text-xs text-slate-500">
@@ -242,9 +249,9 @@ export default function Transfer({
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-3 border-t border-slate-200 pt-4">
-              {flash?.success && (
+              {/* {flash?.success && (
                 <div className="alert-success">{flash.success}</div>
-              )}
+              )} */}
               <button
                 type="submit"
                 disabled={processing || cards.length === 0}
@@ -261,7 +268,7 @@ export default function Transfer({
               Recent transactions
             </h2>
             <p className="text-xs font-medium tracking-[0.14em] text-slate-500 uppercase">
-              {transactions?.meta.total ?? 0} records
+              {allTransactions?.total ?? 0} records
             </p>
           </div>
 
@@ -275,7 +282,7 @@ export default function Transfer({
                   Your latest movements will appear here once activity starts.
                 </p>
               </div>
-            ) : transactions === null ? (
+            ) : allTransactions === null ? (
               <div className="p-8 text-center text-slate-600">
                 Loading transactions...
               </div>
@@ -285,7 +292,12 @@ export default function Transfer({
                   <Transactions transactions={paginatedTransactions} />
 
                   <Pagination
-                    meta={transactions?.meta}
+                    meta={{
+                      current_page: allTransactions?.current_page,
+                      last_page: allTransactions?.last_page,
+                      per_page: allTransactions?.per_page,
+                      total: allTransactions?.total,
+                    }}
                     className="fixed bottom-10 w-full"
                   />
                 </div>
@@ -315,10 +327,10 @@ export default function Transfer({
     </>
   );
 }
-UserTransfer.layout = {
+Transfer.layout = {
   breadcrumbs: [
     {
-      title: "User Transfer",
+      title: "Transfer",
     },
   ],
 };

@@ -29,7 +29,7 @@ class User extends Authenticatable
         ];
     }
 
-    public function hasCards(): HasMany
+    public function cards(): HasMany
     {
         return $this->hasMany(Card::class, 'user_id');
     }

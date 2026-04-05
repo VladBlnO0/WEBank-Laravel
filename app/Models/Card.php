@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 
 #[Fillable(['account_id',
     'pan',
@@ -19,7 +20,7 @@ class Card extends Model
 {
     use HasFactory;
 
-    public function belongsToUser(): BelongsTo
+    public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -32,5 +33,13 @@ class Card extends Model
     public function receivedTransactions(): HasMany
     {
         return $this->hasMany(Transaction::class, 'to_card_id');
+    }
+
+    public function getTransactions(): Collection
+    {
+        return $this->sentTransactions
+            ->merge($this->receivedTransactions)
+            ->sortByDesc('created_at')
+            ->values();
     }
 }

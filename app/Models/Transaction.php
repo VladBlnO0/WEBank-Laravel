@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,7 +22,7 @@ class Transaction extends Model
         'created_at',
     ];
 
-    public function belongsToCard(): BelongsTo
+    public function card(): BelongsTo
     {
         return $this->belongsTo(Card::class);
     }
@@ -42,47 +43,60 @@ class Transaction extends Model
             ->whereYear('created_at', now()->year);
     }
 
-    public function scopeByCard(Builder $query, array|int $cardIds): Builder
+    public function scopeForUser(Builder $query, User $user): Builder
     {
-        $ids = \is_array($cardIds) ? $cardIds : [$cardIds];
+        $cardIds = $user->cards()->pluck('id')->all();
 
-        return $query->where(function (Builder $query) use ($ids) {
-            $query->whereIn('from_card_id', $ids)
-                ->orWhereIn('to_card_id', $ids);
+        return $cardIds
+        ? $query->byCard($cardIds)
+        : $query;
+    }
+
+    private function extractCardIds(mixed $cards): array
+    {
+        if ($cards instanceof Collection) {
+            return $cards->modelKeys();
+        }
+
+        if ($cards instanceof \Illuminate\Support\Collection) {
+            return $cards->toArray();
+        }
+
+        return \is_array($cards) ? $cards : [$cards];
+    }
+
+    public function scopeByCard(Builder $query, mixed $cards): Builder
+    {
+        $values = $this->extractCardIds($cards);
+
+        return $query->where(function (Builder $q) use ($values) {
+            $q->whereIn('from_card_id', $values)
+                ->orWhereIn('to_card_id', $values);
         });
     }
 
-    public function scopeForUser(Builder $query, User $user): Builder
+    public function scopeCurrentMonthOutflow(Builder $query, Collection|array|int $cards): Builder
     {
-        $cardIds = $user->hasCards()->pluck('id')->all();
+        $values = \is_int($cards) ? [$cards] : $cards;
 
-        return $cardIds
-            ? $query->byCard($cardIds)
-            : $query;
+        return $query->currentMonth()->whereIn('from_card_id', $this->extractCardIds($values));
     }
 
-    public function scopeCurrentMonthOutflow(Builder $query, array|int $cardIds): Builder
+    public function scopeCurrentMonthInflow(Builder $query, Collection|array|int $cards): Builder
     {
-        $ids = \is_array($cardIds) ? $cardIds : [$cardIds];
+        $values = \is_int($cards) ? [$cards] : $cards;
 
-        return $query->currentMonth()->whereIn('from_card_id', $ids);
+        return $query->currentMonth()->whereIn('to_card_id', $this->extractCardIds($values));
     }
 
-    public function scopeCurrentMonthInflow(Builder $query, array|int $cardIds): Builder
+    public static function getMonthTotalInflow(mixed $cards): float|int
     {
-        $ids = \is_array($cardIds) ? $cardIds : [$cardIds];
-
-        return $query->currentMonth()->whereIn('to_card_id', $ids);
+        return self::query()->currentMonthInflow($cards)->sum('amount');
     }
 
-    public function scopeMonthTotalInflow(Builder $query, Card $card): Builder
+    public static function getMonthTotalOutflow(mixed $cards): float|int
     {
-        return $query->where('to_card_id', $card->id)->currentMonth()->sum('amount');
-    }
-
-    public function scopeMonthTotalOutflow(Builder $query, Card $card): Builder
-    {
-        return $query->where('from_card_id', $card->id)->currentMonth()->sum('amount');
+        return self::query()->currentMonthOutflow($cards)->sum('amount');
     }
 
     public function scopeFilter(Builder $query, array $filters): Builder

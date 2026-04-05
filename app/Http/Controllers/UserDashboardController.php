@@ -18,31 +18,22 @@ class UserDashboardController extends Controller
 
         $user = Auth::user();
 
-        $cards = $user->hasCards()
-            ->withCount(['sentTransactions', 'receivedTransactions'])
-            ->get();
-
-        $cardIds = $cards->pluck('id')->all();
-
+        $cards = $user->cards()->get();
+        // ->withCount(['sentTransactions', 'receivedTransactions'])
         $allTransactions = Transaction::query()
             ->forUser($user)
             ->latest('created_at')
-            ->paginate(10)
+            ->paginate(5)
             ->withQueryString();
 
-        $thisMonthOutflowTotal = Transaction::query()
-            ->currentMonthOutflow($cardIds)
-            ->sum('amount');
-
-        $thisMonthInflowTotal = Transaction::query()
-            ->currentMonthInflow($cardIds)
-            ->sum('amount');
+        $thisMonthOutflowTotal = Transaction::getMonthTotalOutflow($cards);
+        $thisMonthInflowTotal = Transaction::getMonthTotalInflow($cards);
 
         return Inertia::render('user/dashboard', [
             'cards' => $cards,
             'allTransactions' => $allTransactions,
             'thisMonthOutflowTotal' => $thisMonthOutflowTotal,
             'thisMonthInflowTotal' => $thisMonthInflowTotal,
-        ]);
+        ])->with('success', 'data good');
     }
 }

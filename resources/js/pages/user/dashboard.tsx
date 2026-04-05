@@ -2,116 +2,38 @@ import BankCard from "@/components/bank-card";
 import NavigationButton from "@/components/navigation-button";
 import Pagination from "@/components/pagination";
 import Transactions from "@/components/transactions";
+import type { CardData, Transaction } from "@/types";
 import { formatToLocal } from "@/utils/formatData";
 import { Head } from "@inertiajs/react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
-type RawCard = {
-  id: number;
-  pan?: string;
-  balance: number;
-  expire_date?: number | string;
-  status?: string;
-  payment_network: string;
-  type?: string;
-  limit_amount?: number;
-  cvv?: string;
-  monthly_inflow?: number;
-  monthly_outflow?: number;
-  monthly_inflow_sum_amount?: number;
-  monthly_outflow_sum_amount?: number;
-  sent_transactions_count?: number;
-  received_transactions_count?: number;
-};
-type CardData = {
-  id: number;
-  number: string;
-  balance: number;
-  expire_date?: number;
-  status?: string;
-  payment_network: string;
-  type?: string;
-  limit_amount?: number;
-  cvv?: string;
-  monthly_inflow: number;
-  monthly_outflow: number;
-};
-type RawTransaction = {
-  id: number;
-  from_card_id?: number;
-  to_card_id?: number;
-  type?: string;
-  created_at?: string;
-  description?: string;
-  amount: number;
-};
-type Tran = {
-  id: number;
-  from_card_id?: number;
-  to_card_id?: number;
-  label: string;
-  type: string;
-  date: string;
-  description?: string;
-  amount: number;
-};
-type TransactionsList = {
-  data?: RawTransaction[];
+type PaginatedData<T> = {
+  data: T[];
+  links: never[];
+  meta?: never;
   current_page?: number;
   last_page?: number;
   per_page?: number;
   total?: number;
 };
 
+interface DashboardProps {
+  cards: CardData[];
+  allTransactions?: PaginatedData<Transaction> | null;
+  thisMonthOutflowTotal?: number;
+  thisMonthInflowTotal?: number;
+}
+
 export default function Dashboard({
   cards,
   allTransactions,
   thisMonthOutflowTotal,
   thisMonthInflowTotal,
-}: {
-  cards: RawCard[];
-  allTransactions?: TransactionsList;
-  thisMonthOutflowTotal?: number;
-  thisMonthInflowTotal?: number;
-}) {
+}: DashboardProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const normalizedCards = useMemo<CardData[]>(
-    () =>
-      cards.map((card) => ({
-        id: card.id,
-        number: card.pan ?? "",
-        balance: card.balance ?? 0,
-        expire_date:
-          typeof card.expire_date === "string"
-            ? new Date(card.expire_date).getTime()
-            : card.expire_date,
-        status: card.status,
-        payment_network: card.payment_network,
-        type: card.type,
-        limit_amount: card.limit_amount,
-        cvv: card.cvv,
-        monthly_inflow:
-          card.monthly_inflow ??
-          card.monthly_inflow_sum_amount ??
-          card.received_transactions_count ??
-          0,
-        monthly_outflow:
-          card.monthly_outflow ??
-          card.monthly_outflow_sum_amount ??
-          card.sent_transactions_count ??
-          0,
-      })),
-    [cards],
-  );
-
-  const selectedCard = useMemo(
-    () => normalizedCards[currentIndex],
-    [normalizedCards, currentIndex],
-  );
-
   const handleNext = () => {
-    if (currentIndex < normalizedCards.length - 1) {
+    if (currentIndex < cards.length - 1) {
       setCurrentIndex(currentIndex + 1);
     }
   };
@@ -122,26 +44,17 @@ export default function Dashboard({
     }
   };
 
+  const selectedCard = cards[currentIndex];
+
   const balance = selectedCard?.balance ?? 0;
-  const income = thisMonthInflowTotal ?? selectedCard?.monthly_inflow ?? 0;
-  const spent = thisMonthOutflowTotal ?? selectedCard?.monthly_outflow ?? 0;
+  const income: number = thisMonthInflowTotal ?? 0;
+  const spent: number = thisMonthOutflowTotal ?? 0;
+
+  const transactions: Transaction[] = allTransactions?.data ?? [];
 
   const isFirst: boolean = currentIndex === 0;
-  const isLast: boolean = currentIndex === normalizedCards.length - 1;
-  const paginatedTransactions: Tran[] = useMemo(
-    () =>
-      (allTransactions?.data ?? []).map((transaction) => ({
-        id: transaction.id,
-        from_card_id: transaction.from_card_id,
-        to_card_id: transaction.to_card_id,
-        label: transaction.type ?? "transaction",
-        type: transaction.type ?? "transaction",
-        date: transaction.created_at ?? new Date().toISOString(),
-        description: transaction.description,
-        amount: Number(transaction.amount ?? 0),
-      })),
-    [allTransactions],
-  );
+  const isLast: boolean = currentIndex === cards.length - 1;
+
   return (
     <>
       <Head title="User Dashboard" />
@@ -188,13 +101,13 @@ export default function Dashboard({
       </section>
 
       <section className="animate-fade-up relative z-10 mx-auto max-w-7xl rounded-3xl border border-white/80 bg-white/70 p-4 shadow-sm backdrop-blur-sm transition duration-300 sm:p-6 sm:px-6">
-        {normalizedCards.length === 0 ? (
+        {cards.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
             <p className="text-lg font-medium text-slate-700">No cards found</p>
           </div>
         ) : (
           <div className="relative z-20 mx-auto flex w-full items-center justify-center gap-2 sm:gap-4 lg:gap-6">
-            {normalizedCards.length > 1 && (
+            {cards.length > 1 && (
               <NavigationButton
                 onClick={handlePrev}
                 disabled={isFirst}
@@ -208,7 +121,7 @@ export default function Dashboard({
               <BankCard key={selectedCard.id} card={selectedCard} />
             </div>
 
-            {normalizedCards.length > 1 && (
+            {cards.length > 1 && (
               <NavigationButton
                 onClick={handleNext}
                 disabled={isLast}
@@ -227,12 +140,12 @@ export default function Dashboard({
             Recent transactions
           </h2>
           <p className="text-xs font-medium tracking-[0.14em] text-slate-500 uppercase">
-            {paginatedTransactions.length} records
+            {allTransactions?.total ?? 0} records
           </p>
         </div>
 
         <div className="mt-4 flex flex-col gap-3">
-          {normalizedCards.length === 0 ? (
+          {cards.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
               <p className="text-lg font-medium text-slate-700">
                 No transactions found
@@ -245,10 +158,15 @@ export default function Dashboard({
           ) : (
             <>
               <div className="flex min-h-170 flex-col gap-3">
-                <Transactions transactions={paginatedTransactions} />
+                <Transactions transactions={transactions} />
 
                 <Pagination
-                  meta={allTransactions}
+                  meta={{
+                    current_page: allTransactions?.current_page,
+                    last_page: allTransactions?.last_page,
+                    per_page: allTransactions?.per_page,
+                    total: allTransactions?.total,
+                  }}
                   className="fixed bottom-10 w-full"
                 />
               </div>

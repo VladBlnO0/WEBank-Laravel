@@ -6,13 +6,14 @@ use App\Models\Card;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class UserDashboardPolicy
+class UserTransferControllerPolicy
 {
     use HandlesAuthorization;
 
     public function viewAny(User $user): bool
     {
         return true;
+
     }
 
     public function view(User $user, Card $card): bool

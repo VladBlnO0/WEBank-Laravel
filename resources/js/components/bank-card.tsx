@@ -1,8 +1,9 @@
-import { CardData } from "@/types";
+import type { CardData } from "@/types";
 import { formatDate, formatToLocal } from "@/utils/formatData";
 import clsx from "clsx";
 import { useState } from "react";
-import PaymentNetwork from "./payment-network";
+import PaymentNetwork from "@/components/payment-network";
+
 export default function BankCard({
   card,
   className = "",
@@ -15,10 +16,7 @@ export default function BankCard({
   const [showDigits, setShowDigits] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
 
-  const safeNumber = card.number
-    .replace(/\s+/g, "")
-    .padEnd(16, "•")
-    .slice(0, 16);
+  const safeNumber = card.pan.replace(/\s+/g, "").padEnd(16, "•").slice(0, 16);
   const digitsGroups = safeNumber.match(/.{1,4}/g) || [
     "••••",
     "••••",
@@ -40,7 +38,7 @@ export default function BankCard({
   }
 
   function copyToClipboard() {
-    navigator.clipboard.writeText(card.number);
+    navigator.clipboard.writeText(card.pan);
   }
 
   const handleClick = () => {
@@ -124,7 +122,7 @@ export default function BankCard({
             <div className="flex flex-row">
               <p className="font-medium text-gray-300 select-none">Exp:</p>
               <span className="ml-1 font-bold select-all">
-                {formatDate(card.expire_date ? card.expire_date : 0)}
+                {card.expire_date ? formatDate(card.expire_date) : '0'}
               </span>
             </div>
           </div>

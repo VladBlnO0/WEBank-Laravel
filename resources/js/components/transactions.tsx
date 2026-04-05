@@ -1,9 +1,15 @@
-import { type Tran } from "@/types";
-
+export type Transaction = {
+  id: number;
+  from_card_id?: number;
+  to_card_id?: number;
+  type: string;
+  amount: number;
+  created_at: string;
+};
 export default function Transactions({
   transactions,
 }: {
-  transactions: Tran[];
+  transactions: any[];
 }) {
   const currencyFormatter = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -37,17 +43,12 @@ export default function Transactions({
                     {tran.type}
                   </p>
                   <p className="text-sm text-slate-500">
-                    {new Date(tran.date).toLocaleDateString(undefined, {
+                    {new Date(tran.created_at).toLocaleDateString(undefined, {
                       year: "numeric",
                       month: "short",
                       day: "2-digit",
                     })}
                   </p>
-                  {tran.description && (
-                    <p className="max-w-lg text-sm text-slate-700">
-                      {tran.description}
-                    </p>
-                  )}
                 </div>
 
                 <div className="ml-auto flex items-center">

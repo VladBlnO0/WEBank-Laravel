@@ -12,12 +12,11 @@ function formatCardNumber(value: string) {
     .trim();
 }
 
-function formatDate(value: number) {
-  const date = new Date(value);
-  const formatter = new Intl.DateTimeFormat("en-US", {
+function formatDate(value: string) {
+  return new Date(value).toLocaleDateString(undefined, {
     year: "2-digit",
     month: "2-digit",
+
   });
-  return formatter.format(date);
 }
 export { formatCardNumber, formatDate, formatToLocal };
