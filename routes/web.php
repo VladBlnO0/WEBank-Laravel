@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AiOperatorController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\UserTransferController;
@@ -12,6 +13,10 @@ Route::get('/', function () {
         ? redirect()->route('dashboard.index')
         : redirect()->route('login');
 });
+
+Route::resource('notification', NotificationController::class)
+    ->middleware('auth')
+    ->only(['index']);
 
 Route::middleware('auth')->group(function () {
     Route::resource('dashboard', UserDashboardController::class)->only(['index']);

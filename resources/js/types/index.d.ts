@@ -13,6 +13,7 @@ export type PageProps<
 > = T & {
   auth: {
     user: User;
+    notificationCount?: number;
   };
   ziggy: Config & { location: string };
 };

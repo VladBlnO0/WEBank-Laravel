@@ -14,17 +14,17 @@ createInertiaApp({
   resolve: (name) =>
     resolvePageComponent(
       `./pages/${name}.tsx`,
-      import.meta.glob("./pages/**/*.tsx"),
+      import.meta.glob("./pages/**/*.tsx", { eager: true }),
     ),
   layout: (name) => {
     switch (true) {
-      case name === "faq":
-        return null;
       case name.startsWith("auth/"):
-        return GuestLayout;
+        return [GuestLayout];
       case name.startsWith("profile/"):
         return [AuthenticatedLayout];
       case name.startsWith("user/"):
+        return [AuthenticatedLayout];
+      case name.startsWith("notification/"):
         return [AuthenticatedLayout];
     }
   },

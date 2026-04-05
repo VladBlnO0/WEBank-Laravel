@@ -1,8 +1,8 @@
+import PaymentNetwork from "@/components/payment-network";
 import type { CardData } from "@/types";
 import { formatDate, formatToLocal } from "@/utils/formatData";
 import clsx from "clsx";
 import { useState } from "react";
-import PaymentNetwork from "@/components/payment-network";
 
 export default function BankCard({
   card,
@@ -30,7 +30,11 @@ export default function BankCard({
     "••••",
     "••••",
   ];
-
+  new Array(4).fill(0).forEach((_, i) => {
+    if (i === 0 || i === 3) {
+      cardGroups[i] = digitsGroups[i];
+    }
+  });
   const displayGroups = showDigits ? digitsGroups : cardGroups;
 
   function toggle() {
@@ -122,7 +126,7 @@ export default function BankCard({
             <div className="flex flex-row">
               <p className="font-medium text-gray-300 select-none">Exp:</p>
               <span className="ml-1 font-bold select-all">
-                {card.expire_date ? formatDate(card.expire_date) : '0'}
+                {card.expire_date ? formatDate(card.expire_date) : "0"}
               </span>
             </div>
           </div>

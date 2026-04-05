@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Card;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Notifications\TransactionNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -60,12 +61,18 @@ class UserTransferController extends Controller
             return back()->withErrors(['to_card' => 'You cannot transfer money to the same card.']);
         }
 
-        Transaction::create([
+        $transaction = Transaction::create([
             'from_card_id' => $validated['from_card_id'],
             'to_card_id' => $toCard->id,
             'amount' => $validated['amount'],
             'type' => 'transfer',
         ]);
+        $transaction->fromCard->owner?->notify(
+            new TransactionNotification($transaction)
+        );
+        $transaction->toCard->owner?->notify(
+            new TransactionNotification($transaction)
+        );
 
         return redirect()->back()->with(
             'success',

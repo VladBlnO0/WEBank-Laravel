@@ -4,7 +4,7 @@ import Pagination from "@/components/pagination";
 import Transactions from "@/components/transactions";
 import type { CardData, Transaction } from "@/types";
 import { formatToLocal } from "@/utils/formatData";
-import { Head } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 import { useState } from "react";
 
 type PaginatedData<T> = {
@@ -23,13 +23,72 @@ interface DashboardProps {
   thisMonthOutflowTotal?: number;
   thisMonthInflowTotal?: number;
 }
+function TransactionsSection({
+  allTransactions,
+}: {
+  allTransactions?: PaginatedData<Transaction> | null;
+}) {}
+function BankCardSection({
+  cards,
+  selectedCard,
+  handleNext,
+  handlePrev,
+  isFirst,
+  isLast,
+}: {
+  cards: CardData[];
+  selectedCard: CardData;
+  handleNext: () => void;
+  handlePrev: () => void;
+  isFirst: boolean;
+  isLast: boolean;
+}) {
+  return (
+    <>
+      {cards.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
+          <p className="text-lg font-medium text-slate-700">No cards found</p>
+        </div>
+      ) : (
+        <div className="relative z-20 mx-auto flex w-full items-center justify-center gap-2 sm:gap-4 lg:gap-6">
+          {cards.length > 1 && (
+            <NavigationButton
+              onClick={handlePrev}
+              disabled={isFirst}
+              className="group rounded-2xl border border-slate-300 bg-white/90 p-3 text-2xl shadow-sm hover:border-slate-400 hover:bg-white disabled:opacity-30 sm:text-4xl"
+              aria-label="Previous Card"
+            >
+              <i className="bi bi-caret-left-fill transition hover:-translate-x-0.5" />
+            </NavigationButton>
+          )}
 
+          <div className="relative z-30">
+            <BankCard key={selectedCard.id} card={selectedCard} />
+          </div>
+
+          {cards.length > 1 && (
+            <NavigationButton
+              onClick={handleNext}
+              disabled={isLast}
+              className="group rounded-2xl border border-slate-300 bg-white/90 p-3 text-2xl shadow-sm hover:border-slate-400 hover:bg-white disabled:opacity-30 sm:text-4xl"
+              aria-label="Next Card"
+            >
+              <i className="bi bi-caret-right-fill transition hover:translate-x-0.5" />
+            </NavigationButton>
+          )}
+        </div>
+      )}
+    </>
+  );
+}
 export default function Dashboard({
   cards,
   allTransactions,
   thisMonthOutflowTotal,
   thisMonthInflowTotal,
 }: DashboardProps) {
+  const { flash } = usePage().props as { flash?: { success?: string } };
+
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleNext = () => {
@@ -44,9 +103,9 @@ export default function Dashboard({
     }
   };
 
-  const selectedCard = cards[currentIndex];
+  const selectedCard: CardData | undefined = cards[currentIndex];
 
-  const balance = selectedCard?.balance ?? 0;
+  const balance: number = selectedCard?.balance ?? 0;
   const income: number = thisMonthInflowTotal ?? 0;
   const spent: number = thisMonthOutflowTotal ?? 0;
 
@@ -59,6 +118,11 @@ export default function Dashboard({
     <>
       <Head title="User Dashboard" />
 
+      {flash?.success && (
+        <div className="mb-4 rounded-md border border-green-200 bg-green-50 p-2 shadow-sm dark:border-green-800 dark:bg-green-900">
+          {flash.success}
+        </div>
+      )}
       <section
         className="mb-5 space-y-7"
         style={{
@@ -101,37 +165,14 @@ export default function Dashboard({
       </section>
 
       <section className="animate-fade-up relative z-10 mx-auto max-w-7xl rounded-3xl border border-white/80 bg-white/70 p-4 shadow-sm backdrop-blur-sm transition duration-300 sm:p-6 sm:px-6">
-        {cards.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
-            <p className="text-lg font-medium text-slate-700">No cards found</p>
-          </div>
-        ) : (
-          <div className="relative z-20 mx-auto flex w-full items-center justify-center gap-2 sm:gap-4 lg:gap-6">
-            {cards.length > 1 && (
-              <NavigationButton
-                onClick={handlePrev}
-                disabled={isFirst}
-                className="group rounded-2xl border border-slate-300 bg-white/90 p-3 text-2xl shadow-sm hover:border-slate-400 hover:bg-white disabled:opacity-30 sm:text-4xl"
-              >
-                <i className="bi bi-caret-left-fill transition hover:-translate-x-0.5" />
-              </NavigationButton>
-            )}
-
-            <div className="relative z-30">
-              <BankCard key={selectedCard.id} card={selectedCard} />
-            </div>
-
-            {cards.length > 1 && (
-              <NavigationButton
-                onClick={handleNext}
-                disabled={isLast}
-                className="group rounded-2xl border border-slate-300 bg-white/90 p-3 text-2xl shadow-sm hover:border-slate-400 hover:bg-white disabled:opacity-30 sm:text-4xl"
-              >
-                <i className="bi bi-caret-right-fill transition hover:translate-x-0.5" />
-              </NavigationButton>
-            )}
-          </div>
-        )}
+        <BankCardSection
+          cards={cards}
+          selectedCard={selectedCard!}
+          handleNext={handleNext}
+          handlePrev={handlePrev}
+          isFirst={isFirst}
+          isLast={isLast}
+        />
       </section>
 
       <section className="animate-fade-up mt-10 min-h-160 rounded-3xl border border-white/80 bg-white/75 p-4 shadow-sm backdrop-blur-sm transition duration-300 sm:p-6 sm:px-6 lg:px-8">

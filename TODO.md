@@ -1,6 +1,9 @@
 # TODO
 
 localization
-swithch theme
-change ui
+switch theme
 add testing
+2fa
+email
+notifications
+ai?

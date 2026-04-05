@@ -39,9 +39,9 @@ test('dashboard cards include aggregated monthly totals', function () {
     ]);
 
     $this->actingAs($user)
-        ->get(route('user.dashboard'))
+        ->get(route('dashboard.index'))
         ->assertInertia(fn (Assert $page) => $page
-            ->component('user/dashboard')
+            ->component('dashboard.index')
             ->where('selectedCardId', $senderCard->id)
             ->has('userData.data', 1, fn (Assert $card) => $card
                 ->where('id', $senderCard->id)

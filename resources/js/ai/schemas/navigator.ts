@@ -9,7 +9,7 @@ const tools = [
         properties: {
           path: {
             type: "string",
-            enum: ["/dashboard", "/billing", "/settings", "/support"],
+            enum: ["/dashboard", "/settings", "/transfer", "/support"],
             description: "The internal URL path to redirect to.",
           },
         },
