@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\AiOperatorController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\TransactionMadeController;
 use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\UserTransferController;
 use Illuminate\Support\Facades\Auth;
@@ -15,12 +14,8 @@ Route::get('/', function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::resource('/dashboard', UserDashboardController::class)->only(['index']);
-    Route::resource('/transfer', UserTransferController::class)->only(['index']);
-    Route::name('/make-transfer')->put(
-        'transaction/{transaction}/make',
-        TransactionMadeController::class
-    );
+    Route::resource('dashboard', UserDashboardController::class)->only(['index']);
+    Route::resource('transfer', UserTransferController::class)->only(['index', 'store']);
 
     // Route::post('/ai/operator/chat', [AiOperatorController::class, 'chat'])
     //     ->middleware('throttle:30,1')

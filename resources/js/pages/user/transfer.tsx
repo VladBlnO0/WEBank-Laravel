@@ -1,13 +1,11 @@
-import InputError from "@/components/input-error";
 import NavigationButton from "@/components/navigation-button";
 import Pagination from "@/components/pagination";
 import PaymentNetwork from "@/components/payment-network";
 import Transactions from "@/components/transactions";
 import type { CardData, Transaction } from "@/types";
 import { formatToLocal } from "@/utils/formatData";
-import { Head, useForm } from "@inertiajs/react";
-import { useState } from "react";
-
+import { Head, useForm, usePage } from "@inertiajs/react";
+import { useEffect, useState, type ChangeEvent } from "react";
 type PaginatedData<T> = {
   data: T[];
   links: never[];
@@ -24,6 +22,8 @@ interface DashboardProps {
 }
 
 export default function Transfer({ cards, allTransactions }: DashboardProps) {
+  const { flash } = usePage().props as any;
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const selectedCard = cards[currentIndex];
 
@@ -39,86 +39,55 @@ export default function Transfer({ cards, allTransactions }: DashboardProps) {
     }
   };
 
-  const { data, setData, post, processing, errors } = useForm({
+  const { data, setData, post, processing, transform, reset } = useForm({
     from_card_id: selectedCard.id,
-    to_card: "",
+    to_card_pan: "",
     amount: "",
   });
-  // const { flash } =
-  //   usePage<PageProps<{ flash?: { success?: string } }>>().props;
+  transform((data) => ({
+    ...data,
+    to_card_pan: data.to_card_pan.replace(/\s+/g, ""),
+  }));
 
-  const [error, setError] = useState("");
+  useEffect(() => {
+    if (selectedCard) {
+      setData("from_card_id", selectedCard.id);
+    }
+  }, [selectedCard, setData]);
 
-  // const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   setError("");
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    post(route("transfer.store"), {
+      preserveScroll: true,
+      onSuccess: () => reset("to_card_pan", "amount"),
+    });
+  };
 
-  //   if (!selectedCard) {
-  //     setError("No sender card available.");
-  //     return;
-  //   }
+  const handleChangePan = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const formatted = value
+      .replace(/\D/g, "")
+      .replace(/(.{4})/g, "$1 ")
+      .trim();
+    setData("to_card_pan", formatted);
+  };
+  const handleChangeAmount = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
 
-  //   const userBalance = selectedCard.balance;
-  //   const senderCard = selectedCard.number;
+    if (value === "") {
+      setData("amount", "");
+      return;
+    }
 
-  //   const amountDB = parseFloat(data.amount);
-  //   const cardNumberForDB = data.to_card.replace(/\s/g, "");
-  //   const cardNumberDB = senderCard?.replace(/\D/g, "") ?? "";
+    const isValid = /^\d*\.?\d{0,2}$/.test(value);
+    const parsed = parseFloat(value);
+    const max = 100001;
 
-  //   if (!cardNumberForDB || cardNumberForDB.length !== 16) {
-  //     setError("Card number must contain 16 digits.");
-  //     return;
-  //   }
-
-  //   if (cardNumberDB === cardNumberForDB) {
-  //     setError("Cannot send money to your own card.");
-  //     return;
-  //   }
-
-  //   if (isNaN(amountDB) || amountDB <= 0) {
-  //     setError("Please enter a valid amount.");
-  //     return;
-  //   }
-
-  //   if (amountDB > userBalance) {
-  //     setError("Insufficient funds in your account.");
-  //     return;
-  //   }
-
-  //   post(route("transactions.store"), {
-  //     preserveScroll: true,
-  //   });
-  // };
-
-  // const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   const { name, value } = e.target;
-
-  //   if (name === "to_card") {
-  //     const formatted = value
-  //       .replace(/\D/g, "")
-  //       .replace(/(.{4})/g, "$1 ")
-  //       .trim();
-  //     setData((prev) => ({ ...prev, to_card: formatted }));
-  //     return;
-  //   }
-
-  //   if (name === "amount") {
-  //     if (value === "") {
-  //       setData((prev) => ({ ...prev, amount: "" }));
-  //       return;
-  //     }
-  //     const isValid = /^\d*\.?\d{0,2}$/.test(value);
-  //     const parsed = parseFloat(value);
-  //     const max = 100001;
-  //     if (isValid && (isNaN(parsed) || parsed <= max)) {
-  //       setData((prev) => ({ ...prev, amount: value }));
-  //     }
-  //     return;
-  //   }
-
-  //   setData((prev) => ({ ...prev, [name]: value }));
-  // };
-  const digitsGroups = selectedCard.pan.match(/.{0,4}/g) || [];
+    if (isValid && (isNaN(parsed) || parsed <= max)) {
+      setData("amount", value);
+    }
+  };
+  const digitsGroups = selectedCard?.pan.match(/.{0,4}/g) || [];
   const paginatedTransactions: Transaction[] = allTransactions?.data ?? [];
 
   const masked = digitsGroups[0] + "•".repeat(8) + digitsGroups[3];
@@ -136,22 +105,10 @@ export default function Transfer({ cards, allTransactions }: DashboardProps) {
         }}
       >
         <section className="animate-fade-up rounded-3xl border border-white/80 bg-white/80 p-5 shadow-sm backdrop-blur-sm transition duration-300 sm:p-7">
-          <form className="space-y-5">
-            {error && (
-              <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3">
-                <InputError message={error} className="m-0" />
-              </div>
-            )}
-
-            {errors.to_card && (
-              <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3">
-                <InputError message={errors.to_card} className="m-0" />
-              </div>
-            )}
-
-            {errors.amount && (
-              <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3">
-                <InputError message={errors.amount} className="m-0" />
+          <form className="space-y-5" onSubmit={submit}>
+            {flash?.success && (
+              <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 font-medium text-emerald-700">
+                {flash.success}
               </div>
             )}
 
@@ -212,15 +169,15 @@ export default function Transfer({ cards, allTransactions }: DashboardProps) {
                 <div className="flex w-full items-center gap-2 rounded-2xl border border-slate-300 bg-white px-3 py-3 transition focus-within:border-slate-500">
                   <i className="bi bi-credit-card text-slate-500"></i>
                   <input
-                    name="to_card"
+                    name="to_card_pan"
                     type="tel"
                     inputMode="numeric"
                     className="w-full border-0 bg-transparent p-0 text-slate-800 placeholder:text-slate-400 focus:ring-0"
                     placeholder="1234 5678 9012 3456"
                     maxLength={19}
                     required
-                    value={data.to_card}
-                    // onChange={handleChange}
+                    value={data.to_card_pan}
+                    onChange={handleChangePan}
                   />
                 </div>
               </div>
@@ -239,7 +196,7 @@ export default function Transfer({ cards, allTransactions }: DashboardProps) {
                     placeholder="0.00"
                     required
                     value={data.amount}
-                    // onChange={handleChange}
+                    onChange={handleChangeAmount}
                   />
                 </div>
                 <p className="mt-1 text-xs text-slate-500">

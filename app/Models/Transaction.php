@@ -116,4 +116,18 @@ class Transaction extends Model
                 $query->orderBy($value, $filters['order'] ?? 'desc')
         );
     }
+
+    protected static function booted(): void
+    {
+        static::created(function (Transaction $transaction) {
+            if ($transaction->from_card_id) {
+                $transaction->fromCard()->decrement('balance', $transaction->amount);
+            }
+
+            if ($transaction->to_card_id) {
+                $transaction->toCard()->increment('balance', $transaction->amount);
+            }
+
+        });
+    }
 }
