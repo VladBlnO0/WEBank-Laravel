@@ -61,7 +61,7 @@ class CardController extends Controller
             });
         }
 
-        return Inertia::render('user/user-dashboard', [
+        return Inertia::render('user/dashboard', [
             'userData' => CardDashboardResource::collection($cards),
             'selectedCardId' => $selectedCard?->id,
             'transactions' => $transactions ? CardTransactionResource::collection($transactions) : null,

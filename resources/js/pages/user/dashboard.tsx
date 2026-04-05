@@ -2,43 +2,116 @@ import BankCard from "@/components/bank-card";
 import NavigationButton from "@/components/navigation-button";
 import Pagination from "@/components/pagination";
 import Transactions from "@/components/transactions";
-import { type CardData, type Tran } from "@/types";
 import { formatToLocal } from "@/utils/formatData";
 import { Head } from "@inertiajs/react";
 import { useMemo, useState } from "react";
 
-export default function UserDashboard({
+type RawCard = {
+  id: number;
+  pan?: string;
+  balance: number;
+  expire_date?: number | string;
+  status?: string;
+  payment_network: string;
+  type?: string;
+  limit_amount?: number;
+  cvv?: string;
+  monthly_inflow?: number;
+  monthly_outflow?: number;
+  monthly_inflow_sum_amount?: number;
+  monthly_outflow_sum_amount?: number;
+  sent_transactions_count?: number;
+  received_transactions_count?: number;
+};
+type CardData = {
+  id: number;
+  number: string;
+  balance: number;
+  expire_date?: number;
+  status?: string;
+  payment_network: string;
+  type?: string;
+  limit_amount?: number;
+  cvv?: string;
+  monthly_inflow: number;
+  monthly_outflow: number;
+};
+type RawTransaction = {
+  id: number;
+  from_card_id?: number;
+  to_card_id?: number;
+  type?: string;
+  created_at?: string;
+  description?: string;
+  amount: number;
+};
+type Tran = {
+  id: number;
+  from_card_id?: number;
+  to_card_id?: number;
+  label: string;
+  type: string;
+  date: string;
+  description?: string;
+  amount: number;
+};
+type TransactionsList = {
+  data?: RawTransaction[];
+  current_page?: number;
+  last_page?: number;
+  per_page?: number;
+  total?: number;
+};
+
+export default function Dashboard({
   cards,
   allTransactions,
-  thisMonthTransactions,
+  thisMonthOutflowTotal,
+  thisMonthInflowTotal,
 }: {
-  userData: { data: CardData[] } | CardData[];
-  selectedCardId?: number;
-  transactions?: { data: Tran[]; meta?: any; links?: any } | null;
+  cards: RawCard[];
+  allTransactions?: TransactionsList;
+  thisMonthOutflowTotal?: number;
+  thisMonthInflowTotal?: number;
 }) {
-  const cards = useMemo(
-    () => (Array.isArray(userData) ? userData : (userData?.data ?? [])),
-    [userData],
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const normalizedCards = useMemo<CardData[]>(
+    () =>
+      cards.map((card) => ({
+        id: card.id,
+        number: card.pan ?? "",
+        balance: card.balance ?? 0,
+        expire_date:
+          typeof card.expire_date === "string"
+            ? new Date(card.expire_date).getTime()
+            : card.expire_date,
+        status: card.status,
+        payment_network: card.payment_network,
+        type: card.type,
+        limit_amount: card.limit_amount,
+        cvv: card.cvv,
+        monthly_inflow:
+          card.monthly_inflow ??
+          card.monthly_inflow_sum_amount ??
+          card.received_transactions_count ??
+          0,
+        monthly_outflow:
+          card.monthly_outflow ??
+          card.monthly_outflow_sum_amount ??
+          card.sent_transactions_count ??
+          0,
+      })),
+    [cards],
   );
 
-  const initialIndex = useMemo(() => {
-    if (!selectedCardId) {
-      return 0;
-    }
-
-    const index = cards.findIndex((card) => card.id === selectedCardId);
-    return index >= 0 ? index : 0;
-  }, [cards, selectedCardId]);
-
-  const [currentIndex, setCurrentIndex] = useState(initialIndex);
-
   const selectedCard = useMemo(
-    () => cards[currentIndex],
-    [cards, currentIndex],
+    () => normalizedCards[currentIndex],
+    [normalizedCards, currentIndex],
   );
 
   const handleNext = () => {
-    if (currentIndex < cards.length - 1) {
+    if (currentIndex < normalizedCards.length - 1) {
       setCurrentIndex(currentIndex + 1);
     }
   };
@@ -50,12 +123,25 @@ export default function UserDashboard({
   };
 
   const balance = selectedCard?.balance ?? 0;
-  const income = selectedCard?.monthly_inflow ?? 0;
-  const spent = selectedCard?.monthly_outflow ?? 0;
+  const income = thisMonthInflowTotal ?? selectedCard?.monthly_inflow ?? 0;
+  const spent = thisMonthOutflowTotal ?? selectedCard?.monthly_outflow ?? 0;
 
   const isFirst: boolean = currentIndex === 0;
-  const isLast: boolean = currentIndex === cards.length - 1;
-  const paginatedTransactions: Tran[] = transactions?.data ?? [];
+  const isLast: boolean = currentIndex === normalizedCards.length - 1;
+  const paginatedTransactions: Tran[] = useMemo(
+    () =>
+      (allTransactions?.data ?? []).map((transaction) => ({
+        id: transaction.id,
+        from_card_id: transaction.from_card_id,
+        to_card_id: transaction.to_card_id,
+        label: transaction.type ?? "transaction",
+        type: transaction.type ?? "transaction",
+        date: transaction.created_at ?? new Date().toISOString(),
+        description: transaction.description,
+        amount: Number(transaction.amount ?? 0),
+      })),
+    [allTransactions],
+  );
   return (
     <>
       <Head title="User Dashboard" />
@@ -102,13 +188,13 @@ export default function UserDashboard({
       </section>
 
       <section className="animate-fade-up relative z-10 mx-auto max-w-7xl rounded-3xl border border-white/80 bg-white/70 p-4 shadow-sm backdrop-blur-sm transition duration-300 sm:p-6 sm:px-6">
-        {cards.length === 0 ? (
+        {normalizedCards.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
             <p className="text-lg font-medium text-slate-700">No cards found</p>
           </div>
         ) : (
           <div className="relative z-20 mx-auto flex w-full items-center justify-center gap-2 sm:gap-4 lg:gap-6">
-            {cards.length > 1 && (
+            {normalizedCards.length > 1 && (
               <NavigationButton
                 onClick={handlePrev}
                 disabled={isFirst}
@@ -122,7 +208,7 @@ export default function UserDashboard({
               <BankCard key={selectedCard.id} card={selectedCard} />
             </div>
 
-            {cards.length > 1 && (
+            {normalizedCards.length > 1 && (
               <NavigationButton
                 onClick={handleNext}
                 disabled={isLast}
@@ -141,18 +227,18 @@ export default function UserDashboard({
             Recent transactions
           </h2>
           <p className="text-xs font-medium tracking-[0.14em] text-slate-500 uppercase">
-            {transactions?.data?.length ?? 0} records
+            {paginatedTransactions.length} records
           </p>
         </div>
 
         <div className="mt-4 flex flex-col gap-3">
-          {cards.length === 0 ? (
+          {normalizedCards.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
               <p className="text-lg font-medium text-slate-700">
                 No transactions found
               </p>
             </div>
-          ) : transactions === null ? (
+          ) : allTransactions === null ? (
             <div className="p-8 text-center text-slate-600">
               Loading transactions...
             </div>
@@ -162,7 +248,7 @@ export default function UserDashboard({
                 <Transactions transactions={paginatedTransactions} />
 
                 <Pagination
-                  meta={transactions?.meta}
+                  meta={allTransactions}
                   className="fixed bottom-10 w-full"
                 />
               </div>
@@ -192,10 +278,10 @@ export default function UserDashboard({
   );
 }
 
-UserDashboard.layout = {
+Dashboard.layout = {
   breadcrumbs: [
     {
-      title: "User Dashboard",
+      title: "Dashboard",
     },
   ],
 };

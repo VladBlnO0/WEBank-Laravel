@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Card;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -11,34 +14,31 @@ class UserDashboardController extends Controller
 {
     public function index(Request $request): Response
     {
-        $user = $request->user();
+        Gate::authorize('viewAny', Card::class);
 
-        $now = now();
+        $user = Auth::user();
 
         $cards = $user->hasCards()
-            ->with(['sentTransactions', 'receivedTransactions']);
+            ->withCount(['sentTransactions', 'receivedTransactions'])
+            ->get();
 
-        $cardIds = $user->hasCards()->pluck('id')->toArray();
+        $cardIds = $cards->pluck('id')->all();
 
         $allTransactions = Transaction::query()
-            ->where(function ($query) use ($cardIds) {
-                $query->whereIn('from_card_id', $cardIds)
-                    ->orWhereIn('to_card_id', $cardIds);
-            })
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->forUser($user)
+            ->latest('created_at')
+            ->paginate(10)
+            ->withQueryString();
 
         $thisMonthOutflowTotal = Transaction::query()
-            ->where('from_card_id', $cardIds)
-            ->currentMonth()
+            ->currentMonthOutflow($cardIds)
             ->sum('amount');
 
         $thisMonthInflowTotal = Transaction::query()
-            ->where('to_card_id', $cardIds)
-            ->currentMonth()
+            ->currentMonthInflow($cardIds)
             ->sum('amount');
 
-        return Inertia::render('user/user-dashboard', [
+        return Inertia::render('user/dashboard', [
             'cards' => $cards,
             'allTransactions' => $allTransactions,
             'thisMonthOutflowTotal' => $thisMonthOutflowTotal,

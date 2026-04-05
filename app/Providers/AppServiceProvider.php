@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Card;
+use App\Policies\UserDashboardPolicy;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 
@@ -20,6 +23,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Gate::policy(Card::class, UserDashboardPolicy::class);
+
         Vite::prefetch(concurrency: 3);
     }
 }

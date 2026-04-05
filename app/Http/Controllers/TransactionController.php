@@ -119,7 +119,15 @@ class TransactionController extends Controller
      */
     public function show(Transaction $transaction)
     {
-        //
+        // return Inertia::render(
+        //     'Realtor/Show',
+        //     [
+        //         'listing' => $listing->load(
+        //             'offers',
+        //             'offers.bidder'
+        //         )
+        //     ]
+        // );
     }
 
     /**

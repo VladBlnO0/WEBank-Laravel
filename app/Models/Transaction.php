@@ -2,67 +2,24 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Carbon;
 
-/**
- * @property int $id
- * @property int $from_card_id
- * @property int $to_card_id
- * @property string $type
- * @property numeric $amount
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property-read Card|null $belongsToCard
- * @property-read Card $fromCard
- * @property-read Card $toCard
- *
- * @method static \Database\Factories\TransactionFactory factory($count = null, $state = [])
- * @method static Builder<static>|Transaction filter(array $filters)
- * @method static Builder<static>|Transaction newModelQuery()
- * @method static Builder<static>|Transaction newQuery()
- * @method static Builder<static>|Transaction query()
- * @method static Builder<static>|Transaction whereAmount($value)
- * @method static Builder<static>|Transaction whereCreatedAt($value)
- * @method static Builder<static>|Transaction whereFromCardId($value)
- * @method static Builder<static>|Transaction whereId($value)
- * @method static Builder<static>|Transaction whereToCardId($value)
- * @method static Builder<static>|Transaction whereType($value)
- * @method static Builder<static>|Transaction whereUpdatedAt($value)
- *
- * @mixin \Eloquent
- */
+#[Fillable(['from_card_id',
+    'to_card_id',
+    'type',
+    'amount', ])]
 class Transaction extends Model
 {
     use HasFactory;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'from_card_id',
-        'to_card_id',
-        'type',
-        'amount',
-    ];
 
     protected array $sortable = [
         'amount',
         'created_at',
     ];
-    /**
-     * Scope a query to only include transactions from the current month.
-     */
-    public function scopeCurrentMonth(Builder $query): Builder
-    {
-        return $query->whereMonth('created_at', now()->month)
-                     ->whereYear('created_at', now()->year);
-    }
 
     public function belongsToCard(): BelongsTo
     {
@@ -77,6 +34,55 @@ class Transaction extends Model
     public function toCard(): BelongsTo
     {
         return $this->belongsTo(Card::class, 'to_card_id');
+    }
+
+    public function scopeCurrentMonth(Builder $query): Builder
+    {
+        return $query->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year);
+    }
+
+    public function scopeByCard(Builder $query, array|int $cardIds): Builder
+    {
+        $ids = \is_array($cardIds) ? $cardIds : [$cardIds];
+
+        return $query->where(function (Builder $query) use ($ids) {
+            $query->whereIn('from_card_id', $ids)
+                ->orWhereIn('to_card_id', $ids);
+        });
+    }
+
+    public function scopeForUser(Builder $query, User $user): Builder
+    {
+        $cardIds = $user->hasCards()->pluck('id')->all();
+
+        return $cardIds
+            ? $query->byCard($cardIds)
+            : $query;
+    }
+
+    public function scopeCurrentMonthOutflow(Builder $query, array|int $cardIds): Builder
+    {
+        $ids = \is_array($cardIds) ? $cardIds : [$cardIds];
+
+        return $query->currentMonth()->whereIn('from_card_id', $ids);
+    }
+
+    public function scopeCurrentMonthInflow(Builder $query, array|int $cardIds): Builder
+    {
+        $ids = \is_array($cardIds) ? $cardIds : [$cardIds];
+
+        return $query->currentMonth()->whereIn('to_card_id', $ids);
+    }
+
+    public function scopeMonthTotalInflow(Builder $query, Card $card): Builder
+    {
+        return $query->where('to_card_id', $card->id)->currentMonth()->sum('amount');
+    }
+
+    public function scopeMonthTotalOutflow(Builder $query, Card $card): Builder
+    {
+        return $query->where('from_card_id', $card->id)->currentMonth()->sum('amount');
     }
 
     public function scopeFilter(Builder $query, array $filters): Builder

@@ -8,7 +8,7 @@ import { formatToLocal } from "@/utils/formatData";
 import { Head, useForm, usePage } from "@inertiajs/react";
 import React, { type ChangeEvent, useState } from "react";
 
-export default function UserTransfer({
+export default function Transfer({
   userData,
   selectedCard,
   transactions,

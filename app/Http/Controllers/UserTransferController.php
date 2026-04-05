@@ -30,7 +30,7 @@ class UserTransferController extends Controller
             ], 'amount')
             ->get();
 
-        return Inertia::render('user/user-transfer', [
+        return Inertia::render('user/transfer', [
             'userData' => CardDashboardResource::collection($cards),
         ]);
     }
