@@ -34,12 +34,13 @@ class UserTransferController extends Controller
         return Inertia::render('user/transfer', [
             'cards' => $cards,
             'allTransactions' => $allTransactions,
-
         ]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request, Transaction $transaction)
     {
+        Gate::authorize('store', $transaction);
+
         /**
          * @var User|null $user
          */
@@ -52,25 +53,33 @@ class UserTransferController extends Controller
                 Rule::exists('cards', 'id')->where('user_id', $user->id),
             ],
             'to_card_pan' => ['required', 'string', 'size:16', 'exists:cards,pan'],
-            'amount' => ['required', 'integer', 'min:1', 'max:20000000'],
+            'amount' => ['required', 'numeric', 'min:1', 'max:20000000'],
         ]
         );
-        $toCard = Card::where('pan', $validated['to_card_pan'])->firstOrFail();
 
-        if ($toCard->id == $validated['from_card_id']) {
-            return back()->withErrors(['to_card' => 'You cannot transfer money to the same card.']);
+        $toCard = Card::query()->where('pan', $validated['to_card_pan'])->first();
+        if (! $toCard) {
+            return back()->with('error', 'Bad card');
+        }
+
+        if ($toCard->id === $validated['from_card_id']) {
+            return back()->with('error', 'You cannot transfer money to the same card');
         }
 
         $transaction = Transaction::create([
+            'amount' => $validated['amount'],
             'from_card_id' => $validated['from_card_id'],
             'to_card_id' => $toCard->id,
-            'amount' => $validated['amount'],
-            'type' => 'transfer',
         ]);
+
         $transaction->fromCard->owner?->notify(
             new TransactionNotification($transaction)
         );
         $transaction->toCard->owner?->notify(
+            new TransactionNotification($transaction)
+        );
+
+        $transaction->toCard->owner->notify(
             new TransactionNotification($transaction)
         );
 

@@ -2,36 +2,26 @@ import BankCard from "@/components/bank-card";
 import NavigationButton from "@/components/navigation-button";
 import Pagination from "@/components/pagination";
 import Transactions from "@/components/transactions";
-import type { CardData, Transaction } from "@/types";
+import type { CardData, PaginatedData, Transaction } from "@/types";
 import { formatToLocal } from "@/utils/formatData";
 import { Head, usePage } from "@inertiajs/react";
 import { useState } from "react";
 
-type PaginatedData<T> = {
-  data: T[];
-  links: never[];
-  meta?: never;
-  current_page?: number;
-  last_page?: number;
-  per_page?: number;
-  total?: number;
-};
-
 interface DashboardProps {
   cards: CardData[];
-  allTransactions?: PaginatedData<Transaction>;
+  allTransactions?: PaginatedData<Transaction> | null;
   thisMonthOutflowTotal?: number;
   thisMonthInflowTotal?: number;
 }
 function TransactionsSection({
   allTransactions,
-  selectedCard,
-  currentIndex
+  cardIds,
 }: {
-  allTransactions?: PaginatedData<Transaction>,
-  selectedCard?: CardData[],
-  currentIndex: number
+  allTransactions?: PaginatedData<Transaction> | null;
+  cardIds: number[];
 }) {
+  const transactions = allTransactions?.data ?? [];
+
   return (
     <>
       <div className="flex items-center justify-between gap-4 border-b border-slate-200 pb-4">
@@ -44,20 +34,23 @@ function TransactionsSection({
       </div>
 
       <div className="mt-4 flex flex-col gap-3">
-        {allTransactions?.total === 0 ? (
+        {allTransactions === null ? (
+          <div className="p-8 text-center text-slate-600">
+            Loading transactions...
+          </div>
+        ) : transactions.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
             <p className="text-lg font-medium text-slate-700">
               No transactions found
             </p>
           </div>
-        ) : allTransactions === null ? (
-          <div className="p-8 text-center text-slate-600">
-            Loading transactions...
-          </div>
         ) : (
           <>
             <div className="flex min-h-170 flex-col gap-3">
-              <Transactions transactions={allTransactions?.data} selectedCard={selectedCard} currentIndex={currentIndex} />
+              <Transactions
+                transactions={transactions}
+                cardIds={cardIds}
+              />
 
               <Pagination
                 meta={{
@@ -156,8 +149,6 @@ export default function Dashboard({
   const income: number = thisMonthInflowTotal ?? 0;
   const spent: number = thisMonthOutflowTotal ?? 0;
 
-  // const transactions: Transaction[] = allTransactions?.data ?? [];
-
   const isFirst: boolean = currentIndex === 0;
   const isLast: boolean = currentIndex === cards.length - 1;
 
@@ -223,7 +214,10 @@ export default function Dashboard({
       </section>
 
       <section className="animate-fade-up mt-10 min-h-160 rounded-3xl border border-white/80 bg-white/75 p-4 shadow-sm backdrop-blur-sm transition duration-300 sm:p-6 sm:px-6 lg:px-8">
-        <TransactionsSection allTransactions={allTransactions} selectedCard={selectedCard} currentIndex={currentIndex}  />
+        <TransactionsSection
+          allTransactions={allTransactions}
+          cardIds={cards.map((card) => card.id)}
+        />
       </section>
 
       <style>{`

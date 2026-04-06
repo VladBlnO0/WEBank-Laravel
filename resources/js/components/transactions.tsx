@@ -1,40 +1,38 @@
-import type { CardData } from "@/types";
-
-export type Transaction = {
-  id: number;
-  from_card_id?: number;
-  to_card_id?: number;
-  type: string;
-  amount: number;
-  created_at: string;
-};
+import type { CardData, Transaction } from "@/types";
 
 export default function Transactions({
   transactions,
   selectedCard,
-  currentIndex,
+  cardIds,
 }: {
   transactions?: Transaction[];
-  selectedCard: CardData;
-  currentIndex: number;
+  selectedCard?: CardData;
+  cardIds?: number[];
 }) {
   const currencyFormatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
   });
 
+  const transactionItems = transactions ?? [];
+  const ownedCardIds = cardIds ?? (selectedCard ? [selectedCard.id] : []);
+
   return (
     <ul className="flex flex-col gap-3 p-1 sm:p-2">
-      {transactions?.length === 0 ? (
+      {transactionItems.length === 0 ? (
         <p className="p-4 text-sm text-slate-500">No transactions.</p>
       ) : (
-        transactions?.map((tran) => {
+        transactionItems.map((tran) => {
           const typeClass =
             tran.type === "payment"
               ? "bg-rose-100 text-rose-700"
               : tran.type === "transfer"
                 ? "bg-amber-100 text-amber-700"
                 : "bg-emerald-100 text-emerald-700";
+
+          const isOutgoing = ownedCardIds.includes(tran?.from_card_id)
+            ? true
+            : false;
 
           return (
             <li
@@ -46,7 +44,7 @@ export default function Transactions({
                   <p
                     className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold tracking-wide uppercase ${typeClass}`}
                   >
-                    {tran.type}
+                    Transfer
                   </p>
                   <p className="text-sm text-slate-500">
                     {new Date(tran.created_at).toLocaleDateString(undefined, {
@@ -59,13 +57,9 @@ export default function Transactions({
 
                 <div className="ml-auto flex items-center">
                   <p
-                    className={`text-xl font-semibold tracking-tight ${
-                      tran.from_card_id === selectedCard.id
-                        ? "text-rose-700"
-                        : "text-emerald-700"
-                    }`}
+                    className={`text-xl font-semibold tracking-tight ${isOutgoing ? "text-rose-700" : "text-emerald-700"}`}
                   >
-                    {tran.from_card_id === selectedCard.id ? "-" : "+"}
+                    {isOutgoing ? "-" : "+"}
                     {currencyFormatter.format(Math.abs(tran.amount))}
                   </p>
                 </div>

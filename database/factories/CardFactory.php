@@ -28,7 +28,7 @@ class CardFactory extends Factory
             'expire_date' => Carbon::now(),
 
             'type' => $this->faker->randomElement(['debit', 'credit']),
-            'payment_network' => $this->faker->randomElement(CardType::class),
+            'payment_network' => $this->faker->randomElement(['visa', 'mastercard']),
 
             'balance' => $this->faker->randomFloat(2, 0, 500000),
         ];

@@ -23,10 +23,11 @@ Route::put(
     NotificationSeenController::class
 )->middleware('auth')->name('notification.seen');
 
-Route::middleware('auth')->group(function () {
-    Route::resource('dashboard', UserDashboardController::class)->only(['index']);
-    Route::resource('transfer', UserTransferController::class)->only(['index', 'store']);
+Route::resource('dashboard', UserDashboardController::class)->middleware('auth');
 
+Route::resource('transfer', UserTransferController::class)->middleware('auth');
+
+Route::middleware('auth')->group(function () {
     // Route::post('/ai/operator/chat', [AiOperatorController::class, 'chat'])
     //     ->middleware('throttle:30,1')
     //     ->name('ai.operator.chat');

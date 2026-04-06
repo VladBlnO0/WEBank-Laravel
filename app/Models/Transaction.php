@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[Fillable(['from_card_id',
     'to_card_id',
-    'type',
     'amount', ])]
 class Transaction extends Model
 {
@@ -109,11 +108,6 @@ class Transaction extends Model
             $filters['created_at'] ?? false,
             fn ($query, $value) => $query->where('created_at', '<=', $value)
 
-        )->when(
-            $filters['type'] ?? false,
-            fn ($query, $value) => ! in_array($value, $this->sortable)
-                ? $query :
-                $query->orderBy($value, $filters['order'] ?? 'desc')
         );
     }
 

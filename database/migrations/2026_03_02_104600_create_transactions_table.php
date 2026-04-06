@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignIdFor(Card::class, 'from_card_id')->constrained('cards');
             $table->foreignIdFor(Card::class, 'to_card_id')->constrained('cards');
 
-            $table->string('type', 50);
             $table->decimal('amount', 15, 2);
 
             $table->timestamps();

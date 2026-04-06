@@ -2,27 +2,69 @@ import NavigationButton from "@/components/navigation-button";
 import Pagination from "@/components/pagination";
 import PaymentNetwork from "@/components/payment-network";
 import Transactions from "@/components/transactions";
-import type { CardData, Transaction } from "@/types";
+import type { CardData, PaginatedData, Transaction } from "@/types";
 import { formatToLocal } from "@/utils/formatData";
 import { Head, useForm, usePage } from "@inertiajs/react";
 import { useEffect, useState, type ChangeEvent } from "react";
-type PaginatedData<T> = {
-  data: T[];
-  links: never[];
-  meta?: never;
-  current_page?: number;
-  last_page?: number;
-  per_page?: number;
-  total?: number;
-};
 
-interface DashboardProps {
+interface TransferProps {
   cards: CardData[];
   allTransactions?: PaginatedData<Transaction> | null;
 }
+function TransactionsSection({
+  allTransactions,
+  cardIds,
+}: {
+  allTransactions?: PaginatedData<Transaction> | null;
+  cardIds: number[];
+}) {
+  const transactions = allTransactions?.data ?? [];
 
-export default function Transfer({ cards, allTransactions }: DashboardProps) {
-  const { flash } = usePage().props as any;
+  return (
+    <>
+      <div className="flex items-center justify-between gap-4 border-b border-slate-200 pb-4">
+        <h2 className="text-xl font-semibold tracking-tight text-slate-900">
+          Recent transactions
+        </h2>
+        <p className="text-xs font-medium tracking-[0.14em] text-slate-500 uppercase">
+          {allTransactions?.total ?? 0} records
+        </p>
+      </div>
+
+      <div className="mt-4 flex flex-col gap-3">
+        {allTransactions === null ? (
+          <div className="p-8 text-center text-slate-600">
+            Loading transactions...
+          </div>
+        ) : transactions.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
+            <p className="text-lg font-medium text-slate-700">
+              No transactions found
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="flex min-h-170 flex-col gap-3">
+              <Transactions transactions={transactions} cardIds={cardIds} />
+
+              <Pagination
+                meta={{
+                  current_page: allTransactions?.current_page,
+                  last_page: allTransactions?.last_page,
+                  per_page: allTransactions?.per_page,
+                  total: allTransactions?.total,
+                }}
+                className="fixed bottom-10 w-full"
+              />
+            </div>
+          </>
+        )}
+      </div>
+    </>
+  );
+}
+export default function Transfer({ cards, allTransactions }: TransferProps) {
+  const { flash, errors } = usePage().props as any;
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const selectedCard = cards[currentIndex];
@@ -88,7 +130,6 @@ export default function Transfer({ cards, allTransactions }: DashboardProps) {
     }
   };
   const digitsGroups = selectedCard?.pan.match(/.{0,4}/g) || [];
-  const paginatedTransactions: Transaction[] = allTransactions?.data ?? [];
 
   const masked = digitsGroups[0] + "•".repeat(8) + digitsGroups[3];
   const cardGroups = masked.match(/.{1,4}/g) || [];
@@ -111,7 +152,16 @@ export default function Transfer({ cards, allTransactions }: DashboardProps) {
                 {flash.success}
               </div>
             )}
-
+            {(flash?.error || Object.keys(errors).length > 0) && (
+              <div className="rounded-md bg-rose-50 p-3 text-rose-800">
+                {flash?.error && <div>{flash.error}</div>}
+                {Object.entries(errors).map(([field, messages]) => (
+                  <div key={field}>
+                    <strong>{field}:</strong> {Array.isArray(messages) ? messages.join(', ') : messages}
+                  </div>
+                ))}
+              </div>
+            )}
             <div>
               {cards.length === 0 ? (
                 <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
@@ -220,47 +270,10 @@ export default function Transfer({ cards, allTransactions }: DashboardProps) {
           </form>
         </section>
         <section className="animate-fade-up mt-10 min-h-160 rounded-3xl border border-white/80 bg-white/75 p-4 shadow-sm backdrop-blur-sm transition duration-300 sm:p-6 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between gap-4 border-b border-slate-200 pb-4">
-            <h2 className="text-xl font-semibold tracking-tight text-slate-900">
-              Recent transactions
-            </h2>
-            <p className="text-xs font-medium tracking-[0.14em] text-slate-500 uppercase">
-              {allTransactions?.total ?? 0} records
-            </p>
-          </div>
-
-          <div className="mt-4 flex flex-col gap-3">
-            {cards.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
-                <p className="text-lg font-medium text-slate-700">
-                  No transactions found
-                </p>
-                <p className="mt-2 text-sm text-slate-500">
-                  Your latest movements will appear here once activity starts.
-                </p>
-              </div>
-            ) : allTransactions === null ? (
-              <div className="p-8 text-center text-slate-600">
-                Loading transactions...
-              </div>
-            ) : (
-              <>
-                <div className="flex min-h-170 flex-col gap-3">
-                  <Transactions transactions={paginatedTransactions} />
-
-                  <Pagination
-                    meta={{
-                      current_page: allTransactions?.current_page,
-                      last_page: allTransactions?.last_page,
-                      per_page: allTransactions?.per_page,
-                      total: allTransactions?.total,
-                    }}
-                    className="fixed bottom-10 w-full"
-                  />
-                </div>
-              </>
-            )}
-          </div>
+          <TransactionsSection
+            allTransactions={allTransactions}
+            cardIds={cards.map((card) => card.id)}
+          />
         </section>
       </div>
       <style>{`

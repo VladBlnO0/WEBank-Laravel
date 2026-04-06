@@ -23,12 +23,10 @@ class DatabaseSeeder extends Seeder
         });
 
         $users->each(function ($user) {
-            $cards = $user->hasCards;
-
-            $cards->each(function ($card) {
+            $user->cards->each(function ($card) {
                 Transaction::factory(rand(2, 4))->create([
                     'from_card_id' => $card->id,
-                    'to_card_id' => Card::where(column: 'id', operator: '!=', value: $card->id, boolean: null)->inRandomOrder(seed: null)->first()?->id,
+                    'to_card_id' => Card::where(column: 'id', operator: '!=', value: $card->id)->inRandomOrder(seed: null)->first()?->id,
                 ]);
             });
         });

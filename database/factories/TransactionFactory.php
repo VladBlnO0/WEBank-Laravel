@@ -12,8 +12,6 @@ class TransactionFactory extends Factory
     public function definition(): array
     {
         return [
-
-            'type' => $this->faker->randomElement(\App\Enums\TransactionType::class),
             'amount' => $this->faker->randomFloat(2, 10, 5000),
         ];
     }

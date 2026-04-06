@@ -12,7 +12,6 @@ use Inertia\Response;
 
 class UserDashboardController extends Controller
 {
-
     public function index(Request $request): Response
     {
         Gate::authorize('viewAny', Card::class);
@@ -20,11 +19,11 @@ class UserDashboardController extends Controller
         $user = Auth::user();
 
         $cards = $user->cards()->get();
-        // ->withCount(['sentTransactions', 'receivedTransactions'])
+
         $allTransactions = Transaction::query()
             ->forUser($user)
             ->latest('created_at')
-            ->paginate(perPage: 5)
+            ->paginate(5)
             ->withQueryString();
 
         $thisMonthOutflowTotal = Transaction::getMonthTotalOutflow($cards);

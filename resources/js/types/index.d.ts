@@ -27,6 +27,17 @@ export type CardData = {
   payment_network: string;
   type?: string;
 };
+
+export type PaginatedData<T> = {
+  data: T[];
+  links: any[];
+  meta?: any;
+  current_page?: number;
+  last_page?: number;
+  per_page?: number;
+  total?: number;
+};
+
 export type Transaction = {
   id: number;
   from_card_id?: number;
