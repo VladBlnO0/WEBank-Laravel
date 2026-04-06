@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
-use App\Models\Card;
-use App\Policies\UserDashboardPolicy;
-use Illuminate\Support\Facades\Gate;
+use App\Policies\NotificationPolicy;
+use Gate;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 
@@ -23,8 +23,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Gate::policy(Card::class, UserDashboardPolicy::class);
-
+        Gate::policy(DatabaseNotification::class, NotificationPolicy::class);
         Vite::prefetch(concurrency: 3);
     }
 }

@@ -1,3 +1,5 @@
+import type { CardData } from "@/types";
+
 export type Transaction = {
   id: number;
   from_card_id?: number;
@@ -6,10 +8,15 @@ export type Transaction = {
   amount: number;
   created_at: string;
 };
+
 export default function Transactions({
   transactions,
+  selectedCard,
+  currentIndex,
 }: {
-  transactions: any[];
+  transactions?: Transaction[];
+  selectedCard: CardData;
+  currentIndex: number;
 }) {
   const currencyFormatter = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -18,11 +25,10 @@ export default function Transactions({
 
   return (
     <ul className="flex flex-col gap-3 p-1 sm:p-2">
-      {transactions.length === 0 ? (
+      {transactions?.length === 0 ? (
         <p className="p-4 text-sm text-slate-500">No transactions.</p>
       ) : (
-        transactions.map((tran) => {
-          const isOutgoing = tran.amount < 0;
+        transactions?.map((tran) => {
           const typeClass =
             tran.type === "payment"
               ? "bg-rose-100 text-rose-700"
@@ -54,10 +60,12 @@ export default function Transactions({
                 <div className="ml-auto flex items-center">
                   <p
                     className={`text-xl font-semibold tracking-tight ${
-                      isOutgoing ? "text-rose-700" : "text-emerald-700"
+                      tran.from_card_id === selectedCard.id
+                        ? "text-rose-700"
+                        : "text-emerald-700"
                     }`}
                   >
-                    {isOutgoing ? "-" : "+"}
+                    {tran.from_card_id === selectedCard.id ? "-" : "+"}
                     {currencyFormatter.format(Math.abs(tran.amount))}
                   </p>
                 </div>

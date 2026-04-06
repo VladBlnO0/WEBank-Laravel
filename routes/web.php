@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AiOperatorController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\NotificationSeenController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\UserTransferController;
@@ -17,6 +18,10 @@ Route::get('/', function () {
 Route::resource('notification', NotificationController::class)
     ->middleware('auth')
     ->only(['index']);
+Route::put(
+    'notification/{notification}/seen',
+    NotificationSeenController::class
+)->middleware('auth')->name('notification.seen');
 
 Route::middleware('auth')->group(function () {
     Route::resource('dashboard', UserDashboardController::class)->only(['index']);

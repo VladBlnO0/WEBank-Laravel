@@ -2,25 +2,62 @@
 
 namespace App\Policies;
 
+use App\Models\Card;
 use App\Models\User;
-use Card;
+use Auth;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CardPolicy
 {
     use HandlesAuthorization;
 
-    public function viewAny(User $user): bool {}
+    public function before(User $user, $ability): ?bool
+    {
+        if (Auth::check()) {
+            return true;
+        }
 
-    public function view(User $user, Card $card): bool {}
+        return null;
+    }
 
-    public function create(User $user): bool {}
+    public function viewAny(User $user): bool
+    {
+        return true;
+    }
 
-    public function update(User $user, Card $card): bool {}
+    public function view(User $user, Card $card): bool
+    {
+        return true;
 
-    public function delete(User $user, Card $card): bool {}
+    }
 
-    public function restore(User $user, Card $card): bool {}
+    public function create(User $user): bool
+    {
+        return true;
 
-    public function forceDelete(User $user, Card $card): bool {}
+    }
+
+    public function update(User $user, Card $card): bool
+    {
+        return true;
+
+    }
+
+    public function delete(User $user, Card $card): bool
+    {
+        return true;
+
+    }
+
+    public function restore(User $user, Card $card): bool
+    {
+        return true;
+
+    }
+
+    public function forceDelete(User $user, Card $card): bool
+    {
+        return true;
+
+    }
 }

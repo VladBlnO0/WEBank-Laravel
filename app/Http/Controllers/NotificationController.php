@@ -7,7 +7,7 @@ use Inertia\Response;
 
 class NotificationController extends Controller
 {
-    private const int PAGE_SIZE = 10;
+    private const int PAGE_SIZE = 5;
 
     public function index(Request $request): Response
     {

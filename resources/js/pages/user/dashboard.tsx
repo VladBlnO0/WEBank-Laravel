@@ -19,15 +19,62 @@ type PaginatedData<T> = {
 
 interface DashboardProps {
   cards: CardData[];
-  allTransactions?: PaginatedData<Transaction> | null;
+  allTransactions?: PaginatedData<Transaction>;
   thisMonthOutflowTotal?: number;
   thisMonthInflowTotal?: number;
 }
 function TransactionsSection({
   allTransactions,
+  selectedCard,
+  currentIndex
 }: {
-  allTransactions?: PaginatedData<Transaction> | null;
-}) {}
+  allTransactions?: PaginatedData<Transaction>,
+  selectedCard?: CardData[],
+  currentIndex: number
+}) {
+  return (
+    <>
+      <div className="flex items-center justify-between gap-4 border-b border-slate-200 pb-4">
+        <h2 className="text-xl font-semibold tracking-tight text-slate-900">
+          Recent transactions
+        </h2>
+        <p className="text-xs font-medium tracking-[0.14em] text-slate-500 uppercase">
+          {allTransactions?.total ?? 0} records
+        </p>
+      </div>
+
+      <div className="mt-4 flex flex-col gap-3">
+        {allTransactions?.total === 0 ? (
+          <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
+            <p className="text-lg font-medium text-slate-700">
+              No transactions found
+            </p>
+          </div>
+        ) : allTransactions === null ? (
+          <div className="p-8 text-center text-slate-600">
+            Loading transactions...
+          </div>
+        ) : (
+          <>
+            <div className="flex min-h-170 flex-col gap-3">
+              <Transactions transactions={allTransactions?.data} selectedCard={selectedCard} currentIndex={currentIndex} />
+
+              <Pagination
+                meta={{
+                  current_page: allTransactions?.current_page,
+                  last_page: allTransactions?.last_page,
+                  per_page: allTransactions?.per_page,
+                  total: allTransactions?.total,
+                }}
+                className="fixed bottom-10 w-full"
+              />
+            </div>
+          </>
+        )}
+      </div>
+    </>
+  );
+}
 function BankCardSection({
   cards,
   selectedCard,
@@ -109,7 +156,7 @@ export default function Dashboard({
   const income: number = thisMonthInflowTotal ?? 0;
   const spent: number = thisMonthOutflowTotal ?? 0;
 
-  const transactions: Transaction[] = allTransactions?.data ?? [];
+  // const transactions: Transaction[] = allTransactions?.data ?? [];
 
   const isFirst: boolean = currentIndex === 0;
   const isLast: boolean = currentIndex === cards.length - 1;
@@ -176,45 +223,9 @@ export default function Dashboard({
       </section>
 
       <section className="animate-fade-up mt-10 min-h-160 rounded-3xl border border-white/80 bg-white/75 p-4 shadow-sm backdrop-blur-sm transition duration-300 sm:p-6 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-4 border-b border-slate-200 pb-4">
-          <h2 className="text-xl font-semibold tracking-tight text-slate-900">
-            Recent transactions
-          </h2>
-          <p className="text-xs font-medium tracking-[0.14em] text-slate-500 uppercase">
-            {allTransactions?.total ?? 0} records
-          </p>
-        </div>
-
-        <div className="mt-4 flex flex-col gap-3">
-          {cards.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
-              <p className="text-lg font-medium text-slate-700">
-                No transactions found
-              </p>
-            </div>
-          ) : allTransactions === null ? (
-            <div className="p-8 text-center text-slate-600">
-              Loading transactions...
-            </div>
-          ) : (
-            <>
-              <div className="flex min-h-170 flex-col gap-3">
-                <Transactions transactions={transactions} />
-
-                <Pagination
-                  meta={{
-                    current_page: allTransactions?.current_page,
-                    last_page: allTransactions?.last_page,
-                    per_page: allTransactions?.per_page,
-                    total: allTransactions?.total,
-                  }}
-                  className="fixed bottom-10 w-full"
-                />
-              </div>
-            </>
-          )}
-        </div>
+        <TransactionsSection allTransactions={allTransactions} selectedCard={selectedCard} currentIndex={currentIndex}  />
       </section>
+
       <style>{`
         .animate-fade-up {
           opacity: 0;

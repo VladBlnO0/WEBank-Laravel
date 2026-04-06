@@ -1,9 +1,7 @@
 # TODO
 
-localization
-switch theme
-add testing
+testing
 2fa
 email
-notifications
 ai?
+filters
