@@ -1,67 +1,49 @@
-import { router } from "@inertiajs/react";
-
-type Meta = {
-  current_page?: number;
-  last_page?: number;
-  per_page?: number;
-  total?: number;
-};
+import { Link } from "@inertiajs/react";
 
 export default function Pagination({
-  meta,
+  meta, // This is your allTransactions object from Laravel
   className,
 }: {
-  meta?: Meta | null;
+  meta?: any;
   className?: string;
 }) {
-  const current = meta?.current_page ?? 1;
-  const last = meta?.last_page ?? 1;
-
-  if (!meta || last <= 1) {
+  // If there are no links, or only the "Previous" and "Next" links exist, hide pagination
+  if (!meta || !meta.links || meta.links.length <= 3) {
     return null;
   }
 
-  const start = Math.max(1, current - 2);
-  const end = Math.min(last, Math.max(start + 4, current + 2));
-  const pages = Array.from({ length: end - start + 1 }, (_, i) => start + i);
-
-  const goto = (page: number) => {
-    if (page < 1 || page > last || page === current) return;
-    router.get(
-      window.location.pathname,
-      { page },
-      { preserveState: true, preserveScroll: true },
-    );
-  };
-
   return (
     <div
-      className={`mt-4 flex items-center justify-center gap-4 ${className ?? ""}`}
+      className={`mt-4 flex flex-wrap items-center justify-center gap-2 ${className ?? ""}`}
     >
-      <button
-        onClick={() => goto(current - 1)}
-        disabled={current <= 1}
-        className="rounded border px-3 py-1 text-sm disabled:opacity-40"
-      >
-        Prev
-      </button>
-      {pages.map((p) => (
-        <button
-          key={p}
-          onClick={() => goto(p)}
-          aria-current={p === current}
-          className={`rounded-lg border px-4 py-2 text-sm font-medium text-slate-700 disabled:opacity-50 ${p === current ? "bg-gray-900 text-white hover:bg-slate-700" : "hover:bg-gray-200"} `}
-        >
-          {p}
-        </button>
-      ))}
-      <button
-        onClick={() => goto(current + 1)}
-        disabled={current >= last}
-        className="rounded border px-3 py-1 text-sm disabled:opacity-40"
-      >
-        Next
-      </button>
+      {meta.links.map((link: any, index: number) => {
+        // Laravel returns null for the URL if it's the "Previous" button on page 1, etc.
+        if (link.url === null) {
+          return (
+            <div
+              key={index}
+              className="rounded border px-3 py-1 text-sm text-slate-400 opacity-50"
+              dangerouslySetInnerHTML={{ __html: link.label }}
+            />
+          );
+        }
+
+        // Otherwise, render an Inertia Link!
+        return (
+          <Link
+            key={index}
+            href={link.url}
+            preserveScroll
+            preserveState
+            className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
+              link.active
+                ? "bg-gray-900 text-white hover:bg-slate-700"
+                : "text-slate-700 hover:bg-gray-200"
+            }`}
+            dangerouslySetInnerHTML={{ __html: link.label }}
+          />
+        );
+      })}
     </div>
   );
 }

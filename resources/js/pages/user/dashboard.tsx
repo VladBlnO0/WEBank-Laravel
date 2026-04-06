@@ -1,133 +1,29 @@
-import BankCard from "@/components/bank-card";
-import NavigationButton from "@/components/navigation-button";
-import Pagination from "@/components/pagination";
-import Transactions from "@/components/transactions";
+import BankCardSection from "@/components/dashboard-card-section";
+import TransactionsSection from "@/components/transactions-section";
 import type { CardData, PaginatedData, Transaction } from "@/types";
 import { formatToLocal } from "@/utils/formatData";
 import { Head, usePage } from "@inertiajs/react";
 import { useState } from "react";
 
 interface DashboardProps {
+  filters: {
+    by?: string;
+    order?: string;
+  };
   cards: CardData[];
   allTransactions?: PaginatedData<Transaction> | null;
   thisMonthOutflowTotal?: number;
   thisMonthInflowTotal?: number;
 }
-function TransactionsSection({
-  allTransactions,
-  cardIds,
-}: {
-  allTransactions?: PaginatedData<Transaction> | null;
-  cardIds: number[];
-}) {
-  const transactions = allTransactions?.data ?? [];
 
-  return (
-    <>
-      <div className="flex items-center justify-between gap-4 border-b border-slate-200 pb-4">
-        <h2 className="text-xl font-semibold tracking-tight text-slate-900">
-          Recent transactions
-        </h2>
-        <p className="text-xs font-medium tracking-[0.14em] text-slate-500 uppercase">
-          {allTransactions?.total ?? 0} records
-        </p>
-      </div>
-
-      <div className="mt-4 flex flex-col gap-3">
-        {allTransactions === null ? (
-          <div className="p-8 text-center text-slate-600">
-            Loading transactions...
-          </div>
-        ) : transactions.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
-            <p className="text-lg font-medium text-slate-700">
-              No transactions found
-            </p>
-          </div>
-        ) : (
-          <>
-            <div className="flex min-h-170 flex-col gap-3">
-              <Transactions
-                transactions={transactions}
-                cardIds={cardIds}
-              />
-
-              <Pagination
-                meta={{
-                  current_page: allTransactions?.current_page,
-                  last_page: allTransactions?.last_page,
-                  per_page: allTransactions?.per_page,
-                  total: allTransactions?.total,
-                }}
-                className="fixed bottom-10 w-full"
-              />
-            </div>
-          </>
-        )}
-      </div>
-    </>
-  );
-}
-function BankCardSection({
-  cards,
-  selectedCard,
-  handleNext,
-  handlePrev,
-  isFirst,
-  isLast,
-}: {
-  cards: CardData[];
-  selectedCard: CardData;
-  handleNext: () => void;
-  handlePrev: () => void;
-  isFirst: boolean;
-  isLast: boolean;
-}) {
-  return (
-    <>
-      {cards.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
-          <p className="text-lg font-medium text-slate-700">No cards found</p>
-        </div>
-      ) : (
-        <div className="relative z-20 mx-auto flex w-full items-center justify-center gap-2 sm:gap-4 lg:gap-6">
-          {cards.length > 1 && (
-            <NavigationButton
-              onClick={handlePrev}
-              disabled={isFirst}
-              className="group rounded-2xl border border-slate-300 bg-white/90 p-3 text-2xl shadow-sm hover:border-slate-400 hover:bg-white disabled:opacity-30 sm:text-4xl"
-              aria-label="Previous Card"
-            >
-              <i className="bi bi-caret-left-fill transition hover:-translate-x-0.5" />
-            </NavigationButton>
-          )}
-
-          <div className="relative z-30">
-            <BankCard key={selectedCard.id} card={selectedCard} />
-          </div>
-
-          {cards.length > 1 && (
-            <NavigationButton
-              onClick={handleNext}
-              disabled={isLast}
-              className="group rounded-2xl border border-slate-300 bg-white/90 p-3 text-2xl shadow-sm hover:border-slate-400 hover:bg-white disabled:opacity-30 sm:text-4xl"
-              aria-label="Next Card"
-            >
-              <i className="bi bi-caret-right-fill transition hover:translate-x-0.5" />
-            </NavigationButton>
-          )}
-        </div>
-      )}
-    </>
-  );
-}
 export default function Dashboard({
+  filters,
   cards,
   allTransactions,
   thisMonthOutflowTotal,
   thisMonthInflowTotal,
 }: DashboardProps) {
-  const { flash } = usePage().props as { flash?: { success?: string } };
+  const { flash } = usePage().props as { flash?: { status?: string } };
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -156,9 +52,9 @@ export default function Dashboard({
     <>
       <Head title="User Dashboard" />
 
-      {flash?.success && (
+      {flash?.status && (
         <div className="mb-4 rounded-md border border-green-200 bg-green-50 p-2 shadow-sm dark:border-green-800 dark:bg-green-900">
-          {flash.success}
+          {flash.status}
         </div>
       )}
       <section
@@ -215,6 +111,7 @@ export default function Dashboard({
 
       <section className="animate-fade-up mt-10 min-h-160 rounded-3xl border border-white/80 bg-white/75 p-4 shadow-sm backdrop-blur-sm transition duration-300 sm:p-6 sm:px-6 lg:px-8">
         <TransactionsSection
+          filters={filters}
           allTransactions={allTransactions}
           cardIds={cards.map((card) => card.id)}
         />

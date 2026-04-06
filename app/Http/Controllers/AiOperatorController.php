@@ -50,7 +50,7 @@ class AiOperatorController extends Controller
                                     'properties' => [
                                         'path' => [
                                             'type' => 'string',
-                                            'enum' => ['/dashboard.index', '/transfer.index', '/profile'],
+                                            'enum' => ['/user.dashboard.index', '/transfer.index', '/profile'],
                                             'description' => 'The internal URL path to redirect to.',
                                         ],
                                     ],

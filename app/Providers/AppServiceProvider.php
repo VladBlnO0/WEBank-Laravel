@@ -3,10 +3,14 @@
 namespace App\Providers;
 
 use App\Policies\NotificationPolicy;
+use Carbon\CarbonImmutable;
 use Gate;
 use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rules\Password;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,7 +27,28 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->configureDefaults();
+
         Gate::policy(DatabaseNotification::class, NotificationPolicy::class);
         Vite::prefetch(concurrency: 3);
+    }
+
+    protected function configureDefaults(): void
+    {
+        Date::use(CarbonImmutable::class);
+
+        DB::prohibitDestructiveCommands(
+            app()->isProduction(),
+        );
+
+        Password::defaults(fn (): ?Password => app()->isProduction()
+            ? Password::min(12)
+                ->mixedCase()
+                ->letters()
+                ->numbers()
+                ->symbols()
+                ->uncompromised()
+            : null,
+        );
     }
 }

@@ -10,11 +10,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 class UserTransferController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         Gate::authorize('viewAny', Card::class);
 
@@ -25,18 +26,27 @@ class UserTransferController extends Controller
 
         $cards = $user->cards()->get();
 
+        $cardIds = $cards->pluck('id')->toArray();
+        $filters = $request->only(['by', 'order']);
+
         $allTransactions = Transaction::query()
             ->forUser($user)
-            ->latest('created_at')
+            ->filter($filters, $cardIds)
             ->paginate(5)
             ->withQueryString();
 
         return Inertia::render('user/transfer', [
+            'filters' => $filters,
             'cards' => $cards,
             'allTransactions' => $allTransactions,
         ]);
     }
 
+    /**
+     * Handle an incoming registration request.
+     *
+     * @throws ValidationException
+     */
     public function store(Request $request, Transaction $transaction)
     {
         Gate::authorize('store', $transaction);
@@ -79,12 +89,8 @@ class UserTransferController extends Controller
             new TransactionNotification($transaction)
         );
 
-        $transaction->toCard->owner->notify(
-            new TransactionNotification($transaction)
-        );
-
         return redirect()->back()->with(
-            'success',
+            'status',
             'Transfer was made!'
         );
     }

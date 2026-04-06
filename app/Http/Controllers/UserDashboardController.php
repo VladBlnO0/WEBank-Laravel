@@ -20,9 +20,12 @@ class UserDashboardController extends Controller
 
         $cards = $user->cards()->get();
 
+        $cardIds = $cards->pluck('id')->toArray();
+        $filters = $request->only(['by', 'order']);
+
         $allTransactions = Transaction::query()
             ->forUser($user)
-            ->latest('created_at')
+            ->filter($filters, $cardIds)
             ->paginate(5)
             ->withQueryString();
 
@@ -30,10 +33,11 @@ class UserDashboardController extends Controller
         $thisMonthInflowTotal = Transaction::getMonthTotalInflow($cards);
 
         return Inertia::render('user/dashboard', [
+            'filters' => $filters,
             'cards' => $cards,
             'allTransactions' => $allTransactions,
             'thisMonthOutflowTotal' => $thisMonthOutflowTotal,
             'thisMonthInflowTotal' => $thisMonthInflowTotal,
-        ])->with('success', 'data good');
+        ])->with('status', 'data good');
     }
 }

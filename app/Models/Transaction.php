@@ -98,17 +98,24 @@ class Transaction extends Model
         return self::query()->currentMonthOutflow($cards)->sum('amount');
     }
 
-    public function scopeFilter(Builder $query, array $filters): Builder
+    public function scopeFilter(Builder $query, array $filters, array $userCardIds = []): Builder
     {
-        return $query->when(
-            $filters['amount'] ?? false,
-            fn ($query, $value) => $query->where('amount', '>=', $value)
+        $by = $filters['by'] ?? 'created_at';
+        $order = ($filters['order'] ?? 'desc') === 'asc' ? 'asc' : 'desc';
 
-        )->when(
-            $filters['created_at'] ?? false,
-            fn ($query, $value) => $query->where('created_at', '<=', $value)
+        if (! in_array($by, $this->sortable)) {
+            $by = 'created_at';
+        }
 
-        );
+        if ($by === 'amount' && count($userCardIds) > 0) {
+            $idsString = implode(',', $userCardIds);
+
+            return $query->orderByRaw(
+                "(CASE WHEN from_card_id IN ($idsString) THEN -amount ELSE amount END) $order"
+            );
+        }
+
+        return $query->orderBy($by, $order);
     }
 
     protected static function booted(): void

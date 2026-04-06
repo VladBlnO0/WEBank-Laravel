@@ -13,6 +13,6 @@ class NotificationSeenController extends Controller
         $notification->markAsRead();
 
         return redirect()->back()
-            ->with('success', 'Notification marked as read');
+            ->with('status', 'Notification marked as read');
     }
 }

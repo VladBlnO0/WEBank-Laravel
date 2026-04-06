@@ -15,7 +15,7 @@ class TransactionMadeController extends Controller
 
         return redirect()->back()
             ->with(
-                'success',
+                'status',
                 "Transaction #{$transaction->id} made"
             );
     }

@@ -1,69 +1,25 @@
 import NavigationButton from "@/components/navigation-button";
-import Pagination from "@/components/pagination";
 import PaymentNetwork from "@/components/payment-network";
-import Transactions from "@/components/transactions";
+import TransactionsSection from "@/components/transactions-section";
 import type { CardData, PaginatedData, Transaction } from "@/types";
 import { formatToLocal } from "@/utils/formatData";
 import { Head, useForm, usePage } from "@inertiajs/react";
 import { useEffect, useState, type ChangeEvent } from "react";
 
 interface TransferProps {
+  filters: {
+    by?: string;
+    order?: string;
+  };
   cards: CardData[];
   allTransactions?: PaginatedData<Transaction> | null;
 }
-function TransactionsSection({
+
+export default function Transfer({
+  filters,
+  cards,
   allTransactions,
-  cardIds,
-}: {
-  allTransactions?: PaginatedData<Transaction> | null;
-  cardIds: number[];
-}) {
-  const transactions = allTransactions?.data ?? [];
-
-  return (
-    <>
-      <div className="flex items-center justify-between gap-4 border-b border-slate-200 pb-4">
-        <h2 className="text-xl font-semibold tracking-tight text-slate-900">
-          Recent transactions
-        </h2>
-        <p className="text-xs font-medium tracking-[0.14em] text-slate-500 uppercase">
-          {allTransactions?.total ?? 0} records
-        </p>
-      </div>
-
-      <div className="mt-4 flex flex-col gap-3">
-        {allTransactions === null ? (
-          <div className="p-8 text-center text-slate-600">
-            Loading transactions...
-          </div>
-        ) : transactions.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
-            <p className="text-lg font-medium text-slate-700">
-              No transactions found
-            </p>
-          </div>
-        ) : (
-          <>
-            <div className="flex min-h-170 flex-col gap-3">
-              <Transactions transactions={transactions} cardIds={cardIds} />
-
-              <Pagination
-                meta={{
-                  current_page: allTransactions?.current_page,
-                  last_page: allTransactions?.last_page,
-                  per_page: allTransactions?.per_page,
-                  total: allTransactions?.total,
-                }}
-                className="fixed bottom-10 w-full"
-              />
-            </div>
-          </>
-        )}
-      </div>
-    </>
-  );
-}
-export default function Transfer({ cards, allTransactions }: TransferProps) {
+}: TransferProps) {
   const { flash, errors } = usePage().props as any;
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -147,9 +103,9 @@ export default function Transfer({ cards, allTransactions }: TransferProps) {
       >
         <section className="animate-fade-up rounded-3xl border border-white/80 bg-white/80 p-5 shadow-sm backdrop-blur-sm transition duration-300 sm:p-7">
           <form className="space-y-5" onSubmit={submit}>
-            {flash?.success && (
+            {flash?.status && (
               <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 font-medium text-emerald-700">
-                {flash.success}
+                {flash.status}
               </div>
             )}
             {(flash?.error || Object.keys(errors).length > 0) && (
@@ -157,7 +113,8 @@ export default function Transfer({ cards, allTransactions }: TransferProps) {
                 {flash?.error && <div>{flash.error}</div>}
                 {Object.entries(errors).map(([field, messages]) => (
                   <div key={field}>
-                    <strong>{field}:</strong> {Array.isArray(messages) ? messages.join(', ') : messages}
+                    <strong>{field}:</strong>{" "}
+                    {Array.isArray(messages) ? messages.join(", ") : messages}
                   </div>
                 ))}
               </div>
@@ -240,7 +197,8 @@ export default function Transfer({ cards, allTransactions }: TransferProps) {
                   <i className="bi bi-currency-dollar text-slate-500"></i>
                   <input
                     name="amount"
-                    type="text"
+                    type="number"
+                    step="0.01"
                     inputMode="decimal"
                     className="w-full border-0 bg-transparent p-0 text-slate-800 placeholder:text-slate-400 focus:ring-0"
                     placeholder="0.00"
@@ -256,9 +214,9 @@ export default function Transfer({ cards, allTransactions }: TransferProps) {
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-3 border-t border-slate-200 pt-4">
-              {/* {flash?.success && (
-                <div className="alert-success">{flash.success}</div>
-              )} */}
+              {flash?.status && (
+                <div className="alert-status">{flash.status}</div>
+              )}
               <button
                 type="submit"
                 disabled={processing || cards.length === 0}
@@ -271,6 +229,7 @@ export default function Transfer({ cards, allTransactions }: TransferProps) {
         </section>
         <section className="animate-fade-up mt-10 min-h-160 rounded-3xl border border-white/80 bg-white/75 p-4 shadow-sm backdrop-blur-sm transition duration-300 sm:p-6 sm:px-6 lg:px-8">
           <TransactionsSection
+            filters={filters}
             allTransactions={allTransactions}
             cardIds={cards.map((card) => card.id)}
           />

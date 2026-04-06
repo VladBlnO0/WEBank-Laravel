@@ -39,9 +39,9 @@ export default function Authenticated({
 
               <div className="hidden items-center gap-2 md:flex">
                 <Link
-                  href={route("dashboard.index")}
+                  href={route("user.dashboard.index")}
                   className={`rounded-xl px-4 py-2 text-sm font-medium transition ${
-                    route().current("dashboard.index")
+                    route().current("user.dashboard.index")
                       ? "bg-slate-900 text-white"
                       : "text-slate-700 hover:bg-slate-100"
                   }`}
@@ -49,9 +49,9 @@ export default function Authenticated({
                   Dashboard
                 </Link>
                 <Link
-                  href={route("transfer.index")}
+                  href={route("user.transfer.index")}
                   className={`rounded-xl px-4 py-2 text-sm font-medium transition ${
-                    route().current("transfer.index")
+                    route().current("user.transfer.index")
                       ? "bg-slate-900 text-white"
                       : "text-slate-700 hover:bg-slate-100"
                   }`}
@@ -149,8 +149,8 @@ export default function Authenticated({
               <div className="mx-auto w-full max-w-7xl sm:px-6 lg:px-8">
                 <div className="overflow-hidden border border-slate-200 bg-white shadow-lg">
                   <ResponsiveNavLink
-                    href={route("dashboard.index")}
-                    active={route().current("dashboard.index")}
+                    href={route("user.dashboard.index")}
+                    active={route().current("user.dashboard.index")}
                     onClick={() => setShowingNavigationDropdown(false)}
                   >
                     <div className="flex gap-3">
@@ -159,8 +159,8 @@ export default function Authenticated({
                     </div>
                   </ResponsiveNavLink>
                   <ResponsiveNavLink
-                    href={route("transfer.index")}
-                    active={route().current("transfer.index")}
+                    href={route("user.transfer.index")}
+                    active={route().current("user.transfer.index")}
                     onClick={() => setShowingNavigationDropdown(false)}
                   >
                     <div className="flex gap-3">

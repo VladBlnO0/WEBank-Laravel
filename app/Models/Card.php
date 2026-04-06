@@ -14,8 +14,7 @@ use Illuminate\Support\Collection;
     'cvv',
     'expire_date',
     'type',
-    'payment_network',
-    'status', ])]
+    'payment_network', ])]
 class Card extends Model
 {
     use HasFactory;

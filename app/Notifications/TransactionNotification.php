@@ -14,18 +14,28 @@ class TransactionNotification extends Notification
 
     public function via($notifiable): array
     {
-        return ['database'];
+        return ['database', 'mail'];
+
     }
 
-    // public function toMail($notifiable): MailMessage
-    // {
-    //     return (new MailMessage)->line('Thank you for using our application!');
-    // }
+    public function toMail($notifiable): MailMessage
+    {
+        $isSender = $this->transaction->fromCard->user_id === $notifiable->id;
 
-    // public function toDatabase($notifiable): array
-    // {
-    //     return [];
-    // }
+        if ($isSender) {
+            return (new MailMessage)
+                ->subject('Transfer Sent Successfully')
+                ->line("You sent \${$this->transaction->amount} from your card ({$this->transaction->fromCard->pan}) to card ({$this->transaction->toCard->pan}).")
+                ->action('View Dashboard', route('user.dashboard.index'))
+                ->line('Thank you for using our application!');
+        }
+
+        return (new MailMessage)
+            ->subject('Money Received!')
+            ->line("You received \${$this->transaction->amount} on your card ({$this->transaction->toCard->pan}) from card ({$this->transaction->fromCard->pan}).")
+            ->action('View Dashboard', route('user.dashboard.index'))
+            ->line('Thank you for using our application!');
+    }
 
     public function toArray($notifiable): array
     {

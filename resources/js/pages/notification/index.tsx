@@ -70,15 +70,7 @@ export default function NotificationIndex({
           <section className="mt-8 mb-8 flex w-full justify-center">
             {notifications?.data.length}
           </section>
-          <Pagination
-            meta={{
-              current_page: notifications?.current_page,
-              last_page: notifications?.last_page,
-              per_page: notifications?.per_page,
-              total: notifications?.total,
-            }}
-            className="fixed bottom-10 w-full"
-          />
+          <Pagination meta={notifications} className="fixed bottom-10 w-full" />
         </>
       )}
     </>
