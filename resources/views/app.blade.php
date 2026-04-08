@@ -17,7 +17,7 @@
     @routes
     @vite(['resources/css/app.css', 'resources/js/app.jsx', "resources/js/pages/{$page['component']}.tsx"])
     @vite('resources/css/app.css')
-    @vite('resources/js/app.js')
+    @vite('resources/js/app.jsx')
     <x-inertia::head>
         <title>{{ config('app.name', 'Laravel') }}</title>
     </x-inertia::head>
