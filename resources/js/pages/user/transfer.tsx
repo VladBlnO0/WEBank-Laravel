@@ -22,7 +22,7 @@ export default function Transfer({
 }: TransferProps) {
   const { flash, errors } = usePage().props as any;
 
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
   const selectedCard = cards[currentIndex];
 
   const handleNext = () => {
@@ -55,7 +55,7 @@ export default function Transfer({
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    post(route("transfer.store"), {
+    post(route("user.transfer.store"), {
       preserveScroll: true,
       onSuccess: () => reset("to_card_pan", "amount"),
     });
@@ -111,12 +111,6 @@ export default function Transfer({
             {(flash?.error || Object.keys(errors).length > 0) && (
               <div className="rounded-md bg-rose-50 p-3 text-rose-800">
                 {flash?.error && <div>{flash.error}</div>}
-                {Object.entries(errors).map(([field, messages]) => (
-                  <div key={field}>
-                    <strong>{field}:</strong>{" "}
-                    {Array.isArray(messages) ? messages.join(", ") : messages}
-                  </div>
-                ))}
               </div>
             )}
             <div>

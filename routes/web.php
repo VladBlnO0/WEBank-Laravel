@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\AiOperatorController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\NotificationSeenController;
 use App\Http\Controllers\ProfileController;
@@ -33,9 +32,6 @@ Route::prefix('user')
     });
 
 Route::middleware('auth')->group(function () {
-    // Route::post('/ai/operator/chat', [AiOperatorController::class, 'chat'])
-    //     ->middleware('throttle:30,1')
-    //     ->name('ai.operator.chat');
     // Route::get('cards/{card}/transactions', [TransactionController::class, 'index'])->name('cards.transactions');
 
     // Profile routes

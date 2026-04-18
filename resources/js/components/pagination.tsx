@@ -1,49 +1,62 @@
 import { Link } from "@inertiajs/react";
-
+import clsx from "clsx";
 export default function Pagination({
-  meta, // This is your allTransactions object from Laravel
-  className,
+  meta,
+  className = "",
 }: {
-  meta?: any;
+  meta?: {
+    links: Array<{
+      url: string | null;
+      label: string;
+      active: boolean;
+    }>;
+  };
   className?: string;
 }) {
-  // If there are no links, or only the "Previous" and "Next" links exist, hide pagination
-  if (!meta || !meta.links || meta.links.length <= 3) {
-    return null;
-  }
-
+  // For avoiding dangerouslySetInnerHTML
+  const cleanLabel = (label: string) => {
+    return label
+      .replace("&laquo; Previous", "Previous")
+      .replace("Next &raquo;", "Next");
+  };
   return (
-    <div
-      className={`mt-4 flex flex-wrap items-center justify-center gap-2 ${className ?? ""}`}
+    <nav
+      aria-label="Pagination"
+      className={clsx(
+        `mt-4 flex flex-wrap items-center justify-center gap-2`,
+        className,
+      )}
     >
-      {meta.links.map((link: any, index: number) => {
-        // Laravel returns null for the URL if it's the "Previous" button on page 1, etc.
+      {meta?.links.map((link) => {
         if (link.url === null) {
           return (
             <div
-              key={index}
-              className="rounded border px-3 py-1 text-sm text-slate-400 opacity-50"
-              dangerouslySetInnerHTML={{ __html: link.label }}
-            />
+              key={`${link.label}-${link.url}`}
+              className="rounded-lg border px-4 py-2 text-sm font-medium text-slate-400 opacity-50 transition-colors"
+            >
+              <span>{cleanLabel(link.label)}</span>
+            </div>
+          );
+        } else {
+          return (
+            <Link
+              key={`${link.label}-${link.url}`}
+              href={link.url}
+              preserveScroll
+              preserveState
+              className={clsx(
+                `rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
+                  link.active
+                    ? "bg-gray-900 text-white hover:bg-slate-700"
+                    : "text-slate-700 hover:bg-gray-200"
+                }`,
+              )}
+            >
+              <span>{cleanLabel(link.label)}</span>
+            </Link>
           );
         }
-
-        // Otherwise, render an Inertia Link!
-        return (
-          <Link
-            key={index}
-            href={link.url}
-            preserveScroll
-            preserveState
-            className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
-              link.active
-                ? "bg-gray-900 text-white hover:bg-slate-700"
-                : "text-slate-700 hover:bg-gray-200"
-            }`}
-            dangerouslySetInnerHTML={{ __html: link.label }}
-          />
-        );
       })}
-    </div>
+    </nav>
   );
 }

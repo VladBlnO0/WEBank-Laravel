@@ -1,9 +1,22 @@
+import "@/../../resources/css/animation-fade-up.css";
 import BankCardSection from "@/components/dashboard-card-section";
 import TransactionsSection from "@/components/transactions-section";
 import type { CardData, PaginatedData, Transaction } from "@/types";
 import { formatToLocal } from "@/utils/formatData";
 import { Head, usePage } from "@inertiajs/react";
-import { useState } from "react";
+import { useReducer } from "react";
+type CardIndexAction = { type: "prev" } | { type: "next" };
+
+function cardIndexReducer(state: number, action: CardIndexAction): number {
+  switch (action.type) {
+    case "prev":
+      return state - 1;
+    case "next":
+      return state + 1;
+    default:
+      return state;
+  }
+}
 
 interface DashboardProps {
   filters: {
@@ -25,17 +38,17 @@ export default function Dashboard({
 }: DashboardProps) {
   const { flash } = usePage().props as { flash?: { status?: string } };
 
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, dispatch] = useReducer(cardIndexReducer, 0);
 
   const handleNext = () => {
     if (currentIndex < cards.length - 1) {
-      setCurrentIndex(currentIndex + 1);
+      dispatch({ type: "next" });
     }
   };
 
   const handlePrev = () => {
     if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
+      dispatch({ type: "prev" });
     }
   };
 
@@ -116,25 +129,6 @@ export default function Dashboard({
           cardIds={cards.map((card) => card.id)}
         />
       </section>
-
-      <style>{`
-        .animate-fade-up {
-          opacity: 0;
-          transform: translateY(18px);
-          animation: fadeUp 700ms cubic-bezier(0.2, 0.7, 0.25, 1) forwards;
-        }
-
-        @keyframes fadeUp {
-          from {
-            opacity: 0;
-            transform: translateY(18px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </>
   );
 }

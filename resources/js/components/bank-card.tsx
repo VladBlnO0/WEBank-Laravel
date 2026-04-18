@@ -37,17 +37,23 @@ export default function BankCard({
   });
   const displayGroups = showDigits ? digitsGroups : cardGroups;
 
-  function toggle() {
-    setShowDigits((prev) => !prev);
+  const toggle = () => setShowDigits((prev) => !prev);
+
+  /*
+   * Copy PAN to clipboard
+   * Uses the Clipboard API to write the card number to the user's clipboard
+   */
+  //useCallback?
+  async function copyToClipboard(pan: string = card.pan): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(pan);
+      console.log("PAN copied to clipboard");
+    } catch (err) {
+      console.error("Failed to copy: ", err);
+    }
   }
 
-  function copyToClipboard() {
-    navigator.clipboard.writeText(card.pan);
-  }
-
-  const handleClick = () => {
-    setIsFlipped((prev) => !prev);
-  };
+  const handleClick = () => setIsFlipped((prev) => !prev);
 
   return (
     <div

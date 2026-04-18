@@ -26,7 +26,7 @@ export async function chatWithOperator(
   userMessage: string,
   onNavigate: (path: string) => void,
 ): Promise<string> {
-  const response = await fetch("/ai/operator/chat", {
+  const response = await fetch("/api/ai/operator/chat", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -16,7 +16,7 @@ export default function FullCard({
   isFirst: boolean;
   isLast: boolean;
 }) {
-  const digitsGroups = card.number.match(/.{0,4}/g) || [];
+  const digitsGroups = card.pan.match(/.{0,4}/g) || [];
   const masked = digitsGroups[0] + "•".repeat(8) + digitsGroups[3];
   const cardGroups = masked.match(/.{1,4}/g) || [];
 
