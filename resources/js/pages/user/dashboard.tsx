@@ -3,20 +3,8 @@ import BankCardSection from "@/components/dashboard-card-section";
 import TransactionsSection from "@/components/transactions-section";
 import type { CardData, PaginatedData, Transaction } from "@/types";
 import { formatToLocal } from "@/utils/formatData";
-import { Head, usePage } from "@inertiajs/react";
-import { useReducer } from "react";
-type CardIndexAction = { type: "prev" } | { type: "next" };
-
-function cardIndexReducer(state: number, action: CardIndexAction): number {
-  switch (action.type) {
-    case "prev":
-      return state - 1;
-    case "next":
-      return state + 1;
-    default:
-      return state;
-  }
-}
+import { Head, usePage, useRemember } from "@inertiajs/react";
+import { useEffect } from "react";
 
 interface DashboardProps {
   filters: {
@@ -38,35 +26,54 @@ export default function Dashboard({
 }: DashboardProps) {
   const { flash } = usePage().props as { flash?: { status?: string } };
 
-  const [currentIndex, dispatch] = useReducer(cardIndexReducer, 0);
+  const [selectedCardId, setSelectedCardId] = useRemember<number | null>(
+    cards[0]?.id ?? null,
+    "dashboard:selected-card-id",
+  );
+
+  const selectedCard: CardData | undefined =
+    cards.find((card) => card.id === selectedCardId) ?? cards[0];
+
+  const currentIndex = selectedCard
+    ? cards.findIndex((card) => card.id === selectedCard.id)
+    : -1;
+
+  useEffect(() => {
+    if (cards.length === 0) {
+      return;
+    }
+
+    if (!selectedCard) {
+      setSelectedCardId(cards[0].id);
+    }
+  }, [cards, selectedCard, setSelectedCardId]);
 
   const handleNext = () => {
     if (currentIndex < cards.length - 1) {
-      dispatch({ type: "next" });
+      setSelectedCardId(cards[currentIndex + 1].id);
     }
   };
 
   const handlePrev = () => {
     if (currentIndex > 0) {
-      dispatch({ type: "prev" });
+      setSelectedCardId(cards[currentIndex - 1].id);
     }
   };
-
-  const selectedCard: CardData | undefined = cards[currentIndex];
 
   const balance: number = selectedCard?.balance ?? 0;
   const income: number = thisMonthInflowTotal ?? 0;
   const spent: number = thisMonthOutflowTotal ?? 0;
 
-  const isFirst: boolean = currentIndex === 0;
-  const isLast: boolean = currentIndex === cards.length - 1;
+  const isFirst: boolean = currentIndex <= 0;
+  const isLast: boolean =
+    cards.length === 0 || currentIndex === cards.length - 1;
 
   return (
     <>
       <Head title="User Dashboard" />
 
       {flash?.status && (
-        <div className="mb-4 rounded-md border border-green-200 bg-green-50 p-2 shadow-sm dark:border-green-800 dark:bg-green-900">
+        <div className="mb-4 rounded-md border border-green-200 bg-green-50 p-2 shadow-sm">
           {flash.status}
         </div>
       )}
@@ -112,14 +119,20 @@ export default function Dashboard({
       </section>
 
       <section className="animate-fade-up relative z-10 mx-auto max-w-7xl rounded-3xl border border-white/80 bg-white/70 p-4 shadow-sm backdrop-blur-sm transition duration-300 sm:p-6 sm:px-6">
-        <BankCardSection
-          cards={cards}
-          selectedCard={selectedCard!}
-          handleNext={handleNext}
-          handlePrev={handlePrev}
-          isFirst={isFirst}
-          isLast={isLast}
-        />
+        {selectedCard ? (
+          <BankCardSection
+            cards={cards}
+            selectedCard={selectedCard}
+            handleNext={handleNext}
+            handlePrev={handlePrev}
+            isFirst={isFirst}
+            isLast={isLast}
+          />
+        ) : (
+          <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
+            No cards found.
+          </div>
+        )}
       </section>
 
       <section className="animate-fade-up mt-10 min-h-160 rounded-3xl border border-white/80 bg-white/75 p-4 shadow-sm backdrop-blur-sm transition duration-300 sm:p-6 sm:px-6 lg:px-8">

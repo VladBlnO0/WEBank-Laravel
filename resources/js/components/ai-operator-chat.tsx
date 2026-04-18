@@ -1,7 +1,9 @@
 import { chatWithOperator } from "@/ai/groq";
 import { AnimatePresence, motion } from "framer-motion";
+import { router } from "@inertiajs/react";
 import React, { useEffect, useRef, useState } from "react";
-import { Send, Bot, User, Loader2 } from 'lucide-react';
+import { Bot, Loader2, MessageCircle, Send, X } from "lucide-react";
+
 type Message = {
   id: number;
   role: "user" | "ai";
@@ -9,6 +11,7 @@ type Message = {
 };
 
 export const AiOperatorChat = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
@@ -39,15 +42,16 @@ export const AiOperatorChat = () => {
     try {
       // Connect to the logic we wrote earlier
       const reply = await chatWithOperator(userText, (path) => {
-        console.log("Navigating to:", path);
-        window.location.href = path; // Uncomment to actually redirect
+        router.visit(path, {
+          preserveScroll: true,
+        });
       });
 
       setMessages((prev) => [
         ...prev,
         { id: Date.now() + 1, role: "ai", text: reply || "" },
       ]);
-    } catch (err) {
+    } catch {
       setMessages((prev) => [
         ...prev,
         {
@@ -62,59 +66,88 @@ export const AiOperatorChat = () => {
   };
 
   return (
-    <div className="flex h-[500px] w-full max-w-md flex-col overflow-hidden rounded-2xl border bg-white shadow-xl">
-      {/* Header */}
-      <div className="flex items-center gap-2 bg-blue-600 p-4 text-white">
-        <Bot size={20} />
-        <span className="font-semibold">Site Operator</span>
-      </div>
-
-      {/* Message List */}
-      <div className="flex-1 space-y-4 overflow-y-auto bg-gray-50 p-4">
-        <AnimatePresence>
-          {messages.map((m) => (
-            <motion.div
-              key={m.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
-            >
-              <div
-                className={`max-w-[80%] rounded-2xl p-3 text-sm shadow-sm ${
-                  m.role === "user"
-                    ? "rounded-tr-none bg-blue-500 text-white"
-                    : "rounded-tl-none border bg-white text-gray-800"
-                }`}
-              >
-                {m.text}
+    <div className="pointer-events-none fixed right-5 bottom-5 z-[60] sm:right-7 sm:bottom-7">
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.98 }}
+            className="pointer-events-auto mb-4 flex h-[460px] w-[min(92vw,380px)] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
+          >
+            <div className="flex items-center justify-between bg-slate-900 px-4 py-3 text-white">
+              <div className="flex items-center gap-2">
+                <Bot size={18} />
+                <span className="text-sm font-semibold">AI Operator</span>
               </div>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-        {isLoading && (
-          <div className="flex justify-start">
-            <Loader2 className="animate-spin text-blue-500" size={20} />
-          </div>
-        )}
-        <div ref={scrollRef} />
-      </div>
+              <button
+                type="button"
+                onClick={() => setIsOpen(false)}
+                className="rounded-md p-1 text-slate-300 transition hover:bg-white/10 hover:text-white"
+                aria-label="Close AI operator"
+              >
+                <X size={16} />
+              </button>
+            </div>
 
-      {/* Input Area */}
-      <form onSubmit={handleSend} className="flex gap-2 border-t bg-white p-3">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask me to go to settings..."
-          className="flex-1 rounded-lg border p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        />
-        <button
-          disabled={isLoading}
-          className="rounded-lg bg-blue-600 p-2 text-white hover:bg-blue-700 disabled:opacity-50"
-        >
-          <Send size={18} />
-        </button>
-      </form>
+            <div className="flex-1 space-y-4 overflow-y-auto bg-slate-50 p-4">
+              <AnimatePresence>
+                {messages.map((message) => (
+                  <motion.div
+                    key={message.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                  >
+                    <div
+                      className={`max-w-[85%] rounded-2xl p-3 text-sm shadow-sm ${
+                        message.role === "user"
+                          ? "rounded-tr-none bg-emerald-600 text-white"
+                          : "rounded-tl-none border border-slate-200 bg-white text-slate-800"
+                      }`}
+                    >
+                      {message.text}
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+
+              {isLoading && (
+                <div className="flex justify-start">
+                  <Loader2 className="animate-spin text-emerald-600" size={20} />
+                </div>
+              )}
+              <div ref={scrollRef} />
+            </div>
+
+            <form onSubmit={handleSend} className="flex gap-2 border-t border-slate-200 bg-white p-3">
+              <input
+                type="text"
+                value={input}
+                onChange={(event) => setInput(event.target.value)}
+                placeholder="Ask me to open dashboard, transfer, profile..."
+                className="flex-1 rounded-lg border border-slate-300 p-2 text-sm text-slate-900 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-200 focus:outline-none"
+              />
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="rounded-lg bg-emerald-600 p-2 text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                <Send size={18} />
+              </button>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <button
+        type="button"
+        onClick={() => setIsOpen((state) => !state)}
+        className="pointer-events-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-600 text-white shadow-xl transition hover:bg-emerald-500"
+        aria-label="Toggle AI operator"
+      >
+        <MessageCircle size={22} />
+      </button>
     </div>
   );
 };

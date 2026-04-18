@@ -4,6 +4,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\NotificationSeenController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserDashboardController;
+use App\Http\Controllers\UserTransactionExportController;
 use App\Http\Controllers\UserTransferController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +30,9 @@ Route::prefix('user')
     ->group(function () {
         Route::resource('dashboard', UserDashboardController::class)->middleware('auth');
         Route::resource('transfer', UserTransferController::class)->middleware('auth');
+        Route::get('transactions/export', UserTransactionExportController::class)
+            ->middleware('throttle:1,5')
+            ->name('transactions.export');
     });
 
 Route::middleware('auth')->group(function () {

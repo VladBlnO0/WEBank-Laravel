@@ -95,3 +95,50 @@ test('transaction endpoint returns signed paginated amounts', function () {
         ->assertJsonPath('meta.total', 2)
         ->assertJsonPath('meta.per_page', 5);
 });
+
+test('transactions can be exported as csv with signed amounts', function () {
+    $user = User::factory()->create();
+    $otherUser = User::factory()->create();
+
+    $ownedCard = Card::factory()->create([
+        'user_id' => $user->id,
+        'pan' => '1111222233334444',
+    ]);
+
+    $counterpartyCard = Card::factory()->create([
+        'user_id' => $otherUser->id,
+        'pan' => '5555666677778888',
+    ]);
+
+    Transaction::factory()->create([
+        'from_card_id' => $ownedCard->id,
+        'to_card_id' => $counterpartyCard->id,
+        'type' => TransactionType::TRANSFER->value,
+        'amount' => 40,
+        'created_at' => now()->subMinute(),
+    ]);
+
+    Transaction::factory()->create([
+        'from_card_id' => $counterpartyCard->id,
+        'to_card_id' => $ownedCard->id,
+        'type' => TransactionType::TRANSFER->value,
+        'amount' => 25,
+        'created_at' => now(),
+    ]);
+
+    $response = $this->actingAs($user)
+        ->get(route('user.transactions.export', [
+            'by' => 'amount',
+            'order' => 'desc',
+        ]));
+
+    $response->assertOk();
+    $response->assertHeader('content-type', 'text/csv; charset=UTF-8');
+    $response->assertDownload();
+
+    $content = $response->streamedContent();
+
+    expect($content)->toContain('direction');
+    expect($content)->toContain('-40.00');
+    expect($content)->toContain('25.00');
+});

@@ -1,5 +1,6 @@
 import Pagination from "@/components/pagination";
 import { Head, Link } from "@inertiajs/react";
+
 interface NotificationPayload {
   id: number;
   transaction_id: number;
@@ -22,8 +23,12 @@ interface NotificationItem {
 
 type PaginatedData<T> = {
   data: T[];
-  links: any[];
-  meta?: any;
+  links: Array<{
+    url: string | null;
+    label: string;
+    active: boolean;
+  }>;
+  meta?: Record<string, unknown>;
   current_page?: number;
   last_page?: number;
   per_page?: number;
@@ -33,46 +38,97 @@ type PaginatedData<T> = {
 interface NotificationIndexProps {
   notifications?: PaginatedData<NotificationItem> | null;
 }
+
 export default function NotificationIndex({
   notifications,
 }: NotificationIndexProps) {
   const notificationItems = notifications?.data ?? [];
+  const unreadCount = notificationItems.filter(
+    (notification) => !notification.read_at,
+  ).length;
+
+  const formatDate = (date: string): string => {
+    return new Date(date).toLocaleString(undefined, {
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
   return (
     <>
       <Head title="Notifications" />
 
-      {notificationItems.length === 0 ? (
-        <p>No notifications found</p>
-      ) : (
-        <>
-          {notificationItems.map((notification: NotificationItem) => (
-            <section key={notification.id}>
-              {notification.type ===
-                "App\\Notifications\\TransactionNotification" && (
-                <p>{notification.data.message}</p>
-              )}
-
-              {!notification.read_at && (
-                <Link
-                  href={route("notification.seen", {
-                    notification: notification.id,
-                  })}
-                  as="button"
-                  method="put"
-                  className="btn-outline text-xs font-medium uppercase"
-                >
-                  Mark as read
-                </Link>
-              )}
-            </section>
-          ))}
-          <section className="mt-8 mb-8 flex w-full justify-center">
-            {notifications?.data.length}
+      <section
+        className="mx-auto mb-10 space-y-6"
+        style={{
+          fontFamily:
+            '"Space Grotesk", "IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif',
+        }}
+      >
+        {notificationItems.length === 0 ? (
+          <section className="animate-fade-up rounded-2xl border border-dashed border-slate-300 bg-slate-50/80 p-10 text-center shadow-sm">
+            <p className="text-xl font-semibold text-slate-800">
+              No notifications yet
+            </p>
+            <p className="mt-2 text-sm text-slate-500">
+              When new activity happens, it will appear here.
+            </p>
           </section>
-          <Pagination meta={notifications} className="fixed bottom-10 w-full" />
-        </>
-      )}
+        ) : (
+          <>
+            <div className="space-y-4">
+              {notificationItems.map((notification: NotificationItem) => (
+                <section
+                  key={notification.id}
+                  className={
+                    "animate-fade-up rounded-2xl border border-slate-200 bg-white/70 p-5 shadow-sm backdrop-blur-sm transition hover:shadow-md sm:p-6"
+                  }
+                >
+                  <div className="flex flex-wrap items-start justify-between gap-4">
+                    <div className="space-y-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[11px] font-semibold tracking-wide text-slate-700 uppercase">
+                          Transaction
+                        </span>
+                      </div>
+
+                      {notification.type ===
+                        "App\\Notifications\\TransactionNotification" && (
+                        <p className="text-base font-medium text-slate-900">
+                          {notification.data.message}
+                        </p>
+                      )}
+
+                      <p className="text-sm text-slate-500">
+                        {formatDate(notification.created_at)}
+                      </p>
+                    </div>
+
+                    <Link
+                      href={route("notification.seen", {
+                        notification: notification.id,
+                      })}
+                      as="button"
+                      method="put"
+                      className="rounded-xl bg-slate-800 px-4 py-2 text-xs font-semibold tracking-wide text-white uppercase transition hover:bg-slate-700"
+                    >
+                      Mark as read
+                    </Link>
+                  </div>
+                </section>
+              ))}
+            </div>
+
+            <Pagination
+              meta={notifications}
+              className="fixed bottom-10 left-0 w-full"
+            />
+          </>
+        )}
+      </section>
     </>
   );
 }

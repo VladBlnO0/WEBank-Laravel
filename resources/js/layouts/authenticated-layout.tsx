@@ -13,8 +13,10 @@ export default function Authenticated({
   children,
 }: PropsWithChildren<{ header?: ReactNode }>) {
   const user = (usePage().props.auth?.user as User) ?? null;
-  const notificationCount =
-    Math.min(usePage().props.auth?.notificationCount as number, 9) ?? null;
+  const rawNotificationCount = Number(usePage().props.auth?.notificationCount ?? 0);
+  const notificationCount = Number.isFinite(rawNotificationCount)
+    ? Math.min(rawNotificationCount, 9)
+    : 0;
 
   const [showingNavigationDropdown, setShowingNavigationDropdown] =
     useState(false);
@@ -62,20 +64,18 @@ export default function Authenticated({
             </div>
 
             <div className="hidden items-center gap-3 md:flex">
-              {notificationCount > 0 && (
-                <Link
-                  className="relative py-2 pr-2 text-lg text-gray-500"
-                  href={route("notification.index")}
-                >
-                  <Bell />
-                  <div
-                    v-if="notificationCount"
-                    className="absolute top-0 right-0 h-5 w-5 rounded-full border border-white bg-red-700 text-center text-xs font-medium text-white dark:border-gray-900 dark:bg-red-400"
-                  >
+              <Link
+                className="relative py-2 pr-2 text-lg text-gray-500"
+                href={route("notification.index")}
+              >
+                <Bell />
+                {notificationCount > 0 && (
+                  <div className="absolute top-0 right-0 h-5 w-5 rounded-full border border-white bg-red-700 text-center text-xs font-medium text-white dark:border-gray-900 dark:bg-red-400">
                     {notificationCount}
                   </div>
-                </Link>
-              )}
+                )}
+              </Link>
+
               {user && (
                 <Link
                   href={route("profile.edit")}

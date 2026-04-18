@@ -33,7 +33,7 @@ class AiController extends Controller
                     'messages' => [
                         [
                             'role' => 'system',
-                            'content' => 'You are a helpful site operator. If the user wants to go to a page, use the navigateTo tool.',
+                            'content' => 'You are a banking site operator assistant. Answer briefly. If the user asks to open/navigate to a page, you must call the navigateTo tool with one allowed internal path. Allowed paths: /user/dashboard, /user/transfer, /profile, /notification.',
                         ],
                         [
                             'role' => 'user',
@@ -51,7 +51,7 @@ class AiController extends Controller
                                     'properties' => [
                                         'path' => [
                                             'type' => 'string',
-                                            'enum' => ['/user.dashboard.index', '/transfer.index', '/profile'],
+                                            'enum' => ['/user/dashboard', '/user/transfer', '/profile', '/notification'],
                                             'description' => 'The internal URL path to redirect to.',
                                         ],
                                     ],

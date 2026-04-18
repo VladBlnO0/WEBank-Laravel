@@ -9,8 +9,8 @@ class NotificationSeenController extends Controller
 {
     public function __invoke(DatabaseNotification $notification)
     {
-        Gate::authorize('update', $notification);
-        $notification->markAsRead();
+        Gate::authorize('delete', $notification);
+        $notification->delete();
 
         return redirect()->back()
             ->with('status', 'Notification marked as read');

@@ -69,11 +69,15 @@ class UserTransferController extends Controller
 
         $toCard = Card::query()->where('pan', $validated['to_card_pan'])->first();
         if (! $toCard) {
-            return back()->with('error', 'Bad card');
+            return back()
+                ->with('status', 'Recipient card was not found.')
+                ->with('status_type', 'error');
         }
 
         if ($toCard->id === $validated['from_card_id']) {
-            return back()->with('error', 'You cannot transfer money to the same card');
+            return back()
+                ->with('status', 'You cannot transfer money to the same card.')
+                ->with('status_type', 'error');
         }
 
         $transaction = Transaction::create([
@@ -82,9 +86,6 @@ class UserTransferController extends Controller
             'to_card_id' => $toCard->id,
         ]);
 
-        $transaction->fromCard->owner?->notify(
-            new TransactionNotification($transaction)
-        );
         $transaction->toCard->owner?->notify(
             new TransactionNotification($transaction)
         );
@@ -92,6 +93,6 @@ class UserTransferController extends Controller
         return redirect()->back()->with(
             'status',
             'Transfer was made!'
-        );
+        )->with('status_type', 'success');
     }
 }

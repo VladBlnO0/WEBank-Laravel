@@ -1,6 +1,27 @@
 import Pagination from "@/components/pagination";
 import type { CardData, PaginatedData, Transaction } from "@/types";
 import { router, useForm } from "@inertiajs/react";
+import { useEffect, useState } from "react";
+
+const CLICK_DEBOUNCE_MS = 1200;
+const EXPORT_COOLDOWN_MS = 5 * 60 * 1000;
+const EXPORT_COOLDOWN_STORAGE_KEY = "transactions_csv_last_download_at";
+
+function getInitialCooldownRemainingMs(): number {
+  if (typeof window === "undefined") {
+    return 0;
+  }
+
+  const now = Date.now();
+  const storedValue = window.localStorage.getItem(EXPORT_COOLDOWN_STORAGE_KEY);
+  const lastDownloadAt = Number(storedValue ?? "0");
+
+  if (!Number.isFinite(lastDownloadAt) || lastDownloadAt <= 0) {
+    return 0;
+  }
+
+  return Math.max(0, EXPORT_COOLDOWN_MS - (now - lastDownloadAt));
+}
 
 export default function TransactionsSection({
   filters,
@@ -15,6 +36,54 @@ export default function TransactionsSection({
   cardIds: number[];
 }) {
   const transactions = allTransactions?.data ?? [];
+  const exportHref = route("user.transactions.export", {
+    by: filters.by ?? "created_at",
+    order: filters.order ?? "desc",
+  });
+  const [isWaitingForNextClick, setIsWaitingForNextClick] = useState(false);
+  const [cooldownRemainingMs, setCooldownRemainingMs] = useState(
+    getInitialCooldownRemainingMs,
+  );
+
+  useEffect(() => {
+    if (cooldownRemainingMs <= 0) {
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      setCooldownRemainingMs((current) => Math.max(0, current - 1000));
+    }, 1000);
+
+    return () => window.clearInterval(interval);
+  }, [cooldownRemainingMs]);
+
+  const formatCooldown = (remainingMs: number): string => {
+    const totalSeconds = Math.ceil(remainingMs / 1000);
+    const minutes = Math.floor(totalSeconds / 60)
+      .toString()
+      .padStart(2, "0");
+    const seconds = (totalSeconds % 60).toString().padStart(2, "0");
+
+    return `${minutes}:${seconds}`;
+  };
+
+  const handleDownload = (): void => {
+    if (isWaitingForNextClick || cooldownRemainingMs > 0) {
+      return;
+    }
+
+    setIsWaitingForNextClick(true);
+
+    window.setTimeout(() => {
+      setIsWaitingForNextClick(false);
+    }, CLICK_DEBOUNCE_MS);
+
+    const now = Date.now();
+
+    window.localStorage.setItem(EXPORT_COOLDOWN_STORAGE_KEY, String(now));
+    setCooldownRemainingMs(EXPORT_COOLDOWN_MS);
+    window.location.assign(exportHref);
+  };
 
   return (
     <>
@@ -22,9 +91,21 @@ export default function TransactionsSection({
         <h2 className="text-xl font-semibold tracking-tight text-slate-900">
           Recent transactions
         </h2>
-        <p className="text-xs font-medium tracking-[0.14em] text-slate-500 uppercase">
-          {allTransactions?.total ?? 0} records
-        </p>
+        <div className="flex items-center gap-3">
+          <p className="text-xs font-medium tracking-[0.14em] text-slate-500 uppercase">
+            {allTransactions?.total ?? 0} records
+          </p>
+          <button
+            type="button"
+            onClick={handleDownload}
+            disabled={isWaitingForNextClick || cooldownRemainingMs > 0}
+            className="rounded-md bg-slate-100 px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {cooldownRemainingMs > 0
+              ? `Try again in ${formatCooldown(cooldownRemainingMs)}`
+              : "Download CSV"}
+          </button>
+        </div>
       </div>
 
       <div className="mt-4 flex flex-col gap-3">
@@ -47,7 +128,7 @@ export default function TransactionsSection({
 
               <Pagination
                 meta={allTransactions}
-                className="fixed bottom-10 w-full"
+                className="mt-6 w-full"
               />
             </div>
           </>
@@ -157,46 +238,52 @@ function FiltersTransactions({
     );
   };
   return (
-    <div className="flex flex-wrap items-center gap-3">
-      <p>Filter by</p>
-      <select
-        value={filterForm.data.by}
-        onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-          filterForm.setData("by", e.target.value)
-        }
-        className="rounded-md border border-slate-200 bg-white px-3 py-2 text-sm"
-      >
-        <option value="created_at">Date</option>
-        <option value="amount">Amount</option>
-      </select>
+    <div className="flex flex-wrap items-end gap-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
+      <div className="flex min-w-42 flex-col gap-2">
+        <p className="text-sm font-semibold text-slate-700">Filter by</p>
+        <select
+          value={filterForm.data.by}
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+            filterForm.setData("by", e.target.value)
+          }
+          className="rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-800"
+        >
+          <option value="created_at">Date</option>
+          <option value="amount">Amount</option>
+        </select>
+      </div>
 
-      <p>Order by</p>
-      <select
-        value={filterForm.data.order}
-        onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-          filterForm.setData("order", e.target.value)
-        }
-        className="rounded-md border border-slate-200 bg-white px-3 py-2 text-sm"
-      >
-        <option value="desc">Descending</option>
-        <option value="asc">Ascending</option>
-      </select>
+      <div className="flex min-w-42 flex-col gap-2">
+        <p className="text-sm font-semibold text-slate-700">Order by</p>
+        <select
+          value={filterForm.data.order}
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+            filterForm.setData("order", e.target.value)
+          }
+          className="rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-800"
+        >
+          <option value="desc">Descending</option>
+          <option value="asc">Ascending</option>
+        </select>
+      </div>
 
-      <button
-        type="button"
-        onClick={filter}
-        className="rounded-md bg-slate-100 px-3 py-2 text-sm text-slate-700"
-      >
-        Filter
-      </button>
+      <div className="flex flex-wrap gap-3">
+        <button
+          type="button"
+          onClick={filter}
+          className="rounded-xl bg-slate-700 px-4 py-3 text-sm font-medium text-white transition hover:bg-slate-800"
+        >
+          Filter
+        </button>
 
-      <button
-        type="button"
-        onClick={resetFilters}
-        className="rounded-md bg-slate-100 px-3 py-2 text-sm text-slate-700"
-      >
-        Reset
-      </button>
+        <button
+          type="button"
+          onClick={resetFilters}
+          className="rounded-xl bg-slate-200 px-4 py-3 text-sm font-medium text-slate-800 transition hover:bg-slate-300"
+        >
+          Reset
+        </button>
+      </div>
     </div>
   );
 }

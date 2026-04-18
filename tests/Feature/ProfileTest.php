@@ -33,6 +33,28 @@ test('profile information can be updated', function () {
     $this->assertNull($user->email_verified_at);
 });
 
+test('email can be updated without submitting name', function () {
+    $user = User::factory()->create([
+        'name' => 'Original Name',
+    ]);
+
+    $response = $this
+        ->actingAs($user)
+        ->patch('/profile', [
+            'email' => 'email-only@example.com',
+        ]);
+
+    $response
+        ->assertSessionHasNoErrors()
+        ->assertRedirect('/profile');
+
+    $user->refresh();
+
+    $this->assertSame('Original Name', $user->name);
+    $this->assertSame('email-only@example.com', $user->email);
+    $this->assertNull($user->email_verified_at);
+});
+
 test('email verification status is unchanged when the email address is unchanged', function () {
     $user = User::factory()->create();
 

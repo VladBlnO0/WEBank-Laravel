@@ -42,7 +42,7 @@ export async function chatWithOperator(
 
   const payload = (await response.json()) as OperatorChatResponse;
 
-  if (payload.tool_calls) {
+  if (payload.tool_calls && payload.tool_calls.length > 0) {
     for (const toolCall of payload.tool_calls) {
       if (toolCall.function?.name !== "navigateTo") {
         continue;
@@ -55,7 +55,12 @@ export async function chatWithOperator(
 
         if (args.path) {
           onNavigate(args.path);
-          return `Sure! I'm taking you to the ${args.path.replace("/", "")} page now.`;
+          const pageName = args.path
+            .replace(/^\//, "")
+            .replace("user/", "")
+            .replace("/", " ");
+
+          return `Taking you to ${pageName}.`;
         }
       } catch {
         // Ignore malformed tool-call payloads and fall back to text response.
@@ -63,5 +68,5 @@ export async function chatWithOperator(
     }
   }
 
-  return payload.message ?? "I could not generate a response.";
+  return payload.message?.trim() || "I could not generate a response.";
 }

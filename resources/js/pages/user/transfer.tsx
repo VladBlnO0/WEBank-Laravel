@@ -3,8 +3,8 @@ import PaymentNetwork from "@/components/payment-network";
 import TransactionsSection from "@/components/transactions-section";
 import type { CardData, PaginatedData, Transaction } from "@/types";
 import { formatToLocal } from "@/utils/formatData";
-import { Head, useForm, usePage } from "@inertiajs/react";
-import { useEffect, useState, type ChangeEvent } from "react";
+import { Head, useForm, usePage, useRemember } from "@inertiajs/react";
+import { useEffect, type ChangeEvent } from "react";
 
 interface TransferProps {
   filters: {
@@ -20,25 +20,36 @@ export default function Transfer({
   cards,
   allTransactions,
 }: TransferProps) {
-  const { flash, errors } = usePage().props as any;
+  const { flash } = usePage().props as {
+    flash?: {
+      status?: string;
+      status_type?: "success" | "error";
+    };
+  };
 
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const selectedCard = cards[currentIndex];
+  const [selectedCardId, setSelectedCardId] = useRemember<number | null>(
+    cards[0]?.id ?? null,
+    "transfer:selected-card-id",
+  );
+  const selectedCard = cards.find((card) => card.id === selectedCardId) ?? cards[0];
+  const currentIndex = selectedCard
+    ? cards.findIndex((card) => card.id === selectedCard.id)
+    : -1;
 
   const handleNext = () => {
     if (currentIndex < cards.length - 1) {
-      setCurrentIndex(currentIndex + 1);
+      setSelectedCardId(cards[currentIndex + 1].id);
     }
   };
 
   const handlePrev = () => {
     if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
+      setSelectedCardId(cards[currentIndex - 1].id);
     }
   };
 
-  const { data, setData, post, processing, transform, reset } = useForm({
-    from_card_id: selectedCard.id,
+  const { data, setData, post, processing, transform, reset, errors } = useForm({
+    from_card_id: selectedCard?.id ?? 0,
     to_card_pan: "",
     amount: "",
   });
@@ -46,6 +57,16 @@ export default function Transfer({
     ...data,
     to_card_pan: data.to_card_pan.replace(/\s+/g, ""),
   }));
+
+  useEffect(() => {
+    if (cards.length === 0) {
+      return;
+    }
+
+    if (! selectedCard) {
+      setSelectedCardId(cards[0].id);
+    }
+  }, [cards, selectedCard, setSelectedCardId]);
 
   useEffect(() => {
     if (selectedCard) {
@@ -104,15 +125,17 @@ export default function Transfer({
         <section className="animate-fade-up rounded-3xl border border-white/80 bg-white/80 p-5 shadow-sm backdrop-blur-sm transition duration-300 sm:p-7">
           <form className="space-y-5" onSubmit={submit}>
             {flash?.status && (
-              <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 font-medium text-emerald-700">
+              <div
+                className={`rounded-2xl border px-4 py-3 font-medium ${
+                  flash.status_type === "error"
+                    ? "border-rose-200 bg-rose-50 text-rose-700"
+                    : "border-emerald-200 bg-emerald-50 text-emerald-700"
+                }`}
+              >
                 {flash.status}
               </div>
             )}
-            {(flash?.error || Object.keys(errors).length > 0) && (
-              <div className="rounded-md bg-rose-50 p-3 text-rose-800">
-                {flash?.error && <div>{flash.error}</div>}
-              </div>
-            )}
+
             <div>
               {cards.length === 0 ? (
                 <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
@@ -181,6 +204,9 @@ export default function Transfer({
                     onChange={handleChangePan}
                   />
                 </div>
+                {errors.to_card_pan && (
+                  <p className="mt-2 text-sm text-rose-600">{errors.to_card_pan}</p>
+                )}
               </div>
 
               <div className="w-150">
@@ -201,6 +227,9 @@ export default function Transfer({
                     onChange={handleChangeAmount}
                   />
                 </div>
+                {errors.amount && (
+                  <p className="mt-2 text-sm text-rose-600">{errors.amount}</p>
+                )}
                 <p className="mt-1 text-xs text-slate-500">
                   Maximum per transfer: {formatToLocal(100001)}
                 </p>
@@ -208,9 +237,6 @@ export default function Transfer({
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-3 border-t border-slate-200 pt-4">
-              {flash?.status && (
-                <div className="alert-status">{flash.status}</div>
-              )}
               <button
                 type="submit"
                 disabled={processing || cards.length === 0}
