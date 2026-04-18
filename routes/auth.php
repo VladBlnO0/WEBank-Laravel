@@ -17,6 +17,13 @@ Route::middleware('guest')->group(function () {
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
+    Route::get('login/challenge', [AuthenticatedSessionController::class, 'createChallenge'])
+        ->name('login.challenge');
+
+    Route::post('login/challenge', [AuthenticatedSessionController::class, 'storeChallenge'])
+        ->middleware('throttle:6,1')
+        ->name('login.challenge.store');
+
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
         ->name('password.request');
 
