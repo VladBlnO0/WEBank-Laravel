@@ -1,8 +1,7 @@
 import { chatWithOperator } from "@/ai/groq";
-import { AnimatePresence, motion } from "framer-motion";
 import { router } from "@inertiajs/react";
-import React, { useEffect, useRef, useState } from "react";
 import { Bot, Loader2, MessageCircle, Send, X } from "lucide-react";
+import React, { useState } from "react";
 
 type Message = {
   id: number;
@@ -10,7 +9,7 @@ type Message = {
   text: string;
 };
 
-export const AiOperatorChat = () => {
+export function AiOperatorChat() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -21,12 +20,6 @@ export const AiOperatorChat = () => {
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  // Auto-scroll to bottom when messages change
-  useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +33,6 @@ export const AiOperatorChat = () => {
     setIsLoading(true);
 
     try {
-      // Connect to the logic we wrote earlier
       const reply = await chatWithOperator(userText, (path) => {
         router.visit(path, {
           preserveScroll: true,
@@ -66,16 +58,11 @@ export const AiOperatorChat = () => {
   };
 
   return (
-    <div className="pointer-events-none fixed right-5 bottom-5 z-[60] sm:right-7 sm:bottom-7">
-      <AnimatePresence>
+    <div className="pointer-events-none fixed bottom-7 left-7 z-60">
+      <>
         {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.98 }}
-            className="pointer-events-auto mb-4 flex h-[460px] w-[min(92vw,380px)] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
-          >
-            <div className="flex items-center justify-between bg-slate-900 px-4 py-3 text-white">
+          <div className="pointer-events-auto mb-4 flex h-115 w-[min(92vw,380px)] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
+            <div className="flex items-center justify-between bg-green-600 px-4 py-3 text-white">
               <div className="flex items-center gap-2">
                 <Bot size={18} />
                 <span className="text-sm font-semibold">AI Operator</span>
@@ -91,36 +78,37 @@ export const AiOperatorChat = () => {
             </div>
 
             <div className="flex-1 space-y-4 overflow-y-auto bg-slate-50 p-4">
-              <AnimatePresence>
-                {messages.map((message) => (
-                  <motion.div
-                    key={message.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+              {messages.map((message) => (
+                <div
+                  key={message.id}
+                  className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                >
+                  <div
+                    className={`max-w-[85%] rounded-2xl p-3 text-sm shadow-sm ${
+                      message.role === "user"
+                        ? "rounded-tr-none bg-emerald-600 text-white"
+                        : "rounded-tl-none border border-slate-200 bg-white text-slate-800"
+                    }`}
                   >
-                    <div
-                      className={`max-w-[85%] rounded-2xl p-3 text-sm shadow-sm ${
-                        message.role === "user"
-                          ? "rounded-tr-none bg-emerald-600 text-white"
-                          : "rounded-tl-none border border-slate-200 bg-white text-slate-800"
-                      }`}
-                    >
-                      {message.text}
-                    </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
+                    {message.text}
+                  </div>
+                </div>
+              ))}
 
               {isLoading && (
                 <div className="flex justify-start">
-                  <Loader2 className="animate-spin text-emerald-600" size={20} />
+                  <Loader2
+                    className="animate-spin text-emerald-600"
+                    size={20}
+                  />
                 </div>
               )}
-              <div ref={scrollRef} />
             </div>
 
-            <form onSubmit={handleSend} className="flex gap-2 border-t border-slate-200 bg-white p-3">
+            <form
+              onSubmit={handleSend}
+              className="flex gap-2 border-t border-slate-200 bg-white p-3"
+            >
               <input
                 type="text"
                 value={input}
@@ -136,9 +124,9 @@ export const AiOperatorChat = () => {
                 <Send size={18} />
               </button>
             </form>
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
+      </>
 
       <button
         type="button"
@@ -150,4 +138,4 @@ export const AiOperatorChat = () => {
       </button>
     </div>
   );
-};
+}

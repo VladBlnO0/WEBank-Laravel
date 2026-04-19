@@ -10,9 +10,6 @@
 
 @plugin "@tailwindcss/forms";
 
-@source "../../node_modules/preline/dist/*.js";
-@import "../../node_modules/preline/variants.css";
-
 /* React/TSX */
 @source "../js/**/*.{ts,tsx}";
 

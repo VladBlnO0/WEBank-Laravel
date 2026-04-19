@@ -13,7 +13,9 @@ export default function Authenticated({
   children,
 }: PropsWithChildren<{ header?: ReactNode }>) {
   const user = (usePage().props.auth?.user as User) ?? null;
-  const rawNotificationCount = Number(usePage().props.auth?.notificationCount ?? 0);
+  const rawNotificationCount = Number(
+    usePage().props.auth?.notificationCount ?? 0,
+  );
   const notificationCount = Number.isFinite(rawNotificationCount)
     ? Math.min(rawNotificationCount, 9)
     : 0;
