@@ -1,6 +1,7 @@
-import type { CardData} from "@/types";
 import BankCard from "@/components/bank-card";
 import NavigationButton from "@/components/navigation-button";
+import type { CardData } from "@/types";
+import { CircleArrowLeft, CircleArrowRight } from "lucide-react";
 export default function BankCardSection({
   cards,
   selectedCard,
@@ -31,7 +32,7 @@ export default function BankCardSection({
               className="group rounded-2xl border border-slate-300 bg-white/90 p-3 text-2xl shadow-sm hover:border-slate-400 hover:bg-white disabled:opacity-30 sm:text-4xl"
               aria-label="Previous Card"
             >
-              <i className="bi bi-caret-left-fill transition hover:-translate-x-0.5" />
+              <CircleArrowLeft className="size-10 transition hover:-translate-x-0.5" />
             </NavigationButton>
           )}
 
@@ -46,7 +47,7 @@ export default function BankCardSection({
               className="group rounded-2xl border border-slate-300 bg-white/90 p-3 text-2xl shadow-sm hover:border-slate-400 hover:bg-white disabled:opacity-30 sm:text-4xl"
               aria-label="Next Card"
             >
-              <i className="bi bi-caret-right-fill transition hover:translate-x-0.5" />
+              <CircleArrowRight className="size-10 transition hover:translate-x-0.5" />
             </NavigationButton>
           )}
         </div>

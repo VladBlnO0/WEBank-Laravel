@@ -5,7 +5,13 @@ import ResponsiveNavLink from "@/components/responsive-nav-link";
 import type { User } from "@/types";
 import { Transition, TransitionChild } from "@headlessui/react";
 import { Link, usePage } from "@inertiajs/react";
-import { Bell } from "lucide-react";
+import {
+  Bell,
+  CircleArrowRight,
+  Landmark,
+  Repeat2,
+  UserRound,
+} from "lucide-react";
 import { PropsWithChildren, ReactNode, useState } from "react";
 import { useRoute } from "ziggy-js";
 
@@ -156,8 +162,7 @@ export default function Authenticated({
                     onClick={() => setShowingNavigationDropdown(false)}
                   >
                     <div className="flex gap-3">
-                      <i className="bi bi-bank2"></i>
-                      <p>Dashboard</p>
+                      <Landmark /> <p>Dashboard</p>
                     </div>
                   </ResponsiveNavLink>
                   <ResponsiveNavLink
@@ -166,8 +171,7 @@ export default function Authenticated({
                     onClick={() => setShowingNavigationDropdown(false)}
                   >
                     <div className="flex gap-3">
-                      <i className="bi bi-arrow-repeat"></i>
-                      <p>Transfer</p>
+                      <Repeat2 /> <p>Transfer</p>
                     </div>
                   </ResponsiveNavLink>
                   <div className="border-t border-slate-200 pt-1">
@@ -179,8 +183,7 @@ export default function Authenticated({
                           onClick={() => setShowingNavigationDropdown(false)}
                         >
                           <div className="flex gap-3">
-                            <i className="bi bi-person"></i>
-                            <p>{user.email}</p>
+                            <UserRound /> <p>{user.email}</p>
                           </div>
                         </ResponsiveNavLink>
                         <div className="border-t border-slate-200" />
@@ -192,7 +195,7 @@ export default function Authenticated({
                           onClick={() => setShowingNavigationDropdown(false)}
                         >
                           <div className="flex gap-3">
-                            <i className="bi bi-box-arrow-right"></i>
+                            <CircleArrowRight />
                             <p>Log Out</p>
                           </div>
                         </ResponsiveNavLink>

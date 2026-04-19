@@ -2,6 +2,7 @@ import PaymentNetwork from "@/components/payment-network";
 import type { CardData } from "@/types";
 import { formatDate, formatToLocal } from "@/utils/formatData";
 import clsx from "clsx";
+import { CreditCard } from "lucide-react";
 import { useState } from "react";
 
 export default function BankCard({
@@ -77,7 +78,7 @@ export default function BankCard({
 
           <div className="relative flex w-full select-none">
             <div className="flex items-center gap-3 font-bold">
-              <i className="bi bi-credit-card-fill text-[2.5rem]" aria-hidden />
+              <CreditCard className="text-[2.5rem]" aria-hidden />
               <p className="tracking-wide select-none">
                 {card.type?.toUpperCase() || "BANK CARD"}
               </p>

@@ -2,6 +2,7 @@ import NavigationButton from "@/components/navigation-button";
 import { CardData } from "@/types";
 import { formatToLocal } from "@/utils/formatData";
 import PaymentNetwork from "./payment-network";
+import { CircleArrowLeft, CircleArrowRight } from "lucide-react";
 
 export default function FullCard({
   card,
@@ -38,7 +39,7 @@ export default function FullCard({
             className="text-2xl"
             aria-label="Previous Card"
           >
-            <i className="bi bi-caret-left-fill"></i>
+            <CircleArrowLeft />
           </NavigationButton>
 
           <section className="bg-white-50 flex h-35 w-80 items-start justify-between gap-4 rounded-2xl border border-white p-6 shadow-md shadow-gray-400 backdrop-blur-md">
@@ -60,7 +61,7 @@ export default function FullCard({
             className="text-2xl"
             aria-label="Next Card"
           >
-            <i className="bi bi-caret-right-fill"></i>
+            <CircleArrowRight />
           </NavigationButton>
         </div>
       </div>

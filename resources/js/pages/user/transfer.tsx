@@ -4,6 +4,12 @@ import TransactionsSection from "@/components/transactions-section";
 import type { CardData, PaginatedData, Transaction } from "@/types";
 import { formatToLocal } from "@/utils/formatData";
 import { Head, useForm, usePage, useRemember } from "@inertiajs/react";
+import {
+  CircleArrowLeft,
+  CircleArrowRight,
+  CreditCard,
+  DollarSign,
+} from "lucide-react";
 import { useEffect, type ChangeEvent } from "react";
 
 interface TransferProps {
@@ -31,7 +37,8 @@ export default function Transfer({
     cards[0]?.id ?? null,
     "transfer:selected-card-id",
   );
-  const selectedCard = cards.find((card) => card.id === selectedCardId) ?? cards[0];
+  const selectedCard =
+    cards.find((card) => card.id === selectedCardId) ?? cards[0];
   const currentIndex = selectedCard
     ? cards.findIndex((card) => card.id === selectedCard.id)
     : -1;
@@ -48,11 +55,13 @@ export default function Transfer({
     }
   };
 
-  const { data, setData, post, processing, transform, reset, errors } = useForm({
-    from_card_id: selectedCard?.id ?? 0,
-    to_card_pan: "",
-    amount: "",
-  });
+  const { data, setData, post, processing, transform, reset, errors } = useForm(
+    {
+      from_card_id: selectedCard?.id ?? 0,
+      to_card_pan: "",
+      amount: "",
+    },
+  );
   transform((data) => ({
     ...data,
     to_card_pan: data.to_card_pan.replace(/\s+/g, ""),
@@ -63,7 +72,7 @@ export default function Transfer({
       return;
     }
 
-    if (! selectedCard) {
+    if (!selectedCard) {
       setSelectedCardId(cards[0].id);
     }
   }, [cards, selectedCard, setSelectedCardId]);
@@ -150,7 +159,7 @@ export default function Transfer({
                         disabled={isFirst}
                         className="text-2xl"
                       >
-                        <i className="bi bi-caret-left-fill"></i>
+                        <CircleArrowLeft className="size-10 transition hover:-translate-x-0.5" />
                       </NavigationButton>
                     )}
 
@@ -177,7 +186,7 @@ export default function Transfer({
                         disabled={isLast}
                         className="text-2xl"
                       >
-                        <i className="bi bi-caret-right-fill"></i>
+                        <CircleArrowRight className="size-10 transition hover:translate-x-0.5" />
                       </NavigationButton>
                     )}
                   </div>
@@ -191,7 +200,7 @@ export default function Transfer({
                   Recipient card number
                 </label>
                 <div className="flex w-full items-center gap-2 rounded-2xl border border-slate-300 bg-white px-3 py-3 transition focus-within:border-slate-500">
-                  <i className="bi bi-credit-card text-slate-500"></i>
+                  <CreditCard className="text-slate-500" />
                   <input
                     name="to_card_pan"
                     type="tel"
@@ -205,7 +214,9 @@ export default function Transfer({
                   />
                 </div>
                 {errors.to_card_pan && (
-                  <p className="mt-2 text-sm text-rose-600">{errors.to_card_pan}</p>
+                  <p className="mt-2 text-sm text-rose-600">
+                    {errors.to_card_pan}
+                  </p>
                 )}
               </div>
 
@@ -214,7 +225,7 @@ export default function Transfer({
                   Amount
                 </label>
                 <div className="flex w-full items-center gap-2 rounded-2xl border border-slate-300 bg-white px-3 py-3 transition focus-within:border-slate-500">
-                  <i className="bi bi-currency-dollar text-slate-500"></i>
+                  <DollarSign className="text-slate-500" />
                   <input
                     name="amount"
                     type="number"
