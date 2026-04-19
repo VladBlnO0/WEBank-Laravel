@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('site_knowledge', function (Blueprint $table) {
             $table->id();
-            $table->text('content'); // The human-readable instruction
-            $table->string('url_target')->nullable(); // Where this info lives
+            $table->text('content');
 
             // The vector column (stores the "math" version of the text)
             // 1536 is the standard for OpenAI embeddings

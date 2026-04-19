@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Stringable;
 use Illuminate\Validation\Rules\Password;
 
 class AppServiceProvider extends ServiceProvider
@@ -28,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+        $this->configureEmbeddings();
 
         Gate::policy(DatabaseNotification::class, NotificationPolicy::class);
         Vite::prefetch(concurrency: 3);
@@ -50,5 +52,31 @@ class AppServiceProvider extends ServiceProvider
                 ->uncompromised()
             : null,
         );
+    }
+
+    protected function configureEmbeddings(): void
+    {
+        Stringable::macro('toEmbeddings', function (bool $cache = true): array {
+            $text = mb_strtolower((string) $this);
+            $dimensions = 1536;
+            $embedding = array_fill(0, $dimensions, 0.0);
+            $tokens = preg_split('/[^\pL\pN]+/u', $text, -1, PREG_SPLIT_NO_EMPTY) ?: [];
+
+            foreach ($tokens as $token) {
+                $index = abs(crc32($token)) % $dimensions;
+                $embedding[$index] += 1;
+            }
+
+            $magnitude = sqrt(array_reduce(
+                $embedding,
+                static fn (float $carry, float $value): float => $carry + ($value * $value),
+                0.0,
+            )) ?: 1.0;
+
+            return array_map(
+                static fn (float $value): float => $value / $magnitude,
+                $embedding,
+            );
+        });
     }
 }

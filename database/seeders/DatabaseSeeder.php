@@ -30,5 +30,7 @@ class DatabaseSeeder extends Seeder
                 ]);
             });
         });
+
+        $this->call(SiteKnowledgeSeeder::class);
     }
 }
