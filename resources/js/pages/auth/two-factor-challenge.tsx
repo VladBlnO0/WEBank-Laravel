@@ -5,11 +5,7 @@ import TextInput from "@/components/text-input";
 import { Head, useForm } from "@inertiajs/react";
 import { SubmitEventHandler } from "react";
 
-export default function TwoFactorChallenge({
-  status,
-}: {
-  status?: string;
-}) {
+export default function TwoFactorChallenge({ status }: { status?: string }) {
   const { data, setData, post, processing, errors, reset } = useForm({
     code: "",
   });
@@ -23,13 +19,21 @@ export default function TwoFactorChallenge({
   };
 
   return (
-    <>
+    <main>
+      <meta
+        name="description"
+        content="Two factor authentication challenge page"
+      />
+
       <Head title="Login code" />
 
       <div className="mx-auto max-w-md">
-        <h1 className="text-2xl font-semibold text-slate-900">Check your email</h1>
+        <h1 className="text-2xl font-semibold text-slate-900">
+          Check your email
+        </h1>
         <p className="mt-2 text-sm text-slate-600">
-          We sent a one-time login code to your email address. Enter it below to continue.
+          We sent a one-time login code to your email address. Enter it below to
+          continue.
         </p>
 
         {status && (
@@ -38,7 +42,10 @@ export default function TwoFactorChallenge({
           </div>
         )}
 
-        <form onSubmit={submit} className="mt-6 space-y-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <form
+          onSubmit={submit}
+          className="mt-6 space-y-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+        >
           <div>
             <InputLabel htmlFor="code" value="Login code" />
             <TextInput
@@ -61,7 +68,7 @@ export default function TwoFactorChallenge({
           </div>
         </form>
       </div>
-    </>
+    </main>
   );
 }
 

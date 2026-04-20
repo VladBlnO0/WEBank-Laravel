@@ -28,7 +28,9 @@ export default function Login({
   };
 
   return (
-    <>
+    <main>
+      <meta name="description" content="Login page" />
+
       <Head title="Log in" />
 
       {status && (
@@ -90,7 +92,7 @@ export default function Login({
           {canResetPassword && (
             <Link
               href={route("password.request")}
-              className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
+              className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:ring-2 focus:ring-black focus:ring-offset-2 focus:outline-none"
             >
               Forgot your password?
             </Link>
@@ -101,7 +103,7 @@ export default function Login({
           </PrimaryButton>
         </div>
       </form>
-    </>
+    </main>
   );
 }
 Login.layout = {

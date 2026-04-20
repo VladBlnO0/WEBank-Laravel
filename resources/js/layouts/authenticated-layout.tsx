@@ -75,6 +75,7 @@ export default function Authenticated({
               <Link
                 className="relative py-2 pr-2 text-lg text-gray-500"
                 href={route("notification.index")}
+                aria-label="Notifications"
               >
                 <Bell />
                 {notificationCount > 0 && (
@@ -162,7 +163,8 @@ export default function Authenticated({
                     onClick={() => setShowingNavigationDropdown(false)}
                   >
                     <div className="flex gap-3">
-                      <Landmark /> <p>Dashboard</p>
+                      <Landmark />
+                      <p>Dashboard</p>
                     </div>
                   </ResponsiveNavLink>
                   <ResponsiveNavLink
@@ -171,7 +173,8 @@ export default function Authenticated({
                     onClick={() => setShowingNavigationDropdown(false)}
                   >
                     <div className="flex gap-3">
-                      <Repeat2 /> <p>Transfer</p>
+                      <Repeat2 />
+                      <p>Transfer</p>
                     </div>
                   </ResponsiveNavLink>
                   <div className="border-t border-slate-200 pt-1">
@@ -183,7 +186,8 @@ export default function Authenticated({
                           onClick={() => setShowingNavigationDropdown(false)}
                         >
                           <div className="flex gap-3">
-                            <UserRound /> <p>{user.email}</p>
+                            <UserRound />
+                            <p>{user.email}</p>
                           </div>
                         </ResponsiveNavLink>
                         <div className="border-t border-slate-200" />

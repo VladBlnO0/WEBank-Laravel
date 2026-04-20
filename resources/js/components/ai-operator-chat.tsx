@@ -114,9 +114,10 @@ export function AiOperatorChat() {
                 value={input}
                 onChange={(event) => setInput(event.target.value)}
                 placeholder="Ask me to open dashboard, transfer, profile..."
-                className="flex-1 rounded-lg border border-slate-300 p-2 text-sm text-slate-900 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-200 focus:outline-none"
+                className="flex-1 rounded-lg border border-slate-300 p-2 text-sm text-slate-900  focus:ring-2 focus:ring-black focus:outline-none"
               />
               <button
+                aria-label="Send message"
                 type="submit"
                 disabled={isLoading}
                 className="rounded-lg bg-emerald-600 p-2 text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60"

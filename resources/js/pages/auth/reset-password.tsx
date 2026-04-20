@@ -2,7 +2,6 @@ import InputError from "@/components/input-error";
 import InputLabel from "@/components/input-label";
 import PrimaryButton from "@/components/primary-button";
 import TextInput from "@/components/text-input";
-import GuestLayout from "@/layouts/guest-layout";
 import { Head, useForm } from "@inertiajs/react";
 import { SubmitEventHandler } from "react";
 
@@ -29,7 +28,7 @@ export default function ResetPassword({
   };
 
   return (
-    <GuestLayout>
+    <>
       <Head title="Reset Password" />
 
       <form onSubmit={submit}>
@@ -99,6 +98,13 @@ export default function ResetPassword({
           </PrimaryButton>
         </div>
       </form>
-    </GuestLayout>
+    </>
   );
 }
+ResetPassword.layout = {
+  breadcrumbs: [
+    {
+      title: "Reset Password",
+    },
+  ],
+};

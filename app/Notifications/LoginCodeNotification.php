@@ -22,7 +22,7 @@ class LoginCodeNotification extends Notification
         return (new MailMessage)
             ->subject('Your login code')
             ->greeting('Hello!')
-            ->line('Use the code below to finish signing in to your WEBank account.')
+            ->line('Use the code below to finish signing in to your account.')
             ->line('Login code: '.$this->code)
             ->line('This code expires in 10 minutes.')
             ->line('If you did not request this code, you can ignore this email.');

@@ -8,7 +8,8 @@ export default function Edit({
   status,
 }: PageProps<{ mustVerifyEmail: boolean; status?: string }>) {
   return (
-    <>
+    <main>
+      <meta name="description" content="Edit profile page" />
       <Head title="Profile" />
 
       <div className="py-12">
@@ -26,7 +27,7 @@ export default function Edit({
           </div>
         </div>
       </div>
-    </>
+    </main>
   );
 }
 

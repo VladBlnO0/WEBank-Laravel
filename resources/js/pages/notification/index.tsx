@@ -58,11 +58,12 @@ export default function NotificationIndex({
   };
 
   return (
-    <>
+    <main>
+      <meta name="description" content="Notifications page" />
       <Head title="Notifications" />
 
       <section
-        className="mx-auto mb-10 space-y-6"
+        className="mx-auto mb-10 flex min-h-170 flex-col gap-3 space-y-6"
         style={{
           fontFamily:
             '"Space Grotesk", "IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif',
@@ -87,9 +88,9 @@ export default function NotificationIndex({
                     "animate-fade-up rounded-2xl border border-slate-200 bg-white/70 p-5 shadow-sm backdrop-blur-sm transition hover:shadow-md sm:p-6"
                   }
                 >
-                  <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div className="flex flex-row items-center justify-between gap-4">
                     <div className="space-y-2">
-                      <div className="flex flex-wrap items-center gap-2">
+                      <div className="flex items-center gap-2">
                         <span className="rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[11px] font-semibold tracking-wide text-slate-700 uppercase">
                           Transaction
                         </span>
@@ -121,15 +122,15 @@ export default function NotificationIndex({
                 </section>
               ))}
             </div>
-
-            <Pagination
-              meta={notifications}
-              className="fixed bottom-10 left-0 w-full"
-            />
           </>
         )}
+        {notificationItems.length < 2 ? (
+          <></>
+        ) : (
+          <Pagination meta={notifications} />
+        )}
       </section>
-    </>
+    </main>
   );
 }
 NotificationIndex.layout = {

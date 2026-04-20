@@ -122,7 +122,8 @@ export default function Transfer({
   const isFirst: boolean = currentIndex === 0;
   const isLast: boolean = currentIndex === cards.length - 1;
   return (
-    <>
+    <main>
+      <meta name="description" content="Transfer page" />
       <Head title="Transfer" />
       <div
         className="space-y-7"
@@ -140,6 +141,7 @@ export default function Transfer({
                     ? "border-rose-200 bg-rose-50 text-rose-700"
                     : "border-emerald-200 bg-emerald-50 text-emerald-700"
                 }`}
+                aria-label="Transfer status"
               >
                 {flash.status}
               </div>
@@ -284,7 +286,7 @@ export default function Transfer({
           }
         }
       `}</style>
-    </>
+    </main>
   );
 }
 Transfer.layout = {

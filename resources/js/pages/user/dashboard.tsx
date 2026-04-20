@@ -69,7 +69,8 @@ export default function Dashboard({
     cards.length === 0 || currentIndex === cards.length - 1;
 
   return (
-    <>
+    <main>
+      <meta name="description" content="User dashboard page" />
       <Head title="User Dashboard" />
 
       {flash?.status && (
@@ -142,7 +143,7 @@ export default function Dashboard({
           cardIds={cards.map((card) => card.id)}
         />
       </section>
-    </>
+    </main>
   );
 }
 

@@ -126,10 +126,7 @@ export default function TransactionsSection({
 
               <Transactions transactions={transactions} cardIds={cardIds} />
 
-              <Pagination
-                meta={allTransactions}
-                className="mt-6 w-full"
-              />
+              <Pagination meta={allTransactions} className="mt-6 w-full" />
             </div>
           </>
         )}
@@ -240,13 +237,16 @@ function FiltersTransactions({
   return (
     <div className="flex flex-wrap items-end gap-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
       <div className="flex min-w-42 flex-col gap-2">
-        <p className="text-sm font-semibold text-slate-700">Filter by</p>
+        <label htmlFor="by" className="text-sm font-semibold text-slate-700">
+          Filter by
+        </label>
         <select
+          id="by"
           value={filterForm.data.by}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
             filterForm.setData("by", e.target.value)
           }
-          className="rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-800"
+          className="bg-white px-4 py-3 text-sm text-slate-800 focus:ring-black"
         >
           <option value="created_at">Date</option>
           <option value="amount">Amount</option>
@@ -254,13 +254,16 @@ function FiltersTransactions({
       </div>
 
       <div className="flex min-w-42 flex-col gap-2">
-        <p className="text-sm font-semibold text-slate-700">Order by</p>
+        <label htmlFor="order" className="text-sm font-semibold text-slate-700">
+          Order by
+        </label>
         <select
+          id="order"
           value={filterForm.data.order}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
             filterForm.setData("order", e.target.value)
           }
-          className="rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-800"
+          className="bg-white px-4 py-3 text-sm text-slate-800 focus:ring-black"
         >
           <option value="desc">Descending</option>
           <option value="asc">Ascending</option>
