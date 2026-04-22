@@ -1,8 +1,8 @@
 import { PageProps } from "@/types";
 import { Head } from "@inertiajs/react";
+import TwoFactorAuthenticationForm from "./partials/two-factor-authentication-form";
 import UpdatePasswordForm from "./partials/update-password-form";
 import UpdateProfileInformationForm from "./partials/update-profile-informationForm";
-
 export default function Edit({
   mustVerifyEmail,
   status,
@@ -24,6 +24,9 @@ export default function Edit({
 
           <div className="bg-white p-4 shadow ring-1 ring-white/5 transition duration-300 hover:ring-gray-400 sm:rounded-lg sm:p-8">
             <UpdatePasswordForm className="max-w-xl" />
+          </div>
+          <div className="bg-white p-4 shadow ring-1 ring-white/5 transition duration-300 hover:ring-gray-400 sm:rounded-lg sm:p-8">
+            <TwoFactorAuthenticationForm className="max-w-xl" />
           </div>
         </div>
       </div>

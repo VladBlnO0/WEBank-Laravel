@@ -6,16 +6,15 @@ import { Head, useForm } from "@inertiajs/react";
 import { SubmitEventHandler } from "react";
 
 export default function TwoFactorChallenge({ status }: { status?: string }) {
-  const { data, setData, post, processing, errors, reset } = useForm({
+  const { data, setData, post, processing, errors } = useForm({
     code: "",
+    recovery_code: "",
   });
 
   const submit: SubmitEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
 
-    post(route("login.challenge.store"), {
-      onFinish: () => reset("code"),
-    });
+    post("/two-factor-challenge");
   };
 
   return (
