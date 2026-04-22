@@ -2,7 +2,7 @@
 
 
 test('', function () {
-    $response = $this->get('/');
+  $response = $this->get('/test');
 
-    $response->assertStatus(200);
+  $response->assertStatus(200);
 });
