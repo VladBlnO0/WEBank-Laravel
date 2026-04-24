@@ -4,14 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['from_card_id',
+#[Fillable([
+    'from_card_id',
     'to_card_id',
-    'amount', ])]
+    'amount',
+])]
 class Transaction extends Model
 {
     use HasFactory;
@@ -36,6 +39,20 @@ class Transaction extends Model
         return $this->belongsTo(Card::class, 'to_card_id');
     }
 
+    protected function fromCardLast4(): Attribute
+    {
+        return Attribute::get(function (): ?string {
+            return $this->fromCard?->pan ? substr($this->fromCard->pan, -4) : null;
+        });
+    }
+
+    protected function toCardLast4(): Attribute
+    {
+        return Attribute::get(function (): ?string {
+            return $this->toCard?->pan ? substr($this->toCard->pan, -4) : null;
+        });
+    }
+
     public function scopeCurrentMonth(Builder $query): Builder
     {
         return $query->whereMonth('created_at', now()->month)
@@ -47,8 +64,8 @@ class Transaction extends Model
         $cardIds = $user->cards()->pluck('id')->all();
 
         return $cardIds
-        ? $query->byCard($cardIds)
-        : $query;
+          ? $query->byCard($cardIds)
+          : $query;
     }
 
     private function extractCardIds(mixed $cards): array

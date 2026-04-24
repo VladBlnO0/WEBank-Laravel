@@ -7,6 +7,8 @@ interface NotificationPayload {
   amount: string;
   from_card_id: number;
   to_card_id: number;
+  from_card_last4?: string;
+  to_card_last4?: string;
   message: string | null;
 }
 
@@ -98,9 +100,11 @@ export default function NotificationIndex({
 
                       {notification.type ===
                         "App\\Notifications\\TransactionNotification" && (
-                        <p className="text-base font-medium text-slate-900">
-                          {notification.data.message}
-                        </p>
+                        <div className="space-y-2">
+                          <p className="text-base font-medium text-slate-900">
+                            {notification.data.message}
+                          </p>
+                        </div>
                       )}
 
                       <p className="text-sm text-slate-500">

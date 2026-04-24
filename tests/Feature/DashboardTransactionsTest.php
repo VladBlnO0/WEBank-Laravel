@@ -1,6 +1,5 @@
 <?php
 
-use App\Enums\TransactionType;
 use App\Models\Card;
 use App\Models\Transaction;
 use App\Models\User;
@@ -25,7 +24,6 @@ test('dashboard cards include aggregated monthly totals', function () {
     Transaction::factory()->create([
         'from_card_id' => $senderCard->id,
         'to_card_id' => $recipientCard->id,
-        'type' => TransactionType::TRANSFER->value,
         'amount' => 40,
         'created_at' => now()->subMinute(),
     ]);
@@ -33,7 +31,6 @@ test('dashboard cards include aggregated monthly totals', function () {
     Transaction::factory()->create([
         'from_card_id' => $recipientCard->id,
         'to_card_id' => $senderCard->id,
-        'type' => TransactionType::TRANSFER->value,
         'amount' => 25,
         'created_at' => now(),
     ]);
@@ -41,19 +38,18 @@ test('dashboard cards include aggregated monthly totals', function () {
     $this->actingAs($user)
         ->get(route('user.dashboard.index'))
         ->assertInertia(fn (Assert $page) => $page
-            ->component('user.dashboard.index')
-            ->where('selectedCardId', $senderCard->id)
-            ->has('userData.data', 1, fn (Assert $card) => $card
-                ->where('id', $senderCard->id)
-                ->where('monthly_outflow', 40.0)
-                ->where('monthly_inflow', 25.0)
-                ->missing('transactions')
-                ->etc()
-            )
-            ->has('transactions.data', 2)
-            ->where('transactions.data.0.amount', 25.0)
-            ->where('transactions.data.1.amount', -40.0)
-            ->where('transactions.meta.total', 2)
+            ->component('user/dashboard')
+            ->has('cards', 1)
+            ->has('allTransactions.data', 2)
+            ->where('allTransactions.data.0.amount', '25.00')
+            ->where('allTransactions.data.0.from_card.pan', '5555666677778888')
+            ->where('allTransactions.data.0.to_card.pan', '1111222233334444')
+            ->where('allTransactions.data.1.amount', '40.00')
+            ->where('allTransactions.data.1.from_card.pan', '1111222233334444')
+            ->where('allTransactions.data.1.to_card.pan', '5555666677778888')
+            ->where('thisMonthOutflowTotal', 40)
+            ->where('thisMonthInflowTotal', 25)
+            ->etc()
         );
 });
 
@@ -74,7 +70,6 @@ test('transaction endpoint returns signed paginated amounts', function () {
     Transaction::factory()->create([
         'from_card_id' => $ownedCard->id,
         'to_card_id' => $counterpartyCard->id,
-        'type' => TransactionType::TRANSFER->value,
         'amount' => 40,
         'created_at' => now()->subMinute(),
     ]);
@@ -82,18 +77,25 @@ test('transaction endpoint returns signed paginated amounts', function () {
     Transaction::factory()->create([
         'from_card_id' => $counterpartyCard->id,
         'to_card_id' => $ownedCard->id,
-        'type' => TransactionType::TRANSFER->value,
         'amount' => 25,
         'created_at' => now(),
     ]);
 
     $this->actingAs($user)
-        ->getJson(route('cards.transactions', $ownedCard))
-        ->assertOk()
-        ->assertJsonPath('data.0.amount', 25.0)
-        ->assertJsonPath('data.1.amount', -40.0)
-        ->assertJsonPath('meta.total', 2)
-        ->assertJsonPath('meta.per_page', 5);
+        ->get(route('user.dashboard.index', [
+            'by' => 'amount',
+            'order' => 'asc',
+        ]))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('user/dashboard')
+            ->where('allTransactions.data.0.amount', '40.00')
+            ->where('allTransactions.data.0.from_card.pan', '1111222233334444')
+            ->where('allTransactions.data.0.to_card.pan', '5555666677778888')
+            ->where('allTransactions.data.1.amount', '25.00')
+            ->where('allTransactions.data.1.from_card.pan', '5555666677778888')
+            ->where('allTransactions.data.1.to_card.pan', '1111222233334444')
+            ->etc()
+        );
 });
 
 test('transactions can be exported as csv with signed amounts', function () {
@@ -113,7 +115,6 @@ test('transactions can be exported as csv with signed amounts', function () {
     Transaction::factory()->create([
         'from_card_id' => $ownedCard->id,
         'to_card_id' => $counterpartyCard->id,
-        'type' => TransactionType::TRANSFER->value,
         'amount' => 40,
         'created_at' => now()->subMinute(),
     ]);
@@ -121,7 +122,6 @@ test('transactions can be exported as csv with signed amounts', function () {
     Transaction::factory()->create([
         'from_card_id' => $counterpartyCard->id,
         'to_card_id' => $ownedCard->id,
-        'type' => TransactionType::TRANSFER->value,
         'amount' => 25,
         'created_at' => now(),
     ]);

@@ -42,6 +42,8 @@ export type Transaction = {
   id: number;
   from_card_id?: number;
   to_card_id?: number;
+  from_card?: CardData;
+  to_card?: CardData;
   type: string;
   amount: number;
   created_at: string;

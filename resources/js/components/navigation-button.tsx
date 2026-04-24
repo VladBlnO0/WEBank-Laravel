@@ -4,6 +4,7 @@ export default function Button({
   disabled = false,
   className = "",
   type = "button",
+  ...props
 }: {
   children: React.ReactNode;
   onClick?: () => void;
@@ -20,6 +21,7 @@ export default function Button({
         `rounded-lg px-4 py-2 font-semibold text-black transition hover:text-gray-700 disabled:opacity-50 ` +
         className
       }
+      {...props}
     >
       {children}
     </button>

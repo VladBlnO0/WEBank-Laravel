@@ -1,6 +1,5 @@
 <?php
 
-use App\Enums\TransactionType;
 use App\Models\Card;
 use App\Models\Transaction;
 use App\Models\User;
@@ -22,7 +21,6 @@ test('transaction csv export is throttled for five minutes', function () {
     Transaction::factory()->create([
         'from_card_id' => $ownedCard->id,
         'to_card_id' => $counterpartyCard->id,
-        'type' => TransactionType::TRANSFER->value,
         'amount' => 40,
     ]);
 

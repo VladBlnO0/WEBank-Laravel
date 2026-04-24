@@ -28,11 +28,11 @@ export default function TwoFactorChallenge({ status }: { status?: string }) {
 
       <div className="mx-auto max-w-md">
         <h1 className="text-2xl font-semibold text-slate-900">
-          Check your email
+          Authentication code
         </h1>
         <p className="mt-2 text-sm text-slate-600">
-          We sent a one-time login code to your email address. Enter it below to
-          continue.
+          Enter the authentication code provided by your authenticator
+          application.
         </p>
 
         {status && (

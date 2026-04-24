@@ -164,8 +164,8 @@ function Transactions({
                 ? "bg-amber-100 text-amber-700"
                 : "bg-emerald-100 text-emerald-700";
 
-          const isOutgoing = ownedCardIds.includes(tran?.from_card_id)
-            ? true
+          const isOutgoing = tran.from_card_id
+            ? ownedCardIds.includes(tran.from_card_id)
             : false;
 
           return (
@@ -179,6 +179,10 @@ function Transactions({
                     className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold tracking-wide uppercase ${typeClass}`}
                   >
                     Transfer
+                  </p>
+                  <p className="text-sm text-slate-700">
+                    From card **** {tran.from_card?.pan.slice(-4) ?? "----"} to
+                    card **** {tran.to_card?.pan.slice(-4) ?? "----"}
                   </p>
                   <p className="text-sm text-slate-500">
                     {new Date(tran.created_at).toLocaleDateString(undefined, {

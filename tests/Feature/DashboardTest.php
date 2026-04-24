@@ -1,8 +1,11 @@
 <?php
 
+use App\Models\User;
 
-test('', function () {
-  $response = $this->get('/test');
+test('dashboard page can be rendered', function () {
+    $user = User::factory()->create();
 
-  $response->assertStatus(200);
+    $response = $this->actingAs($user)->get(route('user.dashboard.index'));
+
+    $response->assertOk();
 });

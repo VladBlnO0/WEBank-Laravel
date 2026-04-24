@@ -50,8 +50,8 @@ class UserTransactionExportController extends Controller
                 $isOutgoing = in_array($transaction->from_card_id, $cardIds, true);
                 $direction = $isOutgoing ? 'outgoing' : 'incoming';
                 $signedAmount = $isOutgoing
-                    ? -1 * abs((float) $transaction->amount)
-                    : abs((float) $transaction->amount);
+                  ? -1 * abs((float) $transaction->amount)
+                  : abs((float) $transaction->amount);
 
                 fputcsv($handle, [
                     $transaction->id,

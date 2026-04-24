@@ -2,7 +2,6 @@ import InputError from "@/components/input-error";
 import InputLabel from "@/components/input-label";
 import PrimaryButton from "@/components/primary-button";
 import TextInput from "@/components/text-input";
-import GuestLayout from "@/layouts/guest-layout";
 import { Head, useForm } from "@inertiajs/react";
 import { SubmitEventHandler } from "react";
 
@@ -20,7 +19,7 @@ export default function ConfirmPassword() {
   };
 
   return (
-    <GuestLayout>
+    <>
       <Head title="Confirm Password" />
 
       <div className="mb-4 text-sm text-gray-600">
@@ -54,6 +53,14 @@ export default function ConfirmPassword() {
           </PrimaryButton>
         </div>
       </form>
-    </GuestLayout>
+    </>
   );
 }
+
+ConfirmPassword.layout = {
+  breadcrumbs: [
+    {
+      title: "Confirm Password",
+    },
+  ],
+};

@@ -31,6 +31,7 @@ export default function BankCardSection({
               disabled={isFirst}
               className="group rounded-2xl border border-slate-300 bg-white/90 p-3 text-2xl shadow-sm hover:border-slate-400 hover:bg-white disabled:opacity-30 sm:text-4xl"
               aria-label="Previous Card"
+              type="button"
             >
               <CircleArrowLeft className="size-10 transition hover:-translate-x-0.5" />
             </NavigationButton>
@@ -46,6 +47,7 @@ export default function BankCardSection({
               disabled={isLast}
               className="group rounded-2xl border border-slate-300 bg-white/90 p-3 text-2xl shadow-sm hover:border-slate-400 hover:bg-white disabled:opacity-30 sm:text-4xl"
               aria-label="Next Card"
+              type="button"
             >
               <CircleArrowRight className="size-10 transition hover:translate-x-0.5" />
             </NavigationButton>

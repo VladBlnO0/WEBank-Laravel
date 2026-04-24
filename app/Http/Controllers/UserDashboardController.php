@@ -24,6 +24,7 @@ class UserDashboardController extends Controller
         $filters = $request->only(['by', 'order']);
 
         $allTransactions = Transaction::query()
+            ->with(['fromCard:id,pan', 'toCard:id,pan'])
             ->forUser($user)
             ->filter($filters, $cardIds)
             ->paginate(5)
