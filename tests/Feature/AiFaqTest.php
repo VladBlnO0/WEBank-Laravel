@@ -47,3 +47,32 @@ test('ai chat sends faq context to groq', function () use ($faqContent) {
         return str_contains($request->body(), $faqContent);
     });
 });
+
+test('ai chat normalizes plain text navigate tool payload from groq', function () {
+    config()->set('services.groq.key', 'test-groq-key');
+
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    Http::fake([
+        'api.groq.com/*' => Http::response([
+            'choices' => [
+                [
+                    'message' => [
+                        'content' => '<navigateTo>{"path":"/user/transfer"}</navigateTo>',
+                    ],
+                ],
+            ],
+        ]),
+    ]);
+
+    $response = $this->postJson(route('api.ai.operator.chat'), [
+        'message' => 'open transfer page',
+    ]);
+
+    $response
+        ->assertOk()
+        ->assertJsonPath('message', null)
+        ->assertJsonPath('tool_calls.0.function.name', 'navigateTo')
+        ->assertJsonPath('tool_calls.0.function.arguments', '{"path":"\/user\/transfer"}');
+});

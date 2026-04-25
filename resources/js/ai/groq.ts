@@ -10,6 +10,75 @@ type OperatorChatResponse = {
   tool_calls?: ToolCall[];
 };
 
+const NAVIGABLE_PATHS = new Set([
+  "/user/dashboard",
+  "/user/transfer",
+  "/profile",
+  "/notification",
+]);
+
+function toNavigatePath(rawPath: unknown): string | null {
+  if (typeof rawPath !== "string") {
+    return null;
+  }
+
+  return NAVIGABLE_PATHS.has(rawPath) ? rawPath : null;
+}
+
+function parseNavigateArguments(rawArguments: unknown): string | null {
+  if (typeof rawArguments === "string") {
+    try {
+      const parsed = JSON.parse(rawArguments) as { path?: unknown };
+
+      return toNavigatePath(parsed.path);
+    } catch {
+      return null;
+    }
+  }
+
+  if (rawArguments && typeof rawArguments === "object") {
+    return toNavigatePath((rawArguments as { path?: unknown }).path);
+  }
+
+  return null;
+}
+
+function parseNavigateFromRawMessage(message: string | null): string | null {
+  if (!message) {
+    return null;
+  }
+
+  // Make < optional
+  const attrMatch = message.match(
+    /<?navigateTo[^>]*path=["']([^"']+)["'][^>]*>/i,
+  );
+  if (attrMatch?.[1]) {
+    return toNavigatePath(attrMatch[1]);
+  }
+
+  const jsonMatch = message.match(/<?navigateTo[\s>]*(\{[\s\S]*?\})/i);
+
+  if (jsonMatch?.[1]) {
+    try {
+      const parsed = JSON.parse(jsonMatch[1]) as { path?: unknown };
+      return toNavigatePath(parsed.path);
+    } catch {
+      return null;
+    }
+  }
+
+  return null;
+}
+
+function buildNavigationReply(path: string): string {
+  const pageName = path
+    .replace(/^\//, "")
+    .replace("user/", "")
+    .replace("/", " ");
+
+  return `Taking you to ${pageName}.`;
+}
+
 function getCsrfToken(): string {
   const token = document
     .querySelector('meta[name="csrf-token"]')
@@ -48,24 +117,22 @@ export async function chatWithOperator(
         continue;
       }
 
-      try {
-        const args = JSON.parse(toolCall.function.arguments ?? "{}") as {
-          path?: string;
-        };
+      const path = parseNavigateArguments(toolCall.function.arguments);
 
-        if (args.path) {
-          onNavigate(args.path);
-          const pageName = args.path
-            .replace(/^\//, "")
-            .replace("user/", "")
-            .replace("/", " ");
+      if (path) {
+        onNavigate(path);
 
-          return `Taking you to ${pageName}.`;
-        }
-      } catch {
-        // Ignore malformed tool-call payloads and fall back to text response.
+        return buildNavigationReply(path);
       }
     }
+  }
+
+  const fallbackPath = parseNavigateFromRawMessage(payload.message);
+
+  if (fallbackPath) {
+    onNavigate(fallbackPath);
+
+    return buildNavigationReply(fallbackPath);
   }
 
   return payload.message?.trim() || "I could not generate a response.";
