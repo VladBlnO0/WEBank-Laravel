@@ -15,7 +15,7 @@ export function AiOperatorChat() {
     {
       id: 1,
       role: "ai",
-      text: "Hello! I'm your site assistant. How can I help you navigate today?",
+      text: "Hello! I'm your site assistant. How can I help you today?",
     },
   ]);
   const [input, setInput] = useState("");

@@ -1,4 +1,3 @@
-import "@/../../resources/css/animation-fade-up.css";
 import BankCardSection from "@/components/dashboard-card-section";
 import TransactionsSection from "@/components/transactions-section";
 import type { CardData, PaginatedData, Transaction } from "@/types";
