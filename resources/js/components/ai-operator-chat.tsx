@@ -21,7 +21,7 @@ export function AiOperatorChat() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSend = async (e: React.FormEvent) => {
+  const handleSend = async (e: React.SubmitEvent) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 

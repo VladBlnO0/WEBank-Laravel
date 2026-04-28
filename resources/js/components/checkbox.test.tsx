@@ -5,8 +5,9 @@ import Checkbox from "./checkbox";
 
 test("renders checkbox input", () => {
   render(<Checkbox />);
-  const input = screen.getByRole("checkbox");
+  const input = screen.getByTestId("checkbox");
   expect(input).toBeDefined();
+  screen.debug(input);
 });
 
 test("accepts and applies custom className", () => {

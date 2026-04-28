@@ -5,9 +5,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
-$faqContent = 'To change your password, click on your profile settings and select the password change option in the account security section.';
-
-test('ai chat sends faq context to groq', function () use ($faqContent) {
+test('ai chat sends faq context to groq', function () {
+    $faqContent = 'To change your password, click on your profile settings and select the password change option in the account security section.';
     $userId = DB::table('users')->insertGetId([
         'email' => 'faq-user@example.com',
         'password' => 'not-used-for-this-test',

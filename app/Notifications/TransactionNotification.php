@@ -3,15 +3,20 @@
 namespace App\Notifications;
 
 use App\Models\Transaction;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Str;
 
-class TransactionNotification extends Notification
+class TransactionNotification extends Notification implements ShouldQueue
 {
+    use Queueable;
+
     public function __construct(
         private Transaction $transaction
-    ) {}
+    ) {
+    }
 
     public function via($notifiable): array
     {
@@ -33,14 +38,14 @@ class TransactionNotification extends Notification
         if ($isSender) {
             return (new MailMessage)
                 ->subject('Transfer Sent Successfully')
-                ->line("You sent \${$this->transaction->amount} from card **** {$fromCardLast4} to card **** {$toCardLast4}.")
+                ->line("You sent \${$this->transaction->amount} from card **** $fromCardLast4 to card **** $toCardLast4.")
                 ->action('View Dashboard', route('user.dashboard.index'))
                 ->line('Thank you for using our application!');
         }
 
         return (new MailMessage)
             ->subject('Money Received!')
-            ->line("You received \${$this->transaction->amount} on card **** {$toCardLast4} from card **** {$fromCardLast4}.")
+            ->line("You received \${$this->transaction->amount} on card **** $toCardLast4 from card **** $fromCardLast4.")
             ->action('View Dashboard', route('user.dashboard.index'))
             ->line('Thank you for using our application!');
     }
@@ -51,8 +56,8 @@ class TransactionNotification extends Notification
         $fromCardLast4 = $this->lastFour($this->transaction->fromCard->pan);
         $toCardLast4 = $this->lastFour($this->transaction->toCard->pan);
         $message = $isSender
-            ? "You sent \${$this->transaction->amount} from card **** {$fromCardLast4} to card **** {$toCardLast4}."
-            : "You received \${$this->transaction->amount} on card **** {$toCardLast4} from card **** {$fromCardLast4}.";
+            ? "You sent \${$this->transaction->amount} from card **** $fromCardLast4 to card **** $toCardLast4."
+            : "You received \${$this->transaction->amount} on card **** $toCardLast4 from card **** $fromCardLast4.";
 
         return [
             'transaction_id' => $this->transaction->id,

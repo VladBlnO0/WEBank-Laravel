@@ -73,9 +73,9 @@ test('successful transfer creates a transaction and notifies both users', functi
         ->assertSessionHas('status', 'Transfer was made!')
         ->assertSessionHas('status_type', 'success');
 
-    expect(Transaction::query()->count())->toBe(1);
-    expect((float) $fromCard->fresh()->balance)->toBe(874.75);
-    expect((float) $toCard->fresh()->balance)->toBe(625.25);
+    expect(Transaction::query()->count())->toBe(1)
+        ->and((float) $fromCard->fresh()->balance)->toBe(874.75)
+        ->and((float) $toCard->fresh()->balance)->toBe(625.25);
 
     Notification::assertSentTo($sender, TransactionNotification::class);
     Notification::assertSentTo($recipient, TransactionNotification::class);

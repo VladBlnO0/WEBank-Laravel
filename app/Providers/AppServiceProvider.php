@@ -56,7 +56,7 @@ class AppServiceProvider extends ServiceProvider
 
     protected function configureEmbeddings(): void
     {
-        Stringable::macro('toEmbeddings', function (bool $cache = true): array {
+        Stringable::macro('toEmbeddings', function (): array {
             $text = mb_strtolower((string) $this);
             $dimensions = 1536;
             $embedding = array_fill(0, $dimensions, 0.0);

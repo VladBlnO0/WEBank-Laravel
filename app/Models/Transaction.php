@@ -10,10 +10,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+use function is_array;
+use function is_int;
+
 #[Fillable([
     'from_card_id',
     'to_card_id',
     'amount',
+    'made_at',
 ])]
 class Transaction extends Model
 {
@@ -78,7 +82,7 @@ class Transaction extends Model
             return $cards->toArray();
         }
 
-        return \is_array($cards) ? $cards : [$cards];
+        return is_array($cards) ? $cards : [$cards];
     }
 
     public function scopeByCard(Builder $query, mixed $cards): Builder
@@ -93,14 +97,14 @@ class Transaction extends Model
 
     public function scopeCurrentMonthOutflow(Builder $query, Collection|array|int $cards): Builder
     {
-        $values = \is_int($cards) ? [$cards] : $cards;
+        $values = is_int($cards) ? [$cards] : $cards;
 
         return $query->currentMonth()->whereIn('from_card_id', $this->extractCardIds($values));
     }
 
     public function scopeCurrentMonthInflow(Builder $query, Collection|array|int $cards): Builder
     {
-        $values = \is_int($cards) ? [$cards] : $cards;
+        $values = is_int($cards) ? [$cards] : $cards;
 
         return $query->currentMonth()->whereIn('to_card_id', $this->extractCardIds($values));
     }

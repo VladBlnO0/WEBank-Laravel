@@ -1,7 +1,7 @@
 import Pagination from "@/components/pagination";
 import type { CardData, PaginatedData, Transaction } from "@/types";
 import { router, useForm } from "@inertiajs/react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const CLICK_DEBOUNCE_MS = 1200;
 const EXPORT_COOLDOWN_MS = 5 * 60 * 1000;

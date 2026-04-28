@@ -45,9 +45,6 @@ export default function NotificationIndex({
   notifications,
 }: NotificationIndexProps) {
   const notificationItems = notifications?.data ?? [];
-  const unreadCount = notificationItems.filter(
-    (notification) => !notification.read_at,
-  ).length;
 
   const formatDate = (date: string): string => {
     return new Date(date).toLocaleString(undefined, {

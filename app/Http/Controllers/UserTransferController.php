@@ -70,7 +70,7 @@ class UserTransferController extends Controller
         );
 
         $toCard = Card::query()->where('pan', $validated['to_card_pan'])->first();
-        if (! $toCard) {
+        if (!$toCard) {
             return back()
                 ->with('status', 'Recipient card was not found.')
                 ->with('status_type', 'error');

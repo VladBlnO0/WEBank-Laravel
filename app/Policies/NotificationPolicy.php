@@ -7,7 +7,7 @@ use Illuminate\Notifications\DatabaseNotification;
 
 class NotificationPolicy
 {
-    public function delete(User $user, DatabaseNotification $databaseNotification)
+    public function delete(User $user, DatabaseNotification $databaseNotification): bool
     {
         return $user->id === $databaseNotification->notifiable_id;
     }

@@ -6,6 +6,7 @@ export default function Checkbox({
 }: InputHTMLAttributes<HTMLInputElement>) {
   return (
     <input
+    data-testid="checkbox"
       {...props}
       type="checkbox"
       className={

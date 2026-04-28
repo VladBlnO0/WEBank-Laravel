@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm, usePage, router } from "@inertiajs/react";
 import axios from "axios";
 
@@ -8,7 +8,7 @@ export default function TwoFactorAuthenticationForm({ className = "" }: { classN
   const [enabling, setEnabling] = useState(false);
   const [qrCode, setQrCode] = useState<string | null>(null);
 
-  const { data, setData, post, processing, errors, clearErrors, reset } = useForm({
+  const { data, setData, post, processing, errors, reset } = useForm({
     code: "",
   });
 
@@ -29,14 +29,13 @@ export default function TwoFactorAuthenticationForm({ className = "" }: { classN
     );
   };
 
-  const showQrCode = () => {
+  const showQrCode = async () => {
     // Fortify returns the QR code as a raw SVG string inside a JSON response
-    return axios.get("/user/two-factor-qr-code").then((response) => {
-      setQrCode(response.data.svg);
-    });
+    const response = await axios.get("/user/two-factor-qr-code");
+    setQrCode(response.data.svg);
   };
 
-  const confirmTwoFactorAuthentication = (e: React.FormEvent) => {
+  const confirmTwoFactorAuthentication = (e: React.SubmitEvent) => {
     e.preventDefault();
     // Fortify endpoint to confirm the code from the Authenticator App
     post("/user/confirmed-two-factor-authentication", {

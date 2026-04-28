@@ -138,7 +138,7 @@ test('transactions can be exported as csv with signed amounts', function () {
 
     $content = $response->streamedContent();
 
-    expect($content)->toContain('direction');
-    expect($content)->toContain('-40.00');
-    expect($content)->toContain('25.00');
+    expect($content)->toContain('direction')
+        ->and($content)->toContain('-40.00')
+        ->and($content)->toContain('25.00');
 });

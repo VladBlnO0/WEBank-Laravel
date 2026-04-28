@@ -56,7 +56,7 @@ function parseNavigateFromRawMessage(message: string | null): string | null {
     return toNavigatePath(attrMatch[1]);
   }
 
-  const jsonMatch = message.match(/<?navigateTo[\s>]*(\{[\s\S]*?\})/i);
+  const jsonMatch = message.match(/<?navigateTo[\s>]*(\{[\s\S]*?})/i);
 
   if (jsonMatch?.[1]) {
     try {

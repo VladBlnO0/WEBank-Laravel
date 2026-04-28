@@ -10,7 +10,7 @@ import {
   CreditCard,
   DollarSign,
 } from "lucide-react";
-import { useEffect, type ChangeEvent } from "react";
+import React, { useEffect, type ChangeEvent } from "react";
 
 interface TransferProps {
   filters: {
@@ -83,7 +83,7 @@ export default function Transfer({
     }
   }, [selectedCard, setData]);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = (e: React.SubmitEvent) => {
     e.preventDefault();
     post(route("user.transfer.store"), {
       preserveScroll: true,
