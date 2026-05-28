@@ -15,8 +15,7 @@ class TransactionNotification extends Notification implements ShouldQueue
 
     public function __construct(
         private Transaction $transaction
-    ) {
-    }
+    ) {}
 
     public function via($notifiable): array
     {

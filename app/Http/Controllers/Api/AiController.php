@@ -57,11 +57,11 @@ class AiController extends Controller
                         [
                             'role' => 'system',
                             'content' => "You are a helpful banking site assistant. Answer briefly and conversationally.\n".
-                              "IMPORTANT RULES:\n".
-                              "1. NEVER output XML tags, HTML tags, `<function>`, or `<navigateTo>` in your text response. NEVER leak raw JSON.\n".
-                              "2. ONLY use the official `tool_calls` API feature if the user EXPLICITLY asks to 'open', 'go to', or 'navigate' to a page. \n".
-                              "3. If the user is just asking a question (e.g., 'how do I transfer?'), DO NOT navigate. Just answer the question using the knowledge provided below.\n\n".
-                              "Knowledge:\n".$knowledgeContext,
+                                "IMPORTANT RULES:\n".
+                                "1. NEVER output XML tags, HTML tags, `<function>`, or `<navigateTo>` in your text response. NEVER leak raw JSON.\n".
+                                "2. ONLY use the official `tool_calls` API feature if the user EXPLICITLY asks to 'open', 'go to', or 'navigate' to a page. \n".
+                                "3. If the user is just asking a question (e.g., 'how do I transfer?'), DO NOT navigate. Just answer the question using the knowledge provided below.\n\n".
+                                "Knowledge:\n".$knowledgeContext,
                         ],
                         [
                             'role' => 'user',

@@ -17,7 +17,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 #[Hidden(columns: ['password', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable,  TwoFactorAuthenticatable;
+    use HasFactory, Notifiable, TwoFactorAuthenticatable;
 
     protected function password(): Attribute
     {

@@ -3,7 +3,8 @@ import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { chatWithOperator } from "./groq";
 
 beforeEach(() => {
-  document.head.innerHTML = '<meta name="csrf-token" content="test-csrf-token">';
+  document.head.innerHTML =
+    '<meta name="csrf-token" content="test-csrf-token">';
 });
 
 afterEach(() => {

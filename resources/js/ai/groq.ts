@@ -48,7 +48,6 @@ function parseNavigateFromRawMessage(message: string | null): string | null {
     return null;
   }
 
-  // Make < optional
   const attrMatch = message.match(
     /<?navigateTo[^>]*path=["']([^"']+)["'][^>]*>/i,
   );
