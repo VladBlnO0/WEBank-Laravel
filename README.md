@@ -1,6 +1,7 @@
 # Web Banking
 
-SPA created with MVC using Laravel, React, and Inertia. 
+SPA created with MVC using Laravel, React, and Inertia.
+
 Implemented AI with RAG for FAQ and as a tool for navigation.
 
 ## Technologies

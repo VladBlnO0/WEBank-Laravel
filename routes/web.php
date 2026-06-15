@@ -14,6 +14,7 @@ Route::get('/', fn () => redirect()->route('user.dashboard.index'));
 Route::resource('notification', NotificationController::class)
     ->middleware('auth')
     ->only(['index']);
+
 Route::put(
     'notification/{notification}/seen',
     NotificationSeenController::class
@@ -32,9 +33,9 @@ Route::prefix('user')
 
 Route::middleware('auth')->group(function () {
     // Route::get('cards/{card}/transactions', [TransactionController::class, 'index'])->name('cards.transactions');
-
     // Profile routes
 });
+
 Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
 Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
@@ -47,6 +48,7 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 
     return redirect()->route('user.dashboard.index')
         ->with('status', 'Email was verified!');
+
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
 // Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
