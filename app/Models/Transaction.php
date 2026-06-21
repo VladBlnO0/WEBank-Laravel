@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -13,6 +14,38 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use function is_array;
 use function is_int;
 
+/**
+ * @property int $id
+ * @property int $from_card_id
+ * @property int $to_card_id
+ * @property numeric $amount
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
+ * @property-read Card|null $card
+ * @property-read Card $fromCard
+ * @property-read string|null $from_card_last4
+ * @property-read Card $toCard
+ * @property-read string|null $to_card_last4
+ *
+ * @method static Builder<Transaction>|Transaction byCard(?mixed $cards)
+ * @method static Builder<static>|Transaction currentMonth()
+ * @method static Builder<static>|Transaction currentMonthInflow(\Illuminate\Database\Eloquent\Collection|array|int $cards)
+ * @method static Builder<static>|Transaction currentMonthOutflow(\Illuminate\Database\Eloquent\Collection|array|int $cards)
+ * @method static \Database\Factories\TransactionFactory factory($count = null, $state = [])
+ * @method static Builder<static>|Transaction filter(array $filters, array $userCardIds = [])
+ * @method static Builder<static>|Transaction forUser(\App\Models\User $user)
+ * @method static Builder<static>|Transaction newModelQuery()
+ * @method static Builder<static>|Transaction newQuery()
+ * @method static Builder<static>|Transaction query()
+ * @method static Builder<static>|Transaction whereAmount($value)
+ * @method static Builder<static>|Transaction whereCreatedAt($value)
+ * @method static Builder<static>|Transaction whereFromCardId($value)
+ * @method static Builder<static>|Transaction whereId($value)
+ * @method static Builder<static>|Transaction whereToCardId($value)
+ * @method static Builder<static>|Transaction whereUpdatedAt($value)
+ *
+ * @mixin \Eloquent
+ */
 #[Fillable([
     'from_card_id',
     'to_card_id',
@@ -45,24 +78,30 @@ class Transaction extends Model
 
     protected function fromCardLast4(): Attribute
     {
-        return Attribute::get(function (): ?string {
-            return $this->fromCard?->pan ? substr($this->fromCard->pan, -4) : null;
+        return Attribute::get(function (): string {
+            return substr($this->fromCard->pan, -4);
         });
     }
 
     protected function toCardLast4(): Attribute
     {
-        return Attribute::get(function (): ?string {
-            return $this->toCard?->pan ? substr($this->toCard->pan, -4) : null;
+        return Attribute::get(function (): string {
+            return substr($this->toCard->pan, -4);
         });
     }
 
+    /**
+     * @param  Builder<Transaction>  $query
+     */
     public function scopeCurrentMonth(Builder $query): Builder
     {
         return $query->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year);
     }
 
+    /**
+     * @param  Builder<Transaction>  $query
+     */
     public function scopeForUser(Builder $query, User $user): Builder
     {
         $cardIds = $user->cards()->pluck('id')->all();
@@ -85,6 +124,9 @@ class Transaction extends Model
         return is_array($cards) ? $cards : [$cards];
     }
 
+    /**
+     * @param  Builder<Transaction>  $query
+     */
     public function scopeByCard(Builder $query, mixed $cards): Builder
     {
         $values = $this->extractCardIds($cards);
@@ -95,6 +137,9 @@ class Transaction extends Model
         });
     }
 
+    /**
+     * @param  Builder<Transaction>  $query
+     */
     public function scopeCurrentMonthOutflow(Builder $query, Collection|array|int $cards): Builder
     {
         $values = is_int($cards) ? [$cards] : $cards;
@@ -102,6 +147,9 @@ class Transaction extends Model
         return $query->currentMonth()->whereIn('from_card_id', $this->extractCardIds($values));
     }
 
+    /**
+     * @param  Builder<Transaction>  $query
+     */
     public function scopeCurrentMonthInflow(Builder $query, Collection|array|int $cards): Builder
     {
         $values = is_int($cards) ? [$cards] : $cards;

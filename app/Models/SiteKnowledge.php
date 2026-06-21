@@ -7,6 +7,23 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+/**
+ * @property int $id
+ * @property string $content
+ * @property array<array-key, mixed> $embedding
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
+ * @method static Builder<static>|SiteKnowledge newModelQuery()
+ * @method static Builder<static>|SiteKnowledge newQuery()
+ * @method static Builder<static>|SiteKnowledge query()
+ * @method static Builder<static>|SiteKnowledge similarTo(string $message, float $minSimilarity = 0.4)
+ * @method static Builder<static>|SiteKnowledge whereContent($value)
+ * @method static Builder<static>|SiteKnowledge whereCreatedAt($value)
+ * @method static Builder<static>|SiteKnowledge whereEmbedding($value)
+ * @method static Builder<static>|SiteKnowledge whereId($value)
+ * @method static Builder<static>|SiteKnowledge whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 #[Fillable(['content', 'embedding'])]
 class SiteKnowledge extends Model
 {
