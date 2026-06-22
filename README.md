@@ -19,11 +19,15 @@ Implemented AI with RAG for FAQ and as a tool for navigation.
 ## Getting Started
 
 1. Clone the repository
+
    ```sh
    gh repo clone VladBlnO0/WEBank-Laravel
    ```
+
 2. Run command
+
     ```sh
     composer run dev
     ```
+
 3. Configure the `.env` and enter API key
